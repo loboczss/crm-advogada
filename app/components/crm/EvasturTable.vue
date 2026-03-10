@@ -16,10 +16,8 @@
       <template #header>
         <div class="px-8 py-7 border-b border-border-light dark:border-white/5 flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between bg-surface-light dark:bg-white/5 shadow-inner">
           <div class="flex items-center gap-4">
-            <div class="p-3 bg-primary/10 rounded-2xl shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-primary">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-              </svg>
+            <div class="p-3 bg-blue-500/10 rounded-2xl shadow-sm">
+              <Icon name="ph:users-three-duotone" class="w-5 h-5 text-blue-500" />
             </div>
             <div>
               <h2 class="text-lg font-black text-text-light dark:text-white mb-0.5">Leads e Contatos</h2>
@@ -35,9 +33,7 @@
                 placeholder="Pesquisa rápida..."
                 class="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border-none bg-white dark:bg-background-dark/50 ring-1 ring-border-light dark:ring-white/10 text-text-light dark:text-white placeholder:text-text-light/30 focus:ring-2 focus:ring-primary/40 transition-all duration-300 shadow-sm"
               />
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-text-light/30">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
+              <Icon name="ph:magnifying-glass-bold" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             </div>
             <div class="px-4 py-2 bg-primary/5 rounded-xl border border-primary/10 whitespace-nowrap">
               <p class="text-[10px] font-black uppercase tracking-widest text-primary">
@@ -68,11 +64,8 @@
 
       <template #cell-localizacao="{ item: record }">
         <div class="flex flex-col gap-1.5 items-start">
-          <p class="text-xs font-bold text-text-light/50 dark:text-text-dark/40 tracking-tight flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-            </svg>
+          <p class="text-xs font-bold text-slate-500 dark:text-gray-400 tracking-tight flex items-center gap-2">
+            <Icon name="ph:map-pin-bold" class="w-3.5 h-3.5" />
             {{ record.cidade || 'Não informado' }}
           </p>
           <p v-if="record.nome_social" class="font-black text-[10px] text-primary tracking-widest uppercase">
@@ -90,15 +83,21 @@
             <span class="w-1.5 h-1.5 rounded-full mr-2" :class="getUrgencyClass(record.urgencia, true)"></span>
             {{ record.urgencia || 'Média' }}
           </span>
-          <svg v-if="record.sentimento?.toLowerCase().includes('positivo')" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-success">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
-          </svg>
-          <svg v-else-if="record.sentimento?.toLowerCase().includes('neutro')" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-warning">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-danger">
-             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
-          </svg>
+          <Icon 
+            v-if="record.sentimento?.toLowerCase().includes('positivo')" 
+            name="ph:smiley-bold" 
+            class="w-5 h-5 text-emerald-500" 
+          />
+          <Icon 
+            v-else-if="record.sentimento?.toLowerCase().includes('neutro')" 
+            name="ph:minus-circle-bold" 
+            class="w-5 h-5 text-amber-500" 
+          />
+          <Icon 
+            v-else 
+            name="ph:smiley-angry-bold" 
+            class="w-5 h-5 text-rose-500" 
+          />
         </div>
       </template>
 
@@ -118,23 +117,19 @@
         <div class="flex items-center justify-end gap-2 pr-2">
           <button 
             @click.stop="emits('edit', record)"
-            class="p-2.5 rounded-xl text-text-light/10 dark:text-text-dark/10 hover:text-primary hover:bg-primary/10 hover:ring-1 hover:ring-primary/20 transition-all duration-400 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
+            class="p-2.5 rounded-xl text-slate-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
             title="Editar"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-            </svg>
+            <Icon name="ph:pencil-simple-bold" class="w-4 h-4" />
           </button>
           
           <button 
             v-if="record.id"
             @click.stop="emits('delete', record.id!)"
-            class="p-2.5 rounded-xl text-text-light/10 dark:text-text-dark/10 hover:text-danger hover:bg-danger/10 hover:ring-1 hover:ring-danger/20 transition-all duration-400 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 delay-75"
+            class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 delay-75"
             title="Excluir"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-            </svg>
+            <Icon name="ph:trash-bold" class="w-4 h-4" />
           </button>
         </div>
       </template>

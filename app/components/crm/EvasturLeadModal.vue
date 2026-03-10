@@ -164,24 +164,23 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="mt-8 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-slate-100 dark:border-white/10">
-        <button
-          type="button"
+        <Button
+          variant="secondary"
           @click="emit('close')"
-          class="px-6 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold transition-all w-full sm:w-auto text-sm sm:text-base"
+          class="w-full sm:w-auto"
         >
           Cancelar
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          :disabled="loading"
-          class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-8 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto text-sm sm:text-base"
+          variant="primary"
+          :loading="loading"
+          :icon="isEdit ? 'ph:check-bold' : 'ph:plus-bold'"
+          class="w-full sm:w-auto px-8"
         >
-          <Icon v-if="loading" name="ph:circle-notch-bold" class="animate-spin" />
-          <Icon v-else :name="isEdit ? 'ph:check-bold' : 'ph:plus-bold'" />
-          {{ loading ? 'Salvando...' : (isEdit ? 'Salvar Alterações' : 'Criar Lead') }}
-        </button>
+          {{ isEdit ? 'Salvar Alterações' : 'Criar Lead' }}
+        </Button>
       </div>
     </form>
   </Modal>
@@ -190,6 +189,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch, computed } from 'vue'
 import Modal from '../Modal.vue'
+import Button from '../Button.vue'
 
 import type { CrmEvasturDTO } from '../../../shared/types/CrmEvasturDTO'
 
