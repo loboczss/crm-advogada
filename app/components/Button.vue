@@ -49,10 +49,3 @@ const sizeClasses = computed(() => {
   return sizes[props.size]
 })
 </script>
-
-<style scoped>
-button {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>

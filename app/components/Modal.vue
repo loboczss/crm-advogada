@@ -115,7 +115,3 @@ function handleClose() {
   emit('close')
 }
 </script>
-
-<style scoped>
-/* Any global specific modal styles can go here */
-</style>

@@ -258,26 +258,3 @@ const visiblePages = computed(() => {
   return pages
 })
 </script>
-
-<style scoped>
-.shadow-glow-primary {
-  box-shadow: 0 0 12px -2px rgba(59, 130, 246, 0.3);
-}
-
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-.list-enter-from {
-  opacity: 0;
-  transform: translateY(20px) scale(0.98);
-}
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(-30px) scale(0.95);
-}
-.list-leave-active {
-  position: absolute;
-  width: 100%;
-}
-</style>

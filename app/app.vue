@@ -32,29 +32,6 @@ useHead({
 </script>
 
 <style>
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.font-sans {
-  font-family: 'Inter', sans-serif;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.5);
-}
+/* Estilos globais movidos para app/assets/css/main.css */
 </style>
 

@@ -37,10 +37,3 @@ defineProps<{
   loading?: boolean;
 }>()
 </script>
-
-<style scoped>
-/* Force clear cache */
-.kpi-wrapper {
-  display: block;
-}
-</style>

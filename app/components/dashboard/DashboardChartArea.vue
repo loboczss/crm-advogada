@@ -376,23 +376,3 @@ const tooltipStyle = computed(() => {
   }
 })
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active { transition: opacity 0.15s ease; }
-.fade-enter-from,
-.fade-leave-to    { opacity: 0; }
-
-/* Thin scrollbar for the chart */
-.scrollbar-thin {
-  scrollbar-width: thin;
-  scrollbar-color: #e2e8f0 transparent;
-}
-.dark .scrollbar-thin {
-  scrollbar-color: #334155 transparent;
-}
-.scrollbar-thin::-webkit-scrollbar        { height: 4px; }
-.scrollbar-thin::-webkit-scrollbar-track  { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb  { background: #e2e8f0; border-radius: 2px; }
-.dark .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; }
-</style>
