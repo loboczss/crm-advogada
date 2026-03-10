@@ -43,6 +43,11 @@
                   {{ loginLoading ? 'Entrando...' : 'Entrar' }}
                 </Button>
 
+                <div class="text-center pt-2">
+                  <NuxtLink to="/privacidade" class="text-xs text-gray-400 hover:text-blue-500 transition-colors uppercase tracking-widest font-bold italic">
+                    Leia nossa política de privacidade
+                  </NuxtLink>
+                </div>
               </form>
             </div>
 
@@ -60,7 +65,7 @@
 
                 <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                   <input v-model="signupForm.acceptTerms" type="checkbox" class="rounded border-border-light dark:border-border-dark" />
-                  Aceito os termos e politicas
+                  Aceito os <NuxtLink to="/privacidade" class="text-blue-600 underline hover:text-blue-700 transition-colors">termos e políticas</NuxtLink>
                 </label>
 
                 <p v-if="signupError" class="text-sm text-danger dark:text-danger-300">{{ signupError }}</p>

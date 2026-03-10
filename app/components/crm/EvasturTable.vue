@@ -2,7 +2,7 @@
   <div id="evastur-table-container">
     <DataTable
       :columns="columns"
-      :data="filteredRecords"
+      :data="records"
       key-field="id"
       :loading="loading"
       :total="total"
@@ -143,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, watch } from 'vue'
 import type { CrmEvasturDTO } from '~/../shared/types/CrmEvasturDTO'
 import DataTable from '../DataTable.vue'
 import type { ColumnDef } from '../DataTable.vue'
@@ -161,17 +161,17 @@ const emits = defineEmits<{
   delete: [id: number]
   changePage: [page: number]
   'row-click': [record: CrmEvasturDTO]
+  search: [query: string]
 }>()
 
 const search = ref('')
 
-const filteredRecords = computed(() => {
-  const q = search.value.toLowerCase()
-  if (!q) return props.records
-  return props.records.filter(r => 
-    (r.nome ?? '').toLowerCase().includes(q) || 
-    (r.email ?? '').toLowerCase().includes(q)
-  )
+let debounceTimer: any = null
+watch(search, (val) => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    emits('search', val)
+  }, 400)
 })
 
 const columns: ColumnDef[] = [

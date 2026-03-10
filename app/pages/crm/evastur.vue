@@ -73,7 +73,6 @@ onMounted(() => {
     <!-- Header with Search and Add -->
     <CrmEvasturHeader 
       @add="openAddModal" 
-      @search="crmStore.setSearch"
     />
 
     <!-- Stats Overview -->
@@ -93,6 +92,7 @@ onMounted(() => {
       @delete="handleDeleteLead"
       @change-page="crmStore.goToPage"
       @row-click="openDetailModal"
+      @search="crmStore.setSearch"
     />
 
     <!-- Detail Modal -->

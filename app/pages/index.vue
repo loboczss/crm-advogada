@@ -87,16 +87,15 @@
             :loading="loading"
           />
         </section>
-
         <!-- Charts Area -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2">
-            <DashboardChartArea :chartData="chartData" />
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+          <div class="lg:col-span-2 h-full">
+            <DashboardChartArea :chartData="chartData" class="h-full"></DashboardChartArea>
           </div>
           
           <!-- Quick Summary -->
-          <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl h-full shadow-sm dark:shadow-none flex flex-col">
+          <div class="lg:col-span-1 h-full">
+            <div class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm dark:shadow-none flex flex-col h-full">
               <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Resumo Rápido</h3>
               <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Métricas consolidadas do período selecionado.</p>
               
@@ -211,11 +210,11 @@
                       <div class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -top-1 left-1/2 -translate-x-1/2"></div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+                </div> <!-- End Grid Stats -->
+              </div> <!-- End space-y-5 -->
+            </div> <!-- End root card context -->
+          </div> <!-- End lg:col-span-1 -->
+        </section> <!-- End main charts section -->
 
       </main>
     </div>

@@ -37,7 +37,7 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/confirm',
       include: undefined,
-      exclude: ['/recovery'],
+      exclude: ['/recovery', '/privacidade'],
       saveRedirectToCookie: false
     },
     cookieOptions: {

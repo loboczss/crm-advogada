@@ -1,7 +1,7 @@
 <template>
   <div
     id="dashboard-chart-area"
-    class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl relative shadow-sm dark:shadow-none"
+    class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl relative shadow-sm dark:shadow-none h-full flex flex-col"
   >
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Chart Scroll Wrapper -->
-    <div class="overflow-x-auto -mx-1 px-1 scrollbar-thin" ref="wrapperRef">
+    <div class="overflow-x-auto -mx-1 px-1 scrollbar-thin flex-1 flex items-center" ref="wrapperRef">
       <div :style="{ minWidth: chartMinWidth }" class="relative">
 
         <!-- SVG Chart -->
