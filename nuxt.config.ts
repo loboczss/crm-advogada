@@ -9,9 +9,14 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   app: {
     head: {
-      title: 'Evastur - CRM & Sales',
+      title: 'Evastur Cloud',
+      meta: [
+        { name: 'description', content: 'Plataforma inteligente de CRM e gestão Evastur' },
+        { name: 'theme-color', content: '#2f81f7' }
+      ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/icon-white.svg' }
+        { rel: 'icon', type: 'image/svg+xml', href: '/icon-white.svg' },
+        { rel: 'apple-touch-icon', href: '/icon-white.svg' }
       ]
     }
   },
@@ -31,27 +36,34 @@ export default defineNuxtConfig({
       short_name: 'Evastur',
       description: 'Plataforma inteligente de CRM e gestão Evastur',
       theme_color: '#2f81f7',
+      background_color: '#ffffff',
       icons: [
         {
-          src: '/icon-blue.svg',
+          src: '/icon-192.png',
           sizes: '192x192',
-          type: 'image/svg+xml',
-          purpose: 'any maskable'
+          type: 'image/png',
+          purpose: 'any'
         },
         {
-          src: '/icon-blue.svg',
+          src: '/icon-512.png',
           sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/icon-white.svg',
+          sizes: 'any',
           type: 'image/svg+xml',
-          purpose: 'any maskable'
+          purpose: 'maskable'
         }
       ],
       start_url: '/',
-      display: 'standalone',
-      background_color: '#ffffff'
+      display: 'standalone'
     },
     workbox: {
       navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+      // Limit globPatterns to files that actually exist in public/ during build
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,json}']
     },
     client: {
       installPrompt: true,
@@ -59,7 +71,9 @@ export default defineNuxtConfig({
     },
     devOptions: {
       enabled: true,
-      type: 'module'
+      type: 'module',
+      suppressWarnings: true,
+      navigateFallbackAllowlist: [/^\/$/]
     }
   },
   css: ['~/assets/css/main.css'],
