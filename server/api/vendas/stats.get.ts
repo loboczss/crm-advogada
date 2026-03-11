@@ -18,6 +18,10 @@ export default defineEventHandler(async (event) => {
         if (query.valorMin) q = q.gte('valor_venda', Number(query.valorMin))
         if (query.valorMax) q = q.lte('valor_venda', Number(query.valorMax))
         if (query.valorExato) q = q.eq('valor_venda', Number(query.valorExato))
+        if (query.search) {
+            const search = query.search as string
+            q = q.or(`contact_name.ilike.%${search}%,contato_id.eq.${search}`)
+        }
         return q
     }
 

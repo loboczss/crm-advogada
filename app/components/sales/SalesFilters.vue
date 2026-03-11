@@ -12,7 +12,26 @@
       </button>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- Search Input -->
+      <div class="flex flex-col gap-1.5 lg:col-span-1">
+        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Pesquisar cliente/ID</label>
+        <div class="relative">
+          <input
+            id="filter-search"
+            v-model="filters.search"
+            type="text"
+            placeholder="Nome ou contato_id..."
+            class="filter-input pr-10"
+            @input="emit('change', toQueryParams())"
+          />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
       <!-- Date Range -->
       <div class="flex flex-col gap-1.5">
@@ -90,62 +109,66 @@
 import { reactive, computed } from 'vue'
 
 export interface SalesFilterParams {
-  startDate?: string
-  endDate?: string
-  valorMin?: number
-  valorMax?: number
-  valorExato?: number
-  valorAprox?: number
+    startDate?: string
+    endDate?: string
+    valorMin?: number
+    valorMax?: number
+    valorExato?: number
+    valorAprox?: number
+    search?: string
 }
 
 const emit = defineEmits<{ change: [params: SalesFilterParams] }>()
 
 const filters = reactive({
-  startDate: '',
-  endDate: '',
-  valorModo: '' as '' | 'exato' | 'aprox' | 'min' | 'max' | 'range',
-  valorExato: null as number | null,
-  valorAprox: null as number | null,
-  valorMin: null as number | null,
-  valorMax: null as number | null,
+    startDate: '',
+    endDate: '',
+    valorModo: '' as '' | 'exato' | 'aprox' | 'min' | 'max' | 'range',
+    valorExato: null as number | null,
+    valorAprox: null as number | null,
+    valorMin: null as number | null,
+    valorMax: null as number | null,
+    search: '',
 })
 
 const hasActiveFilters = computed(() =>
-  !!(filters.startDate || filters.endDate || filters.valorModo)
+    !!(filters.startDate || filters.endDate || filters.valorModo || filters.search)
 )
 
 function resetValueInputs() {
-  filters.valorExato = null
-  filters.valorAprox = null
-  filters.valorMin = null
-  filters.valorMax = null
-  emit('change', toQueryParams())
+    filters.valorExato = null
+    filters.valorAprox = null
+    filters.valorMin = null
+    filters.valorMax = null
+    emit('change', toQueryParams())
 }
 
 function toQueryParams(): SalesFilterParams {
-  const params: SalesFilterParams = {}
-  if (filters.startDate) params.startDate = filters.startDate
-  if (filters.endDate) params.endDate = filters.endDate
-  if (filters.valorModo === 'exato' && filters.valorExato != null) params.valorExato = filters.valorExato
-  if (filters.valorModo === 'aprox' && filters.valorAprox != null) params.valorAprox = filters.valorAprox
-  if (filters.valorModo === 'min' && filters.valorMin != null) params.valorMin = filters.valorMin
-  if (filters.valorModo === 'max' && filters.valorMax != null) params.valorMax = filters.valorMax
-  if (filters.valorModo === 'range') {
-    if (filters.valorMin != null) params.valorMin = filters.valorMin
-    if (filters.valorMax != null) params.valorMax = filters.valorMax
-  }
-  return params
+    const params: SalesFilterParams = {}
+    if (filters.startDate) params.startDate = filters.startDate
+    if (filters.endDate) params.endDate = filters.endDate
+    if (filters.search) params.search = filters.search
+    if (filters.valorModo === 'exato' && filters.valorExato != null) params.valorExato = filters.valorExato
+    if (filters.valorModo === 'aprox' && filters.valorAprox != null) params.valorAprox = filters.valorAprox
+    if (filters.valorModo === 'min' && filters.valorMin != null) params.valorMin = filters.valorMin
+    if (filters.valorModo === 'max' && filters.valorMax != null) params.valorMax = filters.valorMax
+    if (filters.valorModo === 'range') {
+        if (filters.valorMin != null) params.valorMin = filters.valorMin
+        if (filters.valorMax != null) params.valorMax = filters.valorMax
+    }
+    return params
 }
 
 function clearFilters() {
-  filters.startDate = ''
-  filters.endDate = ''
-  filters.valorModo = ''
-  filters.valorExato = null
-  filters.valorAprox = null
-  filters.valorMin = null
-  filters.valorMax = null
-  emit('change', {})
+    filters.startDate = ''
+    filters.endDate = ''
+    filters.search = ''
+    filters.valorModo = ''
+    filters.valorExato = null
+    filters.valorAprox = null
+    filters.valorMin = null
+    filters.valorMax = null
+    emit('change', {})
 }
 </script>
 

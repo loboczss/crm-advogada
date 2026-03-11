@@ -68,6 +68,17 @@
               :class="isActive('/crm/evastur') ? 'w-full' : 'w-0 group-hover/link:w-full'"
             ></span>
           </NuxtLink>
+          <NuxtLink 
+            to="/eva" 
+            class="text-[10px] lg:text-[11px] font-black uppercase tracking-[.25em] transition-all relative group/link py-2 select-none"
+            :class="isActive('/eva') ? 'text-primary dark:text-white' : 'text-slate-500 dark:text-gray-400 hover:text-primary dark:hover:text-white'"
+          >
+            EVA
+            <span 
+              class="absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 shadow-glow-primary"
+              :class="isActive('/eva') ? 'w-full' : 'w-0 group-hover/link:w-full'"
+            ></span>
+          </NuxtLink>
 
         </nav>
 
@@ -134,6 +145,15 @@
       >
         CRM
         <span v-if="isActive('/crm/evastur')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-glow-primary"></span>
+      </NuxtLink>
+      <NuxtLink 
+        @click="isMobileMenuOpen = false" 
+        to="/eva" 
+        class="block text-[11px] font-black uppercase tracking-[.25em] transition-colors relative"
+        :class="isActive('/eva') ? 'text-primary dark:text-white pl-3' : 'text-slate-500 dark:text-gray-400 hover:text-primary dark:hover:text-white'"
+      >
+        EVA
+        <span v-if="isActive('/eva')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-glow-primary"></span>
       </NuxtLink>
 
     </div>

@@ -1,0 +1,428 @@
+<template>
+  <div class="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200 dark:border-[#30363d] shadow-xl overflow-hidden flex flex-col h-[700px] lg:h-[800px] transition-all duration-300">
+    
+    <!-- IDE Header / Toolbar -->
+    <div class="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22]">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1.5">
+          <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+          <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+          <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+        </div>
+        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-2"></div>
+        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-[#8b949e] flex items-center gap-2">
+          system_prompt.md
+          <span v-if="hasUnsavedChanges" class="w-2 h-2 rounded-full bg-orange-500 animate-pulse" title="Alterações não salvas"></span>
+        </h2>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <Button 
+          variant="primary" 
+          size="sm" 
+          :loading="store.saving" 
+          @click="handleSave"
+          :disabled="!hasUnsavedChanges && !store.loading"
+          class="!rounded-lg transition-all"
+          :class="hasUnsavedChanges ? 'ring-2 ring-orange-500/20' : ''"
+        >
+          {{ store.saving ? 'Salvando...' : 'Salvar no Banco' }}
+        </Button>
+      </div>
+    </div>
+
+    <!-- IDE Body -->
+    <div class="flex-1 flex overflow-hidden relative">
+      
+      <!-- Gutter / Line Numbers (Git Style) -->
+      <div 
+        ref="gutterRef"
+        class="w-12 bg-slate-50 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d] flex flex-col items-end pr-3 py-6 select-none transition-colors duration-500 overflow-hidden"
+        :class="hasUnsavedChanges ? 'border-r-orange-500/50' : ''"
+      >
+        <div 
+          v-for="n in lineCount" 
+          :key="n" 
+          class="text-[11px] font-mono leading-relaxed h-[21px] flex items-center justify-end"
+          :class="getItemColorClass(n)"
+        >
+          {{ n }}
+        </div>
+      </div>
+
+      <!-- Editor Canvas -->
+      <div class="flex-1 relative bg-white dark:bg-[#0d1117] overflow-hidden">
+        <!-- Git Modified Indicator Stripe -->
+        <div 
+          v-if="hasUnsavedChanges"
+          class="absolute left-0 top-0 bottom-0 w-[3px] bg-orange-500/40 z-30 transition-all duration-500"
+        ></div>
+
+        <div class="w-full h-full relative" @click="focusTextArea">
+          <!-- Background Highlight Layer -->
+          <!-- Removed text-transparent here, this layer PROVIDES the colors -->
+          <div 
+            ref="highlightRef"
+            class="absolute inset-0 w-full h-full pointer-events-none z-10 editor-layer transition-opacity duration-300"
+            v-html="highlightedContent || localContent"
+          ></div>
+
+          <!-- Foreground Editable Area -->
+          <!-- Text becomes transparent so only the Shiki colors below show through -->
+          <textarea
+            ref="textareaRef"
+            v-model="localContent"
+            class="absolute inset-0 w-full h-full resize-none bg-transparent focus:outline-none placeholder-slate-400 dark:placeholder-slate-600 caret-primary z-20 selection:bg-primary/20 editor-layer"
+            :class="{ 
+              'text-transparent': highlighterReady && highlightedContent,
+              'text-slate-800 dark:text-[#e6edf3]': !highlighterReady || !highlightedContent 
+            }"
+            placeholder="Escreva as instruções principais da EVA aqui usando Markdown..."
+            spellcheck="false"
+            @scroll="syncScroll"
+            @keydown.tab.prevent="insertTab"
+            @input="handleInput"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDE Footer / Status Bar -->
+    <div 
+      class="px-6 py-2 border-t text-[11px] font-mono flex justify-between items-center transition-colors duration-300"
+      :class="hasUnsavedChanges 
+        ? 'bg-orange-500/5 border-orange-500/20 text-orange-600 dark:text-orange-400' 
+        : 'bg-slate-50 dark:bg-[#161b22] border-slate-100 dark:border-[#30363d] text-slate-500 dark:text-[#8b949e]'"
+    >
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 text-[#2f81f7]">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+          </svg>
+          Markdown
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ store.lastUpdated ? formatDate(store.lastUpdated) : 'Não salvo' }}
+        </span>
+        <span v-if="!highlighterReady" class="flex items-center gap-2 text-slate-400 italic">
+          <span class="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
+          Iniciando Highlighter...
+        </span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <span v-if="hasUnsavedChanges" class="flex items-center gap-1 text-orange-500 font-bold uppercase tracking-tighter">
+          <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping"></span>
+          MODIFICADO
+        </span>
+        <span class="text-slate-400 dark:text-[#484f58]">
+          Linhas: {{ lineCount }} | Chars: {{ localContent.length }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Alert Overlay -->
+    <div v-if="feedback" class="fixed bottom-10 right-10 z-[100] animate-in slide-in-from-right-10">
+      <Alert :type="feedback.type" :title="feedback.title" @close="feedback = null">
+        {{ feedback.message }}
+      </Alert>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted, watch, onBeforeUnmount, nextTick } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
+import Button from '../Button.vue'
+import Alert from '../Alert.vue'
+import { useEvaPromptStore } from '../../stores/evaPrompt'
+
+const store = useEvaPromptStore()
+const localContent = ref('')
+const highlightedContent = ref('')
+const highlighterReady = ref(false)
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
+const gutterRef = ref<HTMLDivElement | null>(null)
+const highlightRef = ref<HTMLDivElement | null>(null)
+const feedback = ref<{ type: 'success' | 'danger', title: string, message: string } | null>(null)
+
+let highlighter: any = null
+
+// Stats
+const lineCount = computed(() => {
+  if (!localContent.value) return 1
+  return localContent.value.split('\n').length
+})
+const hasUnsavedChanges = computed(() => localContent.value !== store.content)
+
+// Initialization
+onMounted(async () => {
+  await store.fetchPrompt()
+  localContent.value = store.content
+  
+  // Refresh protection
+  window.onbeforeunload = (e) => {
+    if (hasUnsavedChanges.value) {
+      e.preventDefault()
+      e.returnValue = 'Você tem alterações não salvas. Deseja realmente sair?'
+      return e.returnValue
+    }
+  }
+
+  // Load Shiki
+  try {
+    const { createHighlighter } = await import('shiki')
+    highlighter = await createHighlighter({
+      themes: ['github-dark', 'github-light'],
+      langs: ['markdown']
+    })
+    highlighterReady.value = true
+    updateHighlight()
+    
+    // Watch for theme changes on documentElement
+    const observer = new MutationObserver(() => {
+      updateHighlight()
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    
+    // Cleanup observer on unmount
+    onBeforeUnmount(() => observer.disconnect())
+  } catch (err) {
+    console.error('Failed to load shiki:', err)
+  }
+})
+
+// Navigation protection
+onBeforeRouteLeave((to, from, next) => {
+  if (hasUnsavedChanges.value) {
+    const answer = window.confirm('Você tem alterações não salvas no System Prompt. Deseja realmente sair e descartar as mudanças?')
+    if (answer) {
+      next()
+    } else {
+      next(false)
+    }
+  } else {
+    next()
+  }
+})
+
+onBeforeUnmount(() => {
+  window.onbeforeunload = null
+})
+
+// Sync state when store updates
+watch(() => store.content, (newVal) => {
+  if (!store.saving) {
+    localContent.value = newVal
+    updateHighlight()
+  }
+})
+
+function handleInput() {
+  updateHighlight()
+}
+
+function updateHighlight() {
+  if (!highlighterReady.value || !highlighter) return
+  
+  try {
+    const isDark = document.documentElement.classList.contains('dark')
+    const theme = isDark ? 'github-dark' : 'github-light'
+    
+    // Force a trailing space if empty line to keep height consistent between layers
+    const code = localContent.value || ' '
+    const html = highlighter.codeToHtml(code, {
+      lang: 'markdown',
+      theme: theme
+    })
+    
+    // Extract only the inner content of the generated pre/code block
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+    const inner = doc.querySelector('code')?.innerHTML
+    
+    if (inner) {
+      // Ensure we preserve trailing newline if exists
+      const suffix = localContent.value.endsWith('\n') ? '\n' : ''
+      highlightedContent.value = inner + suffix
+    }
+  } catch (err) {
+    console.error('Highlighting error:', err)
+  }
+}
+
+// IDE Helpers
+function insertTab() {
+  const el = textareaRef.value
+  if (!el) return
+  
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  
+  localContent.value = localContent.value.substring(0, start) + '  ' + localContent.value.substring(end)
+  
+  nextTick(() => {
+    el.selectionStart = el.selectionEnd = start + 2
+    updateHighlight()
+  })
+}
+
+function getItemColorClass(line: number) {
+  if (!hasUnsavedChanges.value) return 'text-slate-300 dark:text-[#484f58]'
+  return 'text-orange-500/60 dark:text-orange-400/50'
+}
+
+async function handleSave() {
+  try {
+    await store.savePrompt(localContent.value)
+    feedback.value = {
+      type: 'success',
+      title: 'Commit Realizado',
+      message: 'Prompt sincronizado com a base de dados.'
+    }
+    setTimeout(() => { if (feedback.value?.type === 'success') feedback.value = null }, 4000)
+  } catch (e: any) {
+    feedback.value = {
+      type: 'danger',
+      title: 'Erro de Sincronização',
+      message: e.data?.statusMessage || e.message || 'Falha ao salvar.'
+    }
+  }
+}
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+function syncScroll() {
+  const textarea = textareaRef.value
+  const gutter = gutterRef.value
+  const highlighterLayer = highlightRef.value
+  
+  if (textarea && gutter) {
+    gutter.scrollTop = textarea.scrollTop
+  }
+  if (textarea && highlighterLayer) {
+    highlighterLayer.scrollTop = textarea.scrollTop
+    highlighterLayer.scrollLeft = textarea.scrollLeft
+  }
+}
+
+function focusTextArea() {
+  textareaRef.value?.focus()
+}
+</script>
+
+<style scoped>
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Important: Both layers MUST be pixel-perfect identical */
+.editor-layer {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 21px; /* Robust line-height sync */
+  padding: 1.5rem; /* Equivalent to Tailwinds p-6 */
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+  overflow-y: scroll; /* Force both to scroll so width math matches perfectly */
+  overflow-x: hidden;
+  margin: 0;
+  border: none;
+  box-sizing: border-box;
+}
+
+/* Base scrollbar rules for the editor layers */
+.editor-layer {
+  scrollbar-width: thin;
+  scrollbar-color: #30363d transparent;
+}
+
+.editor-layer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.editor-layer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea.editor-layer::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 10px;
+}
+
+textarea.editor-layer::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Hide the scrollbar thumb for the highlight layer so only the textarea one is visible */
+[ref="highlightRef"].editor-layer::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Specific styling for the highlight layer */
+[ref="highlightRef"] {
+  color: #e6edf3; /* Default text color for github-dark */
+}
+
+:root:not(.dark) [ref="highlightRef"] {
+  color: #24292e; /* Default text color for github-light */
+}
+
+/* Hide textarea text when highlighter is active to show the colors behind/under it */
+.text-transparent {
+  color: transparent !important;
+}
+
+/* Ensure caret is visible even if text is transparent */
+textarea.text-transparent {
+  caret-color: #2f81f7;
+}
+
+:root:not(.dark) textarea.text-transparent {
+  caret-color: #0969da;
+}
+
+/* Shiki styles integration */
+:deep(.shiki) {
+  background: transparent !important;
+}
+
+:deep(pre) {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+:deep(code) {
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+/* Git indicator animation */
+@keyframes stripe-glow {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.3; }
+}
+
+.animate-stripe {
+  animation: stripe-glow 2s infinite ease-in-out;
+}
+</style>

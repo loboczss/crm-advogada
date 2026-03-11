@@ -69,9 +69,11 @@ export const useVendasStore = defineStore('vendas', () => {
         const params = new URLSearchParams()
         if (filters.startDate) params.set('startDate', filters.startDate)
         if (filters.endDate) params.set('endDate', filters.endDate)
+        if (filters.search) params.set('search', filters.search)
         if (filters.valorMin != null) params.set('valorMin', String(filters.valorMin))
         if (filters.valorMax != null) params.set('valorMax', String(filters.valorMax))
         if (filters.valorAprox != null) params.set('valorAprox', String(filters.valorAprox))
+        if (filters.valorExato != null) params.set('valorExato', String(filters.valorExato))
 
         // Add column filters
         Object.entries(columnFilters.value).forEach(([key, value]) => {
@@ -112,6 +114,7 @@ export const useVendasStore = defineStore('vendas', () => {
             const params = new URLSearchParams()
             if (filters.startDate) params.set('startDate', filters.startDate)
             if (filters.endDate) params.set('endDate', filters.endDate)
+            if (filters.search) params.set('search', filters.search)
             if (filters.valorMin != null) params.set('valorMin', String(filters.valorMin))
             if (filters.valorMax != null) params.set('valorMax', String(filters.valorMax))
             if (filters.valorExato != null) params.set('valorExato', String(filters.valorExato))

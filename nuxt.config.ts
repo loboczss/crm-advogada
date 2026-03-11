@@ -46,4 +46,16 @@ export default defineNuxtConfig({
       secure: true
     }
   },
+  runtimeConfig: {
+    // Private — server-side only
+    n8nRagWebhookUrl: process.env.N8N_RAG_WEBHOOK_URL ?? '',
+    openaiApiKey: process.env.OPENAI_API_KEY ?? '',
+  },
+  nitro: {
+    // Prevent Nitro from bundling CJS-only packages — they generate
+    // invalid Windows absolute paths ('d:/...') in the ESM bundle
+    externals: {
+      external: ['pdf-parse', 'xlsx'],
+    },
+  },
 })

@@ -31,6 +31,11 @@ export default defineEventHandler(async (event) => {
         q = q.gte('valor_venda', aprox - tolerance).lte('valor_venda', aprox + tolerance)
     }
 
+    if (query.search) {
+        const search = query.search as string
+        q = q.or(`contact_name.ilike.%${search}%,contato_id.eq.${search}`)
+    }
+
     // Apply column-specific filters
     if (query.filter_contact_name) q = q.ilike('contact_name', `%${query.filter_contact_name}%`)
     if (query.filter_vendedor) q = q.ilike('vendedor', `%${query.filter_vendedor}%`)
