@@ -478,7 +478,6 @@ const {
 } = useDashboardData();
 
 useHead({ title: "Dashboard | Evastur" });
-definePageMeta({ middleware: "auth" });
 
 const formatCurrency = (val: number) => {
   return new Intl.NumberFormat("pt-BR", {
