@@ -1,6 +1,7 @@
 import OpenAI from 'openai'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { createRequire } from 'node:module'
+import { randomUUID } from 'node:crypto'
 import { pathToFileURL } from 'node:url'
 
 // Use node: prefix so Rollup/esbuild always treat these as Node built-ins.
@@ -15,6 +16,7 @@ interface RagBody {
 }
 
 const METADATA_CONTENT_LIMIT = 8000
+const METADATA_PREVIEW_LIMIT = 280
 
 // Helper to split text mimicking LangChain's RecursiveCharacterTextSplitter
 function splitText(text: string, chunkSize = 1200, chunkOverlap = 100): string[] {
@@ -95,6 +97,7 @@ export default defineEventHandler(async (event) => {
     const openai = new OpenAI({ apiKey })
     const supabase = serverSupabaseServiceRole(event)
     const tipo = body.tipo.toUpperCase()
+    const documentGroupId = randomUUID()
 
     // ─── STEP 1: Extract raw text from the document ──────────────────────────
     let rawText = ''
@@ -151,6 +154,8 @@ export default defineEventHandler(async (event) => {
     const markdownContent = gptResponse.choices[0]?.message?.content ?? rawText
     const originalContentPreview = rawText.slice(0, METADATA_CONTENT_LIMIT)
     const markdownContentPreview = markdownContent.slice(0, METADATA_CONTENT_LIMIT)
+    const originalSearchPreview = rawText.slice(0, METADATA_PREVIEW_LIMIT)
+    const markdownSearchPreview = markdownContent.slice(0, METADATA_PREVIEW_LIMIT)
 
     // ─── STEP 3: Save markdown to informacoes_adicional_rag ──────────────────
     const { error: ragError } = await supabase
@@ -192,8 +197,15 @@ export default defineEventHandler(async (event) => {
                 tipo: tipo,
                 chunk_index: i + 1,
                 total_chunks: chunks.length,
-                originalContent: originalContentPreview,
-                markdownContent: markdownContentPreview,
+                document_group_id: documentGroupId,
+                originalPreview: originalSearchPreview,
+                markdownPreview: markdownSearchPreview,
+                ...(i === 0
+                    ? {
+                        originalContent: originalContentPreview,
+                        markdownContent: markdownContentPreview,
+                    }
+                    : {}),
             },
         }
     })

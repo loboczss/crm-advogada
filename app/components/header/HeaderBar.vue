@@ -4,23 +4,28 @@
       <div class="container mx-auto flex items-center justify-between h-full gap-4">
         
         <!-- Branding (Left) -->
-        <div 
-          class="flex items-center shrink-0 cursor-pointer" 
-          @click="navigateTo('/')"
-        >
-          <!-- Logo for Light Mode -->
-          <img 
-            src="/logo-blue.svg" 
-            alt="Evastur" 
-            class="h-9 lg:h-10 w-auto dark:hidden select-none hover:scale-[1.02] transition-transform duration-500" 
-          />
-          <!-- Logo for Dark Mode -->
-          <img 
-            src="/logo-white.svg" 
-            alt="Evastur" 
-            class="h-9 lg:h-10 w-auto hidden dark:block select-none hover:scale-[1.02] transition-transform duration-500" 
-          />
+        <div class="flex items-center gap-4 lg:gap-8 shrink-0">
+          <div 
+            class="flex items-center cursor-pointer" 
+            @click="navigateTo('/')"
+          >
+            <img src="/logo-blue.svg" alt="Evastur" class="h-9 lg:h-10 w-auto dark:hidden select-none hover:scale-[1.05] transition-transform duration-500" />
+            <img src="/logo-white.svg" alt="Evastur" class="h-9 lg:h-10 w-auto hidden dark:block select-none hover:scale-[1.05] transition-transform duration-500" />
+          </div>
+
+          <div class="hidden lg:flex items-center h-8 w-[1px] bg-slate-200 dark:bg-white/10 mx-2"></div>
+
+          <div class="flex flex-col justify-center">
+            <h1 class="text-[12px] font-black uppercase tracking-widest text-primary dark:text-white leading-tight">
+              {{ pageTitle }}
+            </h1>
+            <p v-if="pageTitle !== 'Dashboard'" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-tight">
+              Evastur Cloud
+            </p>
+          </div>
         </div>
+
+        <VitePwaManifest />
 
         <!-- Navigation (Center) -->
         <nav class="hidden md:flex items-center justify-center flex-1 gap-6 lg:gap-10">
@@ -161,13 +166,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { navigateTo, useRoute } from '#imports'
 import DarkModeToggle from '../DarkModeToggle.vue'
 import HeaderProfile from './HeaderProfile.vue'
 
 const isMobileMenuOpen = ref(false)
 const route = useRoute()
+
+// Map routes to friendly names
+const pageTitle = computed(() => {
+  if (route.path === '/') return 'Dashboard'
+  if (route.path.startsWith('/relatorios')) return 'Relatórios'
+  if (route.path.startsWith('/vendas')) return 'Vendas'
+  if (route.path.startsWith('/crm')) return 'CRM'
+  if (route.path.startsWith('/eva')) return 'EVA'
+  if (route.path.startsWith('/profile')) return 'Meu Perfil'
+  return 'Evastur'
+})
 
 // Check if a path is the currently active route
 const isActive = (path: string) => {

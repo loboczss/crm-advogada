@@ -22,7 +22,46 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'nuxt-llms',
     '@nuxt/icon',
+    '@vite-pwa/nuxt',
   ],
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Evastur CRM',
+      short_name: 'Evastur',
+      description: 'Plataforma inteligente de CRM e gestão Evastur',
+      theme_color: '#2f81f7',
+      icons: [
+        {
+          src: '/icon-blue.svg',
+          sizes: '192x192',
+          type: 'image/svg+xml',
+          purpose: 'any maskable'
+        },
+        {
+          src: '/icon-blue.svg',
+          sizes: '512x512',
+          type: 'image/svg+xml',
+          purpose: 'any maskable'
+        }
+      ],
+      start_url: '/',
+      display: 'standalone',
+      background_color: '#ffffff'
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
+    }
+  },
   css: ['~/assets/css/main.css'],
   tailwindcss: {
     exposeConfig: true,

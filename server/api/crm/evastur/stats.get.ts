@@ -26,13 +26,13 @@ export default defineEventHandler(async (event) => {
     // Calculate sentiment average
     let sentimentScore = 0
     if (leadsWithSentiment.length > 0) {
-        const scores = leadsWithSentiment.map(l => {
+        const scores: number[] = leadsWithSentiment.map((l) => {
             const s = l.sentimento
             if (s === 'Positivo' || s === 'Extremamente Positivo') return 100
             if (s === 'Neutro') return 50
             return 0
         })
-        sentimentScore = Math.round(scores.reduce<number>((a, b) => a + b, 0) / scores.length)
+        sentimentScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
     }
 
     // Conversion rate

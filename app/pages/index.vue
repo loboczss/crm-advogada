@@ -452,6 +452,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed, watch } from "vue";
+import { useHead } from "#imports";
 import KpiCard from "../components/KpiCard.vue";
 import DashboardChartArea from "../components/dashboard/DashboardChartArea.vue";
 import { useDashboardData } from "../composables/useDashboardData";
@@ -475,6 +476,9 @@ const {
   chartData,
   fetchDashboardData,
 } = useDashboardData();
+
+useHead({ title: "Dashboard | Evastur" });
+definePageMeta({ middleware: "auth" });
 
 const formatCurrency = (val: number) => {
   return new Intl.NumberFormat("pt-BR", {

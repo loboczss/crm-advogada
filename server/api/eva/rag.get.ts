@@ -1,5 +1,19 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 
+function summarizeMetadata(metadata: Record<string, any> | null | undefined) {
+    if (!metadata) {
+        return null
+    }
+
+    const {
+        originalContent: _originalContent,
+        markdownContent: _markdownContent,
+        ...summary
+    } = metadata
+
+    return summary
+}
+
 export default defineEventHandler(async (event) => {
     const supabase = serverSupabaseServiceRole(event)
 
@@ -14,5 +28,8 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, statusMessage: error.message })
     }
 
-    return data ?? []
+    return (data ?? []).map((item) => ({
+        ...item,
+        metadata: summarizeMetadata(item.metadata as Record<string, any> | null | undefined),
+    }))
 })

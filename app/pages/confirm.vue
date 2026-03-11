@@ -18,7 +18,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { navigateTo, useSupabaseCookieRedirect, useSupabaseUser } from '#imports'
+import { useHead, navigateTo, useSupabaseCookieRedirect, useSupabaseUser } from '#imports'
+
+useHead({ title: 'Confirmando... | Evastur' })
 import Button from '../components/Button.vue'
 import Card from '../components/Card.vue'
 

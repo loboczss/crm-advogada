@@ -1,13 +1,18 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
-    const id = getRouterParam(event, 'id')
-    
-    if (!id) {
-        throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
+function parseDocumentId(idParam: string | undefined) {
+    const parsedId = Number(idParam)
+
+    if (!Number.isInteger(parsedId) || parsedId <= 0) {
+        throw createError({ statusCode: 400, statusMessage: 'Invalid document ID' })
     }
 
-    const client = await serverSupabaseClient(event)
+    return parsedId
+}
+
+export default defineEventHandler(async (event) => {
+    const id = parseDocumentId(getRouterParam(event, 'id'))
+    const client = serverSupabaseServiceRole(event)
 
     const { error } = await client
         .from('documents')

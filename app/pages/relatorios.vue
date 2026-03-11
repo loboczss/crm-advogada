@@ -57,9 +57,11 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useHead } from '#imports'
 import RankingVendedores from '../components/relatorios/RankingVendedores.vue'
 import { useRankingData } from '../composables/useRankingData'
 
+useHead({ title: 'Relatórios | Evastur' })
 definePageMeta({ middleware: 'auth' })
 
 const { 

@@ -69,10 +69,11 @@ export const useEvaPromptStore = defineStore('evaPrompt', () => {
         }
     }
 
-    async function fetchHistory() {
+    async function fetchHistory(agentName?: string) {
         loadingHistory.value = true
         try {
-            const data = await $fetch<PromptHistoryDTO[]>(`/api/eva/prompt-history?agent=${currentAgent.value}`)
+            const agent = agentName ?? currentAgent.value
+            const data = await $fetch<PromptHistoryDTO[]>(`/api/eva/prompt-history?agent=${agent}`)
             history.value = data
         } catch (e: any) {
             console.error('Failed to fetch history:', e)

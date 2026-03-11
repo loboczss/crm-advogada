@@ -84,7 +84,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useHead } from '#imports'
+
+useHead({ title: 'Login | Evastur' })
 import Button from '../components/Button.vue'
 import Card from '../components/Card.vue'
 import Input from '../components/Input.vue'

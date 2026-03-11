@@ -170,8 +170,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75v16.5m-9-16.5v16.5m-4.5-9h18" />
                   </svg>
                 </div>
-                <p class="text-sm font-medium text-slate-700 dark:text-slate-200">Nenhuma diferença encontrada</p>
-                <p class="text-xs mt-2 max-w-md">A versão selecionada é idêntica ao conteúdo atual do editor. A seleção foi aplicada e você ainda pode restaurar essa versão se quiser.</p>
+                <p class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ canRenderDiff ? 'Nenhuma diferença encontrada' : 'Diff desativado por tamanho' }}</p>
+                <p class="text-xs mt-2 max-w-md">{{ canRenderDiff ? 'A versão selecionada é idêntica ao conteúdo atual do editor. A seleção foi aplicada e você ainda pode restaurar essa versão se quiser.' : 'O conteúdo atual ou histórico está grande demais para calcular o diff sem travar a interface. A versão selecionada continua disponível para restauração.' }}</p>
               </div>
             </div>
 
@@ -197,6 +197,9 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useEvaPromptStore } from '../../stores/evaPrompt'
 import type { PromptHistoryDTO } from '../../../shared/types/EvaSystemPromptDTO'
 import Button from '../Button.vue'
+
+const MAX_DIFF_LINES = 400
+const MAX_DIFF_OPERATIONS = 40000
 
 interface DiffCell {
   lineNumber: number
@@ -231,7 +234,7 @@ const selectedVersion = computed<PromptHistoryDTO | null>(() => {
 })
 
 onMounted(async () => {
-  await store.fetchHistory()
+  await store.fetchHistory(props.agentName)
   if (store.history.length > 0) {
     selectVersion(store.history[0])
   }
@@ -257,7 +260,7 @@ watch(
 )
 
 const diffRows = computed<DiffRow[]>(() => {
-  if (!selectedVersion.value) {
+  if (!selectedVersion.value || !canRenderDiff.value) {
     return []
   }
 
@@ -278,6 +281,11 @@ const diffStats = computed(() => {
 
 const currentLineCount = computed(() => splitLines(props.currentContent).length)
 const selectedLineCount = computed(() => splitLines(selectedVersion.value?.content ?? '').length)
+const canRenderDiff = computed(() => {
+  return currentLineCount.value <= MAX_DIFF_LINES
+    && selectedLineCount.value <= MAX_DIFF_LINES
+    && currentLineCount.value * selectedLineCount.value <= MAX_DIFF_OPERATIONS
+})
 
 function handleRestore() {
   if (selectedVersion.value) {

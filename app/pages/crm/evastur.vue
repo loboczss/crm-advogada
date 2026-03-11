@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useHead } from '#imports'
 import { useCrmEvasturStore } from '~/stores/crmEvastur'
+
+useHead({ title: 'CRM Evastur | Evastur' })
 import type { CrmEvasturDTO } from '~/../shared/types/CrmEvasturDTO'
 
 const crmStore = useCrmEvasturStore()

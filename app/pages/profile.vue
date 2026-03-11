@@ -159,6 +159,7 @@ import Badge from '../components/Badge.vue'
 import Alert from '../components/Alert.vue'
 
 definePageMeta({ middleware: 'auth' })
+useHead({ title: 'Meu Perfil | Evastur' })
 
 const profileStore = useProfileStore()
 const { profile, loading, error: storeError } = storeToRefs(profileStore)

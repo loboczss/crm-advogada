@@ -168,7 +168,13 @@
       max-width="3xl"
       @close="isModalOpen = false"
     >
-      <div v-if="selectedDoc" class="space-y-6">
+      <div v-if="selectedDoc && loadingSelectedDoc" class="py-14 flex flex-col items-center justify-center text-center text-slate-500 dark:text-slate-400">
+        <span class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></span>
+        <p class="text-sm font-medium text-slate-700 dark:text-slate-200">Carregando detalhes do documento</p>
+        <p class="text-xs mt-2">Buscando o conteúdo completo e os metadados técnicos para este chunk.</p>
+      </div>
+
+      <div v-else-if="selectedDoc" class="space-y-6">
         <!-- Metadata Badges -->
         <div class="flex flex-wrap gap-2">
           <Badge v-if="selectedDoc.metadata?.tipo" variant="info">
@@ -271,6 +277,9 @@ interface RagDocumentMetadata {
   tipo?: string
   chunk_index?: number
   total_chunks?: number
+  document_group_id?: string
+  originalPreview?: string
+  markdownPreview?: string
   originalContent?: string
   markdownContent?: string
 }
@@ -293,6 +302,7 @@ const documents = ref<RagDocumentRecord[]>([])
 const loadingDocs = ref(false)
 const isModalOpen = ref(false)
 const selectedDoc = ref<RagDocumentRecord | null>(null)
+const loadingSelectedDoc = ref(false)
 const isDeleteModalOpen = ref(false)
 const docToDelete = ref<number | null>(null)
 
@@ -317,8 +327,8 @@ const filteredDocuments = computed(() => {
       doc.content,
       doc.metadata?.source,
       doc.metadata?.tipo,
-      doc.metadata?.originalContent,
-      doc.metadata?.markdownContent,
+      doc.metadata?.originalPreview,
+      doc.metadata?.markdownPreview,
     ]
       .filter(Boolean)
       .join(' ')
@@ -369,6 +379,10 @@ async function confirmDeleteAction() {
 
   try {
     await $fetch(`/api/eva/rag/${id}`, { method: 'DELETE' })
+    if (selectedDoc.value?.id === id) {
+      selectedDoc.value = null
+      isModalOpen.value = false
+    }
     await loadDocuments()
     feedback.value = {
       type: 'success',
@@ -386,9 +400,19 @@ async function confirmDeleteAction() {
   }
 }
 
-function openModal(doc: RagDocumentRecord) {
+async function openModal(doc: RagDocumentRecord) {
   selectedDoc.value = doc
   isModalOpen.value = true
+  loadingSelectedDoc.value = true
+
+  try {
+    const detail = await $fetch<RagDocumentRecord>(`/api/eva/rag/${doc.id}`)
+    selectedDoc.value = detail
+  } catch (error) {
+    console.error('Erro ao carregar detalhes do documento:', error)
+  } finally {
+    loadingSelectedDoc.value = false
+  }
 }
 
 function copyContent(text: string) {
