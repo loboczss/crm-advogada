@@ -17,7 +17,7 @@ import HeaderBar from './components/header/HeaderBar.vue'
 const route = useRoute()
 
 const showHeader = computed(() => {
-  const publicPages = ['/login', '/confirm', '/recovery', '/privacidade']
+  const publicPages = ['/login', '/confirm', '/recovery', '/privacidade', '/auth/dropbox']
   return !publicPages.includes(route.path)
 })
 

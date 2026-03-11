@@ -24,20 +24,42 @@
         <div class="lg:col-span-1 space-y-8">
           <Card variant="light" class="text-center p-8 border border-slate-200 dark:border-white/10 group">
             <div class="relative inline-block mb-6">
-              <div class="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary to-secondary p-[2px] shadow-glow-primary/20 group-hover:scale-105 transition-transform duration-500">
-                <div class="w-full h-full rounded-3xl bg-white dark:bg-slate-900 flex items-center justify-center text-4xl font-black text-primary dark:text-white overflow-hidden">
+              
+              <!-- Hidden File Input -->
+              <input 
+                type="file" 
+                ref="avatarInput" 
+                class="hidden" 
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                @change="handleAvatarChange"
+              />
+
+              <!-- Avatar Display Area: Clickable -->
+              <div 
+                class="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary to-secondary p-[2px] shadow-glow-primary/20 group-hover:scale-105 transition-transform duration-500 cursor-pointer relative overflow-hidden"
+                @click="triggerAvatarUpload"
+              >
+                <!-- Existing Image -->
+                <div v-if="profile?.avatar_url" class="w-full h-full rounded-3xl overflow-hidden bg-white dark:bg-slate-900">
+                  <img :src="profile.avatar_url" class="w-full h-full object-cover" alt="Avatar" />
+                </div>
+                <!-- Fallback Initials -->
+                <div v-else class="w-full h-full rounded-3xl bg-white dark:bg-slate-900 flex items-center justify-center text-4xl font-black text-primary dark:text-white overflow-hidden">
                   {{ initials }}
                 </div>
+
+                <!-- Hover Overlay / Loading State -->
+                <div class="absolute inset-[2px] rounded-3xl bg-black/50 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Icon v-if="isUploading" name="ph:spinner-gap-bold" class="w-8 h-8 animate-spin" />
+                  <Icon v-else name="ph:camera-bold" class="w-8 h-8" />
+                  <span v-if="!isUploading" class="text-[10px] font-bold mt-1 uppercase tracking-wider">Trocar</span>
+                </div>
               </div>
-              <button class="absolute -bottom-2 -right-2 p-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 shadow-lg text-primary hover:scale-110 transition-transform">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
+
             </div>
             <h3 class="text-xl font-black text-slate-900 dark:text-white mb-1">{{ profileData.name }}</h3>
             <p class="text-sm font-medium text-slate-500 dark:text-gray-400 mb-4">{{ profileData.email }}</p>
+            <p v-if="avatarError" class="text-danger-500 text-[10px] font-bold uppercase mb-4">{{ avatarError }}</p>
             <Badge variant="primary" class="mx-auto">Membro Ativo</Badge>
           </Card>
 
@@ -88,6 +110,12 @@
                 v-model="profileData.company" 
                 label="Empresa" 
                 placeholder="Nome da sua empresa"
+              />
+              <Input 
+                :model-value="profileData.vendedor_id?.toString() || ''" 
+                label="ID do Vendedor" 
+                placeholder="Não vinculado"
+                disabled
               />
             </div>
           </Card>
@@ -148,9 +176,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch, onMounted } from 'vue'
+import { computed, reactive, watch, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProfileStore } from '../stores/profile'
+import { useAvatar } from '../composables/useAvatar'
 import { definePageMeta, navigateTo } from '#imports'
 import Card from '../components/Card.vue'
 import Button from '../components/Button.vue'
@@ -164,11 +193,15 @@ useHead({ title: 'Meu Perfil | Evastur' })
 const profileStore = useProfileStore()
 const { profile, loading, error: storeError } = storeToRefs(profileStore)
 
+const { isUploading, error: avatarError, uploadAvatar } = useAvatar()
+const avatarInput = ref<HTMLInputElement | null>(null)
+
 const profileData = reactive({
   name: '',
   email: '',
   phone: '',
   company: '',
+  vendedor_id: null as number | null,
 })
 
 const securityData = reactive({
@@ -184,6 +217,7 @@ watch(profile, (newProfile) => {
     profileData.email = newProfile.email || ''
     profileData.phone = newProfile.phone || ''
     profileData.company = newProfile.company || ''
+    profileData.vendedor_id = newProfile.vendedor_id ?? null
   }
 }, { immediate: true })
 
@@ -209,6 +243,29 @@ async function handleSave() {
     alert('Perfil atualizado com sucesso!')
   } catch (e: any) {
     alert('Erro ao atualizar perfil: ' + (e.message || 'Erro desconhecido'))
+  }
+}
+
+function triggerAvatarUpload() {
+  if (!isUploading.value) {
+    avatarInput.value?.click()
+  }
+}
+
+async function handleAvatarChange(e: Event) {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    const file = target.files[0]
+    if (file) {
+      const success = await uploadAvatar(file)
+      if (success) {
+        alert('Foto de perfil atualizada com sucesso!')
+      }
+    }
+  }
+  // Reset input so the same file can be selected again if needed
+  if (avatarInput.value) {
+    avatarInput.value.value = ''
   }
 }
 </script>

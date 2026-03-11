@@ -6,8 +6,13 @@
         :class="{ 'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10': isOpen }"
       >
         <div class="relative shrink-0">
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-primary/20 text-primary dark:text-white flex items-center justify-center text-xs font-bold shadow-sm group-hover:shadow-glow-primary/20 transition-all duration-500">
-            {{ initials }}
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-primary/20 text-primary dark:text-white flex items-center justify-center text-xs font-bold shadow-sm group-hover:shadow-glow-primary/20 transition-all duration-500 overflow-hidden">
+            <template v-if="profile?.avatar_url">
+              <img :src="profile.avatar_url" class="w-full h-full object-cover" alt="User Avatar" />
+            </template>
+            <template v-else>
+              {{ initials }}
+            </template>
           </div>
           <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950 shadow-sm animate-pulse"></span>
         </div>
@@ -60,11 +65,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useSupabaseUser, useSupabaseClient, navigateTo } from '#imports'
+import { useProfileStore } from '../../stores/profile'
 import Dropdown from '../Dropdown.vue'
 
 const user = useSupabaseUser()
 const supabase = useSupabaseClient()
+const profileStore = useProfileStore()
+const { profile } = storeToRefs(profileStore)
 
 const displayName = computed(() => {
   const metadata = user.value?.user_metadata as { name?: string } | undefined

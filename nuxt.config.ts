@@ -90,7 +90,7 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/confirm',
       include: undefined,
-      exclude: ['/recovery', '/privacidade'],
+      exclude: ['/recovery', '/privacidade', '/auth/dropbox'],
       saveRedirectToCookie: false
     },
     cookieOptions: {
@@ -103,6 +103,8 @@ export default defineNuxtConfig({
     // Private — server-side only
     n8nRagWebhookUrl: process.env.N8N_RAG_WEBHOOK_URL ?? '',
     openaiApiKey: process.env.OPENAI_API_KEY ?? '',
+    resendApiKey: process.env.RESEND_API_KEY ?? '',
+    mailerSenderEmail: process.env.MAILER_SENDER_EMAIL ?? '',
   },
   nitro: {
     // Prevent Nitro from bundling CJS-only packages — they generate
