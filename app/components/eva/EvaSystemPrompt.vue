@@ -4,14 +4,8 @@
     <!-- IDE Header / Toolbar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-100 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22] gap-3">
       <div class="flex flex-wrap items-center gap-2 sm:gap-4">
-        <div class="flex items-center gap-1.5 shrink-0">
-          <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></div>
-        </div>
-        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-1 hidden xs:block"></div>
-        <h2 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-[#8b949e] flex items-center gap-2 truncate">
-          system.md
+        <h2 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2 truncate">
+          {{ store.currentAgent }}.md
           <span v-if="hasUnsavedChanges" class="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0"></span>
         </h2>
 
