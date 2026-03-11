@@ -200,6 +200,7 @@
     <PromptHistoryModal 
       v-if="showHistory" 
       :agent-name="store.currentAgent"
+      :current-content="localContent"
       @close="showHistory = false"
       @restore="(content) => { localContent = content; showHistory = false; handleInput() }"
     />

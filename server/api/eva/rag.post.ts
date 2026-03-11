@@ -14,6 +14,8 @@ interface RagBody {
     tipo: string
 }
 
+const METADATA_CONTENT_LIMIT = 8000
+
 // Helper to split text mimicking LangChain's RecursiveCharacterTextSplitter
 function splitText(text: string, chunkSize = 1200, chunkOverlap = 100): string[] {
     const separators = ['\n\n', '\n', ' ', '']
@@ -147,6 +149,8 @@ export default defineEventHandler(async (event) => {
     })
 
     const markdownContent = gptResponse.choices[0]?.message?.content ?? rawText
+    const originalContentPreview = rawText.slice(0, METADATA_CONTENT_LIMIT)
+    const markdownContentPreview = markdownContent.slice(0, METADATA_CONTENT_LIMIT)
 
     // ─── STEP 3: Save markdown to informacoes_adicional_rag ──────────────────
     const { error: ragError } = await supabase
@@ -187,7 +191,9 @@ export default defineEventHandler(async (event) => {
                 source: body.conteudo?.slice(0, 50) || `upload-${tipo}`,
                 tipo: tipo,
                 chunk_index: i + 1,
-                total_chunks: chunks.length
+                total_chunks: chunks.length,
+                originalContent: originalContentPreview,
+                markdownContent: markdownContentPreview,
             },
         }
     })

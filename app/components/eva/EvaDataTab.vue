@@ -95,19 +95,38 @@
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
       <DataTable
         :columns="columns"
-        :data="documents"
-        :total="documents.length"
+        :data="filteredDocuments"
+        :total="filteredDocuments.length"
         :loading="loadingDocs"
         @row-click="openModal"
       >
         <template #header>
-          <div class="px-6 py-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
-            <h3 class="text-base font-black text-slate-800 dark:text-white">Documentos Indexados (Vector Store)</h3>
-            <div class="flex items-center gap-3">
-              <button @click="loadDocuments" class="text-xs text-primary hover:underline">↻ Atualizar</button>
-              <span class="text-xs font-medium bg-primary/10 text-primary px-3 py-1 rounded-full">
-                {{ documents.length }} chunks indexados
-              </span>
+          <div class="px-6 py-5 border-b border-slate-100 dark:border-white/10 space-y-4">
+            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <h3 class="text-base font-black text-slate-800 dark:text-white">Documentos Indexados (Vector Store)</h3>
+              <div class="flex items-center gap-3">
+                <button @click="loadDocuments" class="text-xs text-primary hover:underline">↻ Atualizar</button>
+                <span class="text-xs font-medium bg-primary/10 text-primary px-3 py-1 rounded-full">
+                  {{ filteredDocuments.length }} de {{ documents.length }} chunks
+                </span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div class="w-full lg:max-w-md">
+                <Input
+                  v-model="searchQuery"
+                  placeholder="Buscar por fonte, tipo, trecho, original ou Markdown..."
+                />
+              </div>
+
+              <button
+                v-if="searchQuery"
+                @click="searchQuery = ''"
+                class="text-xs text-slate-500 hover:text-primary transition-colors self-start lg:self-auto"
+              >
+                Limpar busca
+              </button>
             </div>
           </div>
         </template>
@@ -158,21 +177,46 @@
           <Badge v-if="selectedDoc.metadata?.source" variant="secondary">
             Fonte: {{ selectedDoc.metadata.source }}
           </Badge>
+          <Badge v-if="selectedDoc.metadata?.chunk_index" variant="secondary">
+            Chunk: {{ selectedDoc.metadata.chunk_index }}/{{ selectedDoc.metadata?.total_chunks ?? '?' }}
+          </Badge>
+        </div>
+
+        <div class="grid gap-4 xl:grid-cols-2">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Conteúdo Original Extraído</h4>
+              <Button size="sm" variant="outline" @click="copyContent(displayOriginalContent)">Copiar</Button>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-white/5 min-h-[240px] max-h-[420px] overflow-auto">
+              <pre class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{{ displayOriginalContent }}</pre>
+            </div>
+            <p v-if="!selectedDoc.metadata?.originalContent" class="text-xs text-amber-600 dark:text-amber-400">
+              Conteúdo original indisponível para documentos indexados antes desta atualização.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Markdown Gerado pela IA</h4>
+              <Button size="sm" variant="outline" @click="copyContent(displayMarkdownContent)">Copiar</Button>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-white/5 min-h-[240px] max-h-[420px] overflow-auto">
+              <pre class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{{ displayMarkdownContent }}</pre>
+            </div>
+            <p v-if="!selectedDoc.metadata?.markdownContent" class="text-xs text-slate-500 dark:text-slate-400">
+              Para documentos antigos, o Markdown exibido abaixo corresponde ao chunk indexado selecionado.
+            </p>
+          </div>
         </div>
 
         <!-- Full Content -->
         <div class="space-y-2">
-          <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Conteúdo Indexado:</h4>
-          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-white/5 relative group">
-            <button 
-              @click="copyContent(selectedDoc.content)"
-              class="absolute top-4 right-4 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary"
-              title="Copiar conteúdo"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
-              </svg>
-            </button>
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Chunk Indexado no Vector Store</h4>
+            <Button size="sm" variant="outline" @click="copyContent(selectedDoc.content)">Copiar chunk</Button>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-white/5">
             <pre class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{{ selectedDoc.content }}</pre>
           </div>
         </div>
@@ -213,26 +257,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import Button from '../Button.vue'
 import DataTable from '../DataTable.vue'
 import Badge from '../Badge.vue'
 import Alert from '../Alert.vue'
+import Input from '../Input.vue'
 import Modal from '../Modal.vue'
 import { useEvaRagStore } from '../../stores/evaRag'
-import { useRequestFetch } from '#imports'
+
+interface RagDocumentMetadata {
+  source?: string
+  tipo?: string
+  chunk_index?: number
+  total_chunks?: number
+  originalContent?: string
+  markdownContent?: string
+}
+
+interface RagDocumentRecord {
+  id: number
+  content: string
+  metadata?: RagDocumentMetadata | null
+}
 
 const ragStore = useEvaRagStore()
 const isDragging = ref(false)
 const manualText = ref('')
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const feedback = ref<{ type: 'success' | 'danger', title: string, message: string } | null>(null)
+const searchQuery = ref('')
 
 // Documents from Supabase
-const documents = ref<any[]>([])
+const documents = ref<RagDocumentRecord[]>([])
 const loadingDocs = ref(false)
 const isModalOpen = ref(false)
-const selectedDoc = ref<any>(null)
+const selectedDoc = ref<RagDocumentRecord | null>(null)
 const isDeleteModalOpen = ref(false)
 const docToDelete = ref<number | null>(null)
 
@@ -244,10 +304,50 @@ const columns = [
   { key: 'actions', label: 'Ações' },
 ] as any[]
 
+const filteredDocuments = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+
+  if (!query) {
+    return documents.value
+  }
+
+  return documents.value.filter((doc) => {
+    const haystack = [
+      String(doc.id),
+      doc.content,
+      doc.metadata?.source,
+      doc.metadata?.tipo,
+      doc.metadata?.originalContent,
+      doc.metadata?.markdownContent,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+
+    return haystack.includes(query)
+  })
+})
+
+const displayOriginalContent = computed(() => {
+  if (!selectedDoc.value) {
+    return ''
+  }
+
+  return selectedDoc.value.metadata?.originalContent || 'Conteúdo original não disponível para este documento.'
+})
+
+const displayMarkdownContent = computed(() => {
+  if (!selectedDoc.value) {
+    return ''
+  }
+
+  return selectedDoc.value.metadata?.markdownContent || selectedDoc.value.content
+})
+
 async function loadDocuments() {
   loadingDocs.value = true
   try {
-    const data = await $fetch<any[]>('/api/eva/rag')
+    const data = await $fetch<RagDocumentRecord[]>('/api/eva/rag')
     documents.value = data
   } catch {
     // silently fail
@@ -286,7 +386,7 @@ async function confirmDeleteAction() {
   }
 }
 
-function openModal(doc: any) {
+function openModal(doc: RagDocumentRecord) {
   selectedDoc.value = doc
   isModalOpen.value = true
 }
@@ -295,10 +395,6 @@ function copyContent(text: string) {
   navigator.clipboard.writeText(text)
   // Simple check for Toast availability, if not, alert or silent
   alert('Conteúdo copiado para a área de transferência')
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 }
 
 function triggerFileInput() {
