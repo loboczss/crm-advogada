@@ -25,12 +25,12 @@
             leave-to="opacity-0 scale-95 translate-y-4 sm:translate-y-0"
           >
             <DialogPanel 
-              class="w-full transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 p-6 sm:p-8 text-left align-middle shadow-2xl transition-all border border-gray-200 dark:border-zinc-800 relative"
+              class="w-full transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 text-left align-middle shadow-2xl transition-all border border-gray-200 dark:border-zinc-800 relative flex flex-col max-h-[90vh]"
               :class="maxWidthClass"
             >
               
               <!-- Header -->
-              <div class="flex items-center justify-between pb-4 sm:pb-6 border-b border-gray-100 dark:border-zinc-800/50 mb-6">
+              <div class="flex items-center justify-between p-6 sm:p-8 border-b border-gray-100 dark:border-zinc-800/50 flex-shrink-0">
                 <div>
                   <DialogTitle as="h3" class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">
                     <slot name="title">{{ title }}</slot>
@@ -54,8 +54,15 @@
                 </div>
               </div>
 
-              <!-- Content Sections -->
-              <slot></slot>
+              <!-- Content Area (Scrollable) -->
+              <div class="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar">
+                <slot></slot>
+              </div>
+
+              <!-- Footer -->
+              <div v-if="$slots.footer" class="p-6 sm:p-8 border-t border-gray-100 dark:border-zinc-800/50 bg-gray-50/50 dark:bg-zinc-800/30 flex-shrink-0">
+                <slot name="footer"></slot>
+              </div>
 
             </DialogPanel>
           </TransitionChild>

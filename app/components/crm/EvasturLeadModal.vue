@@ -7,51 +7,51 @@
     max-width="3xl"
     @close="emit('close')"
   >
-    <!-- Modal Body (Scrollable) -->
-    <form class="flex-1 overflow-y-auto px-1 sm:px-2 py-2 sm:py-4 custom-scrollbar" @submit.prevent="handleSubmit">
+    <!-- Modal Body -->
+    <form id="lead-form" @submit.prevent="handleSubmit">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Basic Info Section -->
         <div class="md:col-span-2 flex items-center gap-2 mb-2">
-          <div class="h-px flex-1 bg-slate-100 dark:bg-white/10"></div>
-          <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Informações Básicas</span>
-          <div class="h-px flex-1 bg-slate-100 dark:bg-white/10"></div>
+          <div class="h-px flex-1 bg-gray-100 dark:bg-zinc-800"></div>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-600">Informações Básicas</span>
+          <div class="h-px flex-1 bg-gray-100 dark:bg-zinc-800"></div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Nome Completo</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Nome Completo</label>
           <div class="relative group">
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-              <Icon name="ph:user-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+              <Icon name="ph:user-bold" size="18" />
             </span>
             <input v-model="form.nome" type="text" placeholder="Ex: João Silva" class="modal-input" style="padding-left: 3.5rem !important;" required />
           </div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">ID do Contato (ID único)</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">ID do Contato (ID único)</label>
           <div class="relative group">
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-              <Icon name="ph:identification-card-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+              <Icon name="ph:identification-card-bold" size="18" />
             </span>
             <input v-model="form.contato_id" type="text" placeholder="Ex: CTT-001" class="modal-input" style="padding-left: 3.5rem !important;" :disabled="isEdit" required />
           </div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">E-mail</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">E-mail</label>
           <div class="relative group">
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-              <Icon name="ph:envelope-simple-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+              <Icon name="ph:envelope-simple-bold" size="18" />
             </span>
             <input v-model="form.email" type="email" placeholder="email@exemplo.com" class="modal-input" style="padding-left: 3.5rem !important;" />
           </div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Cidade</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Cidade</label>
           <div class="relative group">
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-              <Icon name="ph:map-pin-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+              <Icon name="ph:map-pin-bold" size="18" />
             </span>
             <input v-model="form.cidade" type="text" placeholder="Cidade / UF" class="modal-input" style="padding-left: 3.5rem !important;" />
           </div>
@@ -59,13 +59,13 @@
 
         <!-- Context Section -->
         <div class="md:col-span-2 flex items-center gap-2 mt-4 mb-2">
-          <div class="h-px flex-1 bg-slate-100 dark:bg-white/10"></div>
-          <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Contexto e Qualificação</span>
-          <div class="h-px flex-1 bg-slate-100 dark:bg-white/10"></div>
+          <div class="h-px flex-1 bg-gray-100 dark:bg-zinc-800"></div>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-600">Contexto e Qualificação</span>
+          <div class="h-px flex-1 bg-gray-100 dark:bg-zinc-800"></div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Sentimento</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Sentimento</label>
           <div class="relative group">
             <select v-model="form.sentimento" class="modal-input appearance-none" style="padding-left: 3.5rem !important;">
               <option value="">Selecionar...</option>
@@ -73,8 +73,8 @@
               <option value="Neutro">😐 Neutro</option>
               <option value="Negativo">😡 Negativo</option>
             </select>
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400">
-              <Icon name="ph:heart-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400">
+              <Icon name="ph:heart-bold" size="18" />
             </span>
             <span class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
               <Icon name="ph:caret-down-bold" size="12" />
@@ -83,7 +83,7 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Urgência</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Urgência</label>
           <div class="relative group">
             <select v-model="form.urgencia" class="modal-input appearance-none" style="padding-left: 3.5rem !important;">
               <option value="">Selecionar...</option>
@@ -91,8 +91,8 @@
               <option value="Média">⚡ Média</option>
               <option value="Baixa">☁️ Baixa</option>
             </select>
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400">
-              <Icon name="ph:lightning-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400">
+              <Icon name="ph:lightning-bold" size="18" />
             </span>
             <span class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
               <Icon name="ph:caret-down-bold" size="12" />
@@ -101,27 +101,27 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Fase da Obra</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Fase da Obra</label>
           <input v-model="form.fase_obra" type="text" placeholder="Ex: Acabamento, Planta..." class="modal-input" />
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Data de Nascimento</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Data de Nascimento</label>
           <div class="relative group">
-            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-              <Icon name="ph:calendar-bold" size="20" />
+            <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+              <Icon name="ph:calendar-bold" size="18" />
             </span>
-            <input v-model="form.data_nascimento" type="text" placeholder="DD/MM/AAAA" class="modal-input" style="padding-left: 3.5rem !important;" />
+            <input v-model="form.data_nascimento" type="date" placeholder="AAAA-MM-DD" class="modal-input" style="padding-left: 3.5rem !important;" />
           </div>
         </div>
 
         <div class="md:col-span-2 space-y-4 mt-2">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Interesses</label>
+              <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Interesses</label>
               <div class="relative group">
-                <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                  <Icon name="ph:tag-bold" size="18" />
+                <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                  <Icon name="ph:tag-bold" size="16" />
                 </span>
                 <input 
                   v-model="interessesRaw" 
@@ -131,14 +131,14 @@
                   style="padding-left: 3.5rem !important;"
                 />
               </div>
-              <p class="text-[10px] text-slate-400 ml-1">Separe os interesses por vírgulas.</p>
+              <p class="text-[10px] text-gray-400 ml-1">Separe os interesses por vírgulas.</p>
             </div>
             
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Objeções</label>
+              <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Objeções</label>
               <div class="relative group">
-                <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-slate-400 group-focus-within:text-red-500 transition-colors">
-                  <Icon name="ph:warning-circle-bold" size="18" />
+                <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-danger transition-colors">
+                  <Icon name="ph:warning-circle-bold" size="16" />
                 </span>
                 <input 
                   v-model="objeccoesRaw" 
@@ -148,12 +148,12 @@
                   style="padding-left: 3.5rem !important;"
                 />
               </div>
-              <p class="text-[10px] text-slate-400 ml-1">Separe as objeções por vírgulas.</p>
+              <p class="text-[10px] text-gray-400 ml-1">Separe as objeções por vírgulas.</p>
             </div>
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Resumo do Perfil</label>
+            <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Resumo do Perfil</label>
             <textarea 
               v-model="form.resumo_perfil" 
               rows="3" 
@@ -163,16 +163,19 @@
           </div>
         </div>
       </div>
+    </form>
 
-      <div class="mt-8 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-slate-100 dark:border-white/10">
+    <template #footer>
+      <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4">
         <Button
-          variant="secondary"
+          variant="outline"
           @click="emit('close')"
           class="w-full sm:w-auto"
         >
           Cancelar
         </Button>
         <Button
+          form="lead-form"
           type="submit"
           variant="primary"
           :loading="loading"
@@ -182,7 +185,7 @@
           {{ isEdit ? 'Salvar Alterações' : 'Criar Lead' }}
         </Button>
       </div>
-    </form>
+    </template>
   </Modal>
 </template>
 

@@ -26,139 +26,135 @@
       </button>
     </template>
 
-    <div>
-      <!-- Content Sections -->
-      <div v-if="venda" class="space-y-6 max-h-[65vh] overflow-y-auto pr-2 custom-scrollbar">
-        
-        <!-- Group: Cliente & Vendedor -->
-        <div class="space-y-4">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Informações Principais</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Nome do Contato</label>
-              <input v-if="isEditing" v-model="editForm.contact_name" class="input-field" />
-              <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.contact_name || '-' }}</p>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Contato ID</label>
-              <input v-if="isEditing" v-model="editForm.contato_id" class="input-field opacity-50 cursor-not-allowed" disabled title="Não é possível alterar o ID do contato" />
-              <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.contato_id || '-' }}</p>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor</label>
-              <input v-if="isEditing" v-model="editForm.vendedor" class="input-field" />
-              <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.vendedor || '-' }}</p>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor ID</label>
-              <input v-if="isEditing" v-model="editForm.vendedor_id" class="input-field" />
-              <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.vendedor_id || '-' }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Group: Financeiro & Status -->
-        <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Financeiro e Status</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Valor da Venda</label>
-              <input v-if="isEditing" v-model.number="editForm.valor_venda" type="number" step="0.01" class="input-field" />
-              <p v-else class="text-sm font-semibold text-gray-900 dark:text-white">{{ formatCurrency(venda.valor_venda) }}</p>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Comissão</label>
-              <input v-if="isEditing" v-model.number="editForm.comissao" type="number" step="0.01" class="input-field" />
-              <p v-else class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ formatCurrency(venda.comissao) }}</p>
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Status</label>
-              <select v-if="isEditing" v-model="editForm.status" class="input-field">
-                <option value="PENDENTE">PENDENTE</option>
-                <option value="CONFIRMADO">CONFIRMADO</option>
-                <option value="EM PROCESSO">EM PROCESSO</option>
-                <option value="CANCELADO">CANCELADO</option>
-                <option value="EMITIDA">EMITIDA</option>
-              </select>
-              <div v-else>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ring-1 ring-inset" :class="statusStyles(venda.status)">
-                  {{ venda.status || 'PENDENTE' }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Group: Logística -->
-        <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Logística</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Data de Embarque</label>
-              <input v-if="isEditing" v-model="editForm.embarque" type="date" class="input-field" />
-              <p v-else class="text-sm font-medium text-gray-900 dark:text-white">{{ formatDate(venda.embarque) }}</p>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Previsão de Volta</label>
-              <input v-if="isEditing" v-model="editForm.data_volta" type="date" class="input-field" />
-              <p v-else class="text-sm font-medium text-gray-900 dark:text-white">{{ formatDate(venda.data_volta) }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Group: Observações -->
-        <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Observações</h4>
+    <div v-if="venda" class="space-y-6">
+      <!-- Group: Cliente & Vendedor -->
+      <div class="space-y-4">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Informações Principais</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <textarea v-if="isEditing" v-model="editForm.observacao" rows="3" class="input-field resize-none leading-relaxed" placeholder="Adicione notas sobre esta venda..."></textarea>
-            <p v-else class="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-gray-100 dark:border-zinc-800/50 min-h-[3rem]">
-              {{ venda.observacao || 'Nenhuma observação registrada.' }}
-            </p>
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Nome do Contato</label>
+            <input v-if="isEditing" v-model="editForm.contact_name" class="input-field" />
+            <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.contact_name || '-' }}</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Contato ID</label>
+            <input v-if="isEditing" v-model="editForm.contato_id" class="input-field opacity-50 cursor-not-allowed" disabled title="Não é possível alterar o ID do contato" />
+            <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.contato_id || '-' }}</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor</label>
+            <input v-if="isEditing" v-model="editForm.vendedor" class="input-field" />
+            <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.vendedor || '-' }}</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor ID</label>
+            <input v-if="isEditing" v-model="editForm.vendedor_id" class="input-field" />
+            <p v-else class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ venda.vendedor_id || '-' }}</p>
           </div>
         </div>
-
       </div>
 
-      <!-- Action Buttons -->
-      <div class="mt-8 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-100 dark:border-zinc-800/50">
-        <template v-if="!isEditing">
-          <span class="text-xs text-gray-400 dark:text-zinc-500 mr-auto hidden sm:inline-block font-medium">
-            Criado em: {{ formatDate(venda?.created_at) }}
-          </span>
-          <button
-            @click="handleClose"
-            class="w-full sm:w-auto px-5 py-2.5 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:ring-2 focus:ring-gray-200 outline-none text-sm"
-          >
-            Fechar
-          </button>
-        </template>
-        <template v-else>
-          <button
-            @click="cancelEditing"
-            class="w-full sm:w-auto px-5 py-2.5 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:ring-2 focus:ring-gray-200 outline-none text-sm"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="saveChanges"
-            :disabled="saving"
-            class="w-full sm:w-auto px-5 py-2.5 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm focus:ring-2 focus:ring-primary/50 outline-none flex items-center justify-center gap-2 min-w-[120px] text-sm"
-          >
-            <svg v-if="saving" class="w-4 h-4 animate-spin text-white" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            {{ saving ? 'Salvando...' : 'Salvar Alterações' }}
-          </button>
-        </template>
+      <!-- Group: Financeiro & Status -->
+      <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Financeiro e Status</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Valor da Venda</label>
+            <input v-if="isEditing" v-model.number="editForm.valor_venda" type="number" step="0.01" class="input-field" />
+            <p v-else class="text-sm font-semibold text-gray-900 dark:text-white">{{ formatCurrency(venda.valor_venda) }}</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Comissão</label>
+            <input v-if="isEditing" v-model.number="editForm.comissao" type="number" step="0.01" class="input-field" />
+            <p v-else class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ formatCurrency(venda.comissao) }}</p>
+          </div>
+
+          <div class="space-y-1.5 sm:col-span-2">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Status</label>
+            <select v-if="isEditing" v-model="editForm.status" class="input-field">
+              <option value="PENDENTE">PENDENTE</option>
+              <option value="CONFIRMADO">CONFIRMADO</option>
+              <option value="EM PROCESSO">EM PROCESSO</option>
+              <option value="CANCELADO">CANCELADO</option>
+              <option value="EMITIDA">EMITIDA</option>
+            </select>
+            <div v-else>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ring-1 ring-inset" :class="statusStyles(venda.status)">
+                {{ venda.status || 'PENDENTE' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Logística -->
+      <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Logística</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Data de Embarque</label>
+            <input v-if="isEditing" v-model="editForm.embarque" type="date" class="input-field" />
+            <p v-else class="text-sm font-medium text-gray-900 dark:text-white">{{ formatDate(venda.embarque) }}</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Previsão de Volta</label>
+            <input v-if="isEditing" v-model="editForm.data_volta" type="date" class="input-field" />
+            <p v-else class="text-sm font-medium text-gray-900 dark:text-white">{{ formatDate(venda.data_volta) }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Observações -->
+      <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Observações</h4>
+        <div class="space-y-1.5">
+          <textarea v-if="isEditing" v-model="editForm.observacao" rows="3" class="input-field resize-none leading-relaxed" placeholder="Adicione notas sobre esta venda..."></textarea>
+          <p v-else class="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-gray-100 dark:border-zinc-800/50 min-h-[3rem]">
+            {{ venda.observacao || 'Nenhuma observação registrada.' }}
+          </p>
+        </div>
       </div>
     </div>
+
+    <template #footer>
+      <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 w-full">
+        <template v-if="!isEditing">
+          <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-zinc-500 mr-auto hidden sm:inline-block">
+            Criado em: {{ formatDate(venda?.created_at) }}
+          </span>
+          <Button
+            variant="outline"
+            @click="handleClose"
+            class="w-full sm:w-auto"
+          >
+            Fechar
+          </Button>
+        </template>
+        <template v-else>
+          <Button
+            variant="outline"
+            @click="cancelEditing"
+            class="w-full sm:w-auto"
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="primary"
+            @click="saveChanges"
+            :loading="saving"
+            icon="ph:check-bold"
+            class="w-full sm:w-auto px-8"
+          >
+            Salvar Alterações
+          </Button>
+        </template>
+      </div>
+    </template>
   </Modal>
 </template>
 

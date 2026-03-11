@@ -7,121 +7,117 @@
     max-width="lg"
     @close="handleClose"
   >
-    <form @submit.prevent="handleSubmit">
-      <div class="space-y-6 max-h-[65vh] overflow-y-auto pr-2 custom-scrollbar">
-        
-        <!-- Group: Cliente & Vendedor -->
-        <div class="space-y-4">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Informações Principais</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Nome do Contato</label>
-              <input v-model="form.contact_name" type="text" placeholder="João da Silva" class="input-field" required />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Contato ID</label>
-              <input v-model="form.contato_id" type="text" placeholder="CTT-001" class="input-field" required />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor</label>
-              <input v-model="form.vendedor" type="text" placeholder="Nome do vendedor" class="input-field" />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor ID</label>
-              <input v-model="form.vendedor_id" type="text" placeholder="ID do vendedor" class="input-field" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Group: Financeiro & Status -->
-        <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Financeiro e Status</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Valor da Venda (R$)</label>
-              <input v-model.number="form.valor_venda" type="number" step="0.01" placeholder="0.00" class="input-field" />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Comissão (R$)</label>
-              <input v-model.number="form.comissao" type="number" step="0.01" placeholder="0.00" class="input-field" />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Status</label>
-              <select v-model="form.status" class="input-field">
-                <option value="">Selecionar...</option>
-                <option value="PENDENTE">PENDENTE</option>
-                <option value="EM PROCESSO">EM PROCESSO</option>
-                <option value="CANCELADO">CANCELADO</option>
-                <option value="CONFIRMADO">CONFIRMADO</option>
-                <option value="EMITIDA">EMITIDA</option>
-              </select>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Tipo de Venda</label>
-              <input v-model="form.tipo_venda" type="text" placeholder="Pacote, Avulso..." class="input-field" />
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Forma de Pagamento</label>
-              <input v-model="form.forma_pagamento" type="text" placeholder="PIX, Cartão..." class="input-field" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Group: Logística -->
-        <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Logística</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Data de Embarque</label>
-              <input v-model="form.embarque" type="date" class="input-field" />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Previsão de Volta</label>
-              <input v-model="form.data_volta" type="date" class="input-field" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Group: Observações -->
-        <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Observações</h4>
+    <form id="add-venda-form" @submit.prevent="handleSubmit" class="space-y-6">
+      <!-- Group: Cliente & Vendedor -->
+      <div class="space-y-4">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Informações Principais</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <textarea v-model="form.observacao" rows="3" class="input-field resize-none leading-relaxed" placeholder="Anotações adicionais..."></textarea>
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Nome do Contato</label>
+            <input v-model="form.contact_name" type="text" placeholder="João da Silva" class="input-field" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Contato ID</label>
+            <input v-model="form.contato_id" type="text" placeholder="CTT-001" class="input-field" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor</label>
+            <input v-model="form.vendedor" type="text" placeholder="Nome do vendedor" class="input-field" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor ID</label>
+            <input v-model="form.vendedor_id" type="text" placeholder="ID do vendedor" class="input-field" />
           </div>
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="mt-8 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-100 dark:border-zinc-800/50">
-        <button
-          type="button"
-          @click="handleClose"
-          :disabled="saving"
-          class="w-full sm:w-auto px-5 py-2.5 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:ring-2 focus:ring-gray-200 outline-none text-sm disabled:opacity-50"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          :disabled="saving"
-          class="w-full sm:w-auto px-5 py-2.5 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm focus:ring-2 focus:ring-primary/50 outline-none flex items-center justify-center gap-2 min-w-[120px] text-sm"
-        >
-          <svg v-if="saving" class="w-4 h-4 animate-spin text-white" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-          </svg>
-          {{ saving ? 'Salvando...' : 'Salvar Venda' }}
-        </button>
+      <!-- Group: Financeiro & Status -->
+      <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Financeiro e Status</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Valor da Venda (R$)</label>
+            <input v-model.number="form.valor_venda" type="number" step="0.01" placeholder="0.00" class="input-field" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Comissão (R$)</label>
+            <input v-model.number="form.comissao" type="number" step="0.01" placeholder="0.00" class="input-field" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Status</label>
+            <select v-model="form.status" class="input-field">
+              <option value="">Selecionar...</option>
+              <option value="PENDENTE">PENDENTE</option>
+              <option value="EM PROCESSO">EM PROCESSO</option>
+              <option value="CANCELADO">CANCELADO</option>
+              <option value="CONFIRMADO">CONFIRMADO</option>
+              <option value="EMITIDA">EMITIDA</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Tipo de Venda</label>
+            <input v-model="form.tipo_venda" type="text" placeholder="Pacote, Avulso..." class="input-field" />
+          </div>
+
+          <div class="space-y-1.5 sm:col-span-2">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Forma de Pagamento</label>
+            <input v-model="form.forma_pagamento" type="text" placeholder="PIX, Cartão..." class="input-field" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Logística -->
+      <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Logística</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Data de Embarque</label>
+            <input v-model="form.embarque" type="date" class="input-field" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Previsão de Volta</label>
+            <input v-model="form.data_volta" type="date" class="input-field" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Observações -->
+      <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Observações</h4>
+        <div class="space-y-1.5">
+          <textarea v-model="form.observacao" rows="3" class="input-field resize-none leading-relaxed" placeholder="Anotações adicionais..."></textarea>
+        </div>
       </div>
     </form>
+
+    <template #footer>
+      <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4">
+        <Button
+          variant="outline"
+          @click="handleClose"
+          class="w-full sm:w-auto"
+        >
+          Cancelar
+        </Button>
+        <Button
+          form="add-venda-form"
+          type="submit"
+          variant="primary"
+          :loading="saving"
+          icon="ph:floppy-disk-bold"
+          class="w-full sm:w-auto px-8"
+        >
+          Salvar Venda
+        </Button>
+      </div>
+    </template>
   </Modal>
 </template>
 

@@ -12,31 +12,28 @@
       @page-change="emits('changePage', $event)"
       @row-click="emits('row-click', $event)"
     >
-      <!-- Header Extendido Igual ao de Vendas -->
       <template #header>
-        <div class="px-8 py-7 border-b border-border-light dark:border-white/5 flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between bg-surface-light dark:bg-white/5 shadow-inner">
-          <div class="flex items-center gap-4">
-            <div class="p-3 bg-blue-500/10 rounded-2xl shadow-sm">
-              <Icon name="ph:users-three-duotone" class="w-5 h-5 text-blue-500" />
-            </div>
+        <div class="px-8 py-5 border-b border-gray-100 dark:border-zinc-800/50 flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between bg-white dark:bg-zinc-900/50">
+          <div class="flex items-center gap-3">
+            <Icon name="ph:users-three-bold" class="w-5 h-5 text-gray-400" />
             <div>
-              <h2 class="text-lg font-black text-text-light dark:text-white mb-0.5">Leads e Contatos</h2>
-              <p class="text-xs text-text-light/50 dark:text-text-dark/40 font-semibold uppercase tracking-wider">Gestão de relacionamento Evastur</p>
+              <h2 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Leads e Contatos</h2>
+              <p class="text-[11px] text-gray-400 dark:text-zinc-500 font-medium">Gestão de relacionamento</p>
             </div>
           </div>
           
-          <div class="flex items-center gap-4 w-full lg:w-auto">
-            <div class="relative flex-1 lg:w-72">
+          <div class="flex items-center gap-3 w-full lg:w-auto">
+            <div class="relative flex-1 lg:w-64">
               <input
                 v-model="search"
                 type="text"
                 placeholder="Pesquisa rápida..."
-                class="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border-none bg-white dark:bg-background-dark/50 ring-1 ring-border-light dark:ring-white/10 text-text-light dark:text-white placeholder:text-text-light/30 focus:ring-2 focus:ring-primary/40 transition-all duration-300 shadow-sm"
+                class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-primary focus:outline-none transition-colors shadow-sm"
               />
-              <Icon name="ph:magnifying-glass-bold" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Icon name="ph:magnifying-glass-bold" class="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             </div>
-            <div class="px-4 py-2 bg-primary/5 rounded-xl border border-primary/10 whitespace-nowrap">
-              <p class="text-[10px] font-black uppercase tracking-widest text-primary">
+            <div class="px-2.5 py-1 bg-gray-50 dark:bg-zinc-800 rounded border border-gray-100 dark:border-zinc-700 whitespace-nowrap">
+              <p class="text-[9px] font-bold text-gray-500 dark:text-zinc-400">
                 {{ total }} TOTAL
               </p>
             </div>
@@ -47,15 +44,15 @@
       <!-- Custom Cells -->
 
       <template #cell-contato="{ item: record }">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-surface-light to-border-light dark:from-background-dark dark:to-surface-dark flex items-center justify-center text-primary shadow-sm border border-border-light dark:border-white/5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-            <span class="text-sm font-black">{{ (record.nome ?? '?')[0]?.toUpperCase() }}</span>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded bg-gray-50 dark:bg-zinc-800 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-zinc-700">
+            <span class="text-xs font-semibold">{{ (record.nome ?? '?')[0]?.toUpperCase() }}</span>
           </div>
           <div>
-            <p class="text-sm font-black text-text-light dark:text-text-dark group-hover:text-primary transition-colors duration-300">
+            <p class="text-sm font-bold text-gray-900 dark:text-zinc-100 group-hover:text-primary transition-colors">
               {{ record.nome || 'Sem Nome' }}
             </p>
-            <p class="text-[10px] font-bold text-text-light/30 dark:text-text-dark/30 tracking-wider">
+            <p class="text-[10px] text-gray-400 dark:text-zinc-500">
               {{ record.email || record.contato_id }}
             </p>
           </div>
@@ -68,45 +65,43 @@
             <Icon name="ph:map-pin-bold" class="w-3.5 h-3.5" />
             {{ record.cidade || 'Não informado' }}
           </p>
-          <p v-if="record.nome_social" class="font-black text-[10px] text-primary tracking-widest uppercase">
+          <p v-if="record.nome_social" class="text-[10px] text-gray-400 font-medium lowercase">
             @{{ record.nome_social }}
           </p>
         </div>
       </template>
 
       <template #cell-contexto="{ item: record }">
-        <div class="flex items-center gap-3">
-          <span 
-            class="inline-flex items-center px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm ring-1 ring-inset transition-all duration-300 group-hover:brightness-110"
-            :class="getUrgencyClass(record.urgencia)"
-          >
-            <span class="w-1.5 h-1.5 rounded-full mr-2" :class="getUrgencyClass(record.urgencia, true)"></span>
-            {{ record.urgencia || 'Média' }}
-          </span>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-gray-100 dark:border-zinc-800">
+            <span class="w-1.5 h-1.5 rounded-full" :class="getUrgencyClass(record.urgencia, true)"></span>
+            <span class="text-[10px] font-bold uppercase text-gray-500 dark:text-zinc-400">{{ record.urgencia || 'Média' }}</span>
+          </div>
+          
           <Icon 
             v-if="record.sentimento?.toLowerCase().includes('positivo')" 
             name="ph:smiley-bold" 
-            class="w-5 h-5 text-emerald-500" 
+            class="w-4 h-4 text-emerald-500/60" 
           />
           <Icon 
             v-else-if="record.sentimento?.toLowerCase().includes('neutro')" 
             name="ph:minus-circle-bold" 
-            class="w-5 h-5 text-amber-500" 
+            class="w-4 h-4 text-amber-500/60" 
           />
           <Icon 
             v-else 
             name="ph:smiley-angry-bold" 
-            class="w-5 h-5 text-rose-500" 
+            class="w-4 h-4 text-rose-500/60" 
           />
         </div>
       </template>
 
       <template #cell-interesses="{ item: record }">
-        <div class="flex flex-wrap gap-1.5">
+        <div class="flex flex-wrap gap-1">
           <span 
             v-for="tag in ensureArray(record.interesses)" 
             :key="tag"
-            class="bg-primary/5 text-primary text-[9px] px-3 py-1.5 rounded-full border border-primary/10 font-black uppercase tracking-widest transition-all hover:bg-primary/10 cursor-default"
+            class="bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 text-[9px] px-2 py-1 rounded border border-gray-100 dark:border-zinc-700 font-medium uppercase"
           >
             {{ tag }}
           </span>
@@ -114,22 +109,22 @@
       </template>
 
       <template #cell-actions="{ item: record }">
-        <div class="flex items-center justify-end gap-2 pr-2">
+        <div class="flex items-center justify-end gap-1.5 pr-2">
           <button 
             @click.stop="emits('edit', record)"
-            class="p-2.5 rounded-xl text-slate-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
+            class="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors opacity-0 group-hover:opacity-100"
             title="Editar"
           >
-            <Icon name="ph:pencil-simple-bold" class="w-4 h-4" />
+            <Icon name="ph:pencil-simple-bold" class="w-3.5 h-3.5" />
           </button>
           
           <button 
             v-if="record.id"
             @click.stop="emits('delete', record.id!)"
-            class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 delay-75"
+            class="p-2 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors opacity-0 group-hover:opacity-100"
             title="Excluir"
           >
-            <Icon name="ph:trash-bold" class="w-4 h-4" />
+            <Icon name="ph:trash-bold" class="w-3.5 h-3.5" />
           </button>
         </div>
       </template>
@@ -179,15 +174,9 @@ const columns: ColumnDef[] = [
 
 const getUrgencyClass = (urgency: string | null, isDot = false) => {
   const u = (urgency ?? '').toLowerCase()
-  if (isDot) {
-    if (u.includes('alta')) return 'bg-danger'
-    if (u.includes('média') || u.includes('media')) return 'bg-warning shadow-[0_0_8px_rgba(245,158,11,0.5)]'
-    return 'bg-success'
-  }
-  
-  if (u.includes('alta')) return 'bg-danger/10 text-danger ring-danger/30'
-  if (u.includes('média') || u.includes('media')) return 'bg-warning/10 text-warning ring-warning/30'
-  return 'bg-success/10 text-success ring-success/30'
+  if (u.includes('alta')) return 'bg-rose-500'
+  if (u.includes('média') || u.includes('media')) return 'bg-amber-500'
+  return 'bg-emerald-500'
 }
 
 const ensureArray = (val: any): string[] => {
