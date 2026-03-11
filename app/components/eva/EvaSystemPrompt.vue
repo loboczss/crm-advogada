@@ -2,30 +2,28 @@
   <div class="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200 dark:border-[#30363d] shadow-xl overflow-hidden flex flex-col h-[700px] lg:h-[800px] transition-all duration-300">
     
     <!-- IDE Header / Toolbar -->
-    <div class="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22]">
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-1.5">
-          <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-          <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-          <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-100 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22] gap-3">
+      <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+        <div class="flex items-center gap-1.5 shrink-0">
+          <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></div>
         </div>
-        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-2"></div>
-        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-[#8b949e] flex items-center gap-2">
-          system_prompt.md
-          <span v-if="hasUnsavedChanges" class="w-2 h-2 rounded-full bg-orange-500 animate-pulse" title="Alterações não salvas"></span>
+        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-1 hidden xs:block"></div>
+        <h2 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-[#8b949e] flex items-center gap-2 truncate">
+          system.md
+          <span v-if="hasUnsavedChanges" class="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0"></span>
         </h2>
 
-        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-2"></div>
+        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-1 hidden sm:block"></div>
         
         <div class="flex items-center gap-2">
-          <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Agente:</span>
-          
           <!-- Normal Mode -->
           <div v-if="!isCreatingAgent" class="flex items-center gap-1.5 h-[26px]">
             <select 
               v-model="agentNameInput" 
               @change="handleAgentChange"
-              class="text-[11px] font-mono h-[26px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] rounded px-2 py-0 w-32 outline-none text-slate-700 dark:text-slate-300 focus:border-[#2f81f7] dark:focus:border-[#2f81f7] transition-colors cursor-pointer"
+              class="text-[10px] sm:text-[11px] font-mono h-[26px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] rounded px-2 py-0 w-24 sm:w-32 outline-none text-slate-700 dark:text-slate-300 focus:border-[#2f81f7] dark:focus:border-[#2f81f7] transition-colors cursor-pointer"
             >
               <option v-for="agent in store.agents" :key="agent" :value="agent">{{ agent }}</option>
             </select>
@@ -37,44 +35,34 @@
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              <span class="text-[10px] font-medium">Novo</span>
+              <span class="text-[10px] font-medium hidden xs:inline">Novo</span>
             </button>
           </div>
 
           <!-- Create Mode -->
-          <div v-else class="flex items-center gap-1.5 h-[26px] animate-in fade-in slide-in-from-left-2 direction-reverse">
+          <div v-else class="flex items-center gap-1.5 h-[26px]">
             <input 
               ref="newAgentInputRef"
               v-model="newAgentName" 
               @keydown.enter="confirmNewAgent"
               @keydown.esc="cancelNewAgent"
-              class="text-[11px] font-mono h-[26px] bg-white dark:bg-[#0d1117] border border-[#2f81f7] rounded px-2 py-0 w-32 outline-none text-[#2f81f7] placeholder-slate-400 transition-colors shadow-[0_0_0_1px_rgba(47,129,247,0.2)]"
-              placeholder="Nome do agente..."
+              class="text-[10px] sm:text-[11px] font-mono h-[26px] bg-white dark:bg-[#0d1117] border border-[#2f81f7] rounded px-2 py-0 w-24 sm:w-32 outline-none text-[#2f81f7] placeholder-slate-400 transition-colors shadow-[0_0_0_1px_rgba(47,129,247,0.2)]"
+              placeholder="Nome..."
             />
             <button 
               @click="confirmNewAgent"
               class="h-[26px] bg-[#2f81f7] hover:bg-[#2f81f7]/90 text-white rounded px-2 flex items-center justify-center transition-colors focus:outline-none text-[10px] font-medium"
             >
-              Criar
-            </button>
-            <button 
-              @click="cancelNewAgent"
-              class="h-[26px] bg-slate-100 dark:bg-[#21262d] hover:bg-slate-200 dark:hover:bg-[#30363d] text-slate-500 dark:text-[#8b949e] border border-slate-200 dark:border-[#30363d] rounded px-2 flex items-center justify-center transition-colors focus:outline-none text-[10px] font-medium"
-            >
-              Cancelar
+              Ok
             </button>
           </div>
         </div>
-
-        <div class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#21262d] text-slate-500 dark:text-[#8b949e] border border-slate-200 dark:border-[#30363d]">
-          v{{ store.version }}
-        </div>
       </div>
       
-      <div class="flex items-center gap-3">
+      <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
         <button 
           @click="showHistory = true"
-          class="text-[11px] font-medium text-slate-500 dark:text-[#8b949e] hover:text-slate-700 dark:hover:text-[#c9d1d9] transition-colors flex items-center gap-1.5 px-2 py-1"
+          class="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-[#8b949e] hover:text-slate-700 dark:hover:text-[#c9d1d9] transition-colors flex items-center gap-1.5 py-1"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -88,27 +76,25 @@
           :loading="store.saving" 
           @click="handleSave"
           :disabled="!hasUnsavedChanges && !store.loading"
-          class="!rounded-lg transition-all"
-          :class="hasUnsavedChanges ? 'ring-2 ring-orange-500/20' : ''"
+          class="!rounded-lg transition-all !px-4"
         >
-          {{ store.saving ? 'Salvando...' : 'Salvar' }}
+          {{ store.saving ? '...' : 'Salvar' }}
         </Button>
       </div>
     </div>
 
     <!-- IDE Body -->
-    <div class="flex-1 flex overflow-hidden relative">
+    <div class="flex-1 flex overflow-hidden relative min-h-[400px]">
       
-      <!-- Gutter / Line Numbers (Git Style) -->
+      <!-- Gutter / Line Numbers -->
       <div 
         ref="gutterRef"
-        class="w-12 bg-slate-50 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d] flex flex-col items-end pr-3 py-6 select-none transition-colors duration-500 overflow-hidden"
-        :class="hasUnsavedChanges ? 'border-r-orange-500/50' : ''"
+        class="w-8 sm:w-12 bg-slate-50 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d] flex flex-col items-end sm:pr-3 py-4 sm:py-6 select-none transition-colors duration-500 overflow-hidden shrink-0"
       >
         <div 
           v-for="n in lineCount" 
           :key="n" 
-          class="text-[11px] font-mono leading-relaxed h-[21px] flex items-center justify-end"
+          class="text-[10px] sm:text-[11px] font-mono leading-relaxed h-[21px] flex items-center justify-end px-1.5 sm:px-0"
           :class="getItemColorClass(n)"
         >
           {{ n }}
@@ -117,32 +103,27 @@
 
       <!-- Editor Canvas -->
       <div class="flex-1 relative bg-white dark:bg-[#0d1117] overflow-hidden">
-        <!-- Git Modified Indicator Stripe -->
         <div 
           v-if="hasUnsavedChanges"
-          class="absolute left-0 top-0 bottom-0 w-[3px] bg-orange-500/40 z-30 transition-all duration-500"
+          class="absolute left-0 top-0 bottom-0 w-[2px] sm:w-[3px] bg-orange-500/40 z-30 transition-all duration-500"
         ></div>
 
         <div class="w-full h-full relative" @click="focusTextArea">
-          <!-- Background Highlight Layer -->
-          <!-- Removed text-transparent here, this layer PROVIDES the colors -->
           <div 
             ref="highlightRef"
             class="absolute inset-0 w-full h-full pointer-events-none z-10 editor-layer transition-opacity duration-300"
             v-html="highlightedContent || localContent"
           ></div>
 
-          <!-- Foreground Editable Area -->
-          <!-- Text becomes transparent so only the Shiki colors below show through -->
           <textarea
             ref="textareaRef"
             v-model="localContent"
-            class="absolute inset-0 w-full h-full resize-none bg-transparent focus:outline-none placeholder-slate-400 dark:placeholder-slate-600 caret-primary z-20 selection:bg-primary/20 editor-layer"
+            class="absolute inset-0 w-full h-full resize-none bg-transparent focus:outline-none placeholder-slate-300 dark:placeholder-slate-700 caret-primary z-20 selection:bg-primary/20 editor-layer"
             :class="{ 
               'text-transparent': highlighterReady && highlightedContent,
               'text-slate-800 dark:text-[#e6edf3]': !highlighterReady || !highlightedContent 
             }"
-            placeholder="Escreva as instruções principais da EVA aqui usando Markdown..."
+            placeholder="Instruções da EVA..."
             spellcheck="false"
             @scroll="syncScroll"
             @keydown.tab.prevent="insertTab"
@@ -154,12 +135,12 @@
 
     <!-- IDE Footer / Status Bar -->
     <div 
-      class="px-6 py-2 border-t text-[11px] font-mono flex justify-between items-center transition-colors duration-300"
+      class="px-4 sm:px-6 py-2 border-t text-[10px] sm:text-[11px] font-mono flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 transition-colors duration-300"
       :class="hasUnsavedChanges 
         ? 'bg-orange-500/5 border-orange-500/20 text-orange-600 dark:text-orange-400' 
         : 'bg-slate-50 dark:bg-[#161b22] border-slate-100 dark:border-[#30363d] text-slate-500 dark:text-[#8b949e]'"
     >
-      <div class="flex items-center gap-4">
+      <div class="flex flex-wrap items-center gap-3 sm:gap-4">
         <span class="flex items-center gap-1.5">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 text-[#2f81f7]">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
@@ -167,24 +148,17 @@
           Markdown
         </span>
         <span class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
           {{ store.lastUpdated ? formatDate(store.lastUpdated) : 'Não salvo' }}
-        </span>
-        <span v-if="!highlighterReady" class="flex items-center gap-2 text-slate-400 italic">
-          <span class="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
-          Iniciando Highlighter...
         </span>
       </div>
 
-      <div class="flex items-center gap-4">
-        <span v-if="hasUnsavedChanges" class="flex items-center gap-1 text-orange-500 font-bold uppercase tracking-tighter">
+      <div class="flex items-center justify-between w-full sm:w-auto gap-4">
+        <span v-if="hasUnsavedChanges" class="flex items-center gap-1 text-orange-500 font-bold uppercase tracking-tighter shrink-0">
           <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping"></span>
-          MODIFICADO
+          MOD
         </span>
-        <span class="text-slate-400 dark:text-[#484f58]">
-          Linhas: {{ lineCount }} | Chars: {{ localContent.length }}
+        <span class="text-slate-400 dark:text-[#484f58] whitespace-nowrap">
+          L: {{ lineCount }} | Ch: {{ localContent.length }}
         </span>
       </div>
     </div>

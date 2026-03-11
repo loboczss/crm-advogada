@@ -6,13 +6,13 @@
         :class="{ 'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10': isOpen }"
       >
         <div class="relative shrink-0">
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-primary/20 text-primary dark:text-white flex items-center justify-center text-xs font-black shadow-sm group-hover:shadow-glow-primary/20 transition-all duration-500">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-primary/20 text-primary dark:text-white flex items-center justify-center text-xs font-bold shadow-sm group-hover:shadow-glow-primary/20 transition-all duration-500">
             {{ initials }}
           </div>
           <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950 shadow-sm animate-pulse"></span>
         </div>
         <div class="leading-tight hidden sm:block">
-          <p class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white group-hover:text-primary transition-colors flex items-center gap-2">
+          <p class="text-[11px] font-bold uppercase tracking-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors flex items-center gap-2">
             {{ displayName }}
             <svg 
               class="w-3 h-3 transition-transform duration-300 shrink-0" 
@@ -22,7 +22,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
             </svg>
           </p>
-          <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 tracking-wider truncate max-w-[120px]">
+          <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 tracking-tight truncate max-w-[120px]">
             {{ emailText }}
           </p>
         </div>
@@ -31,7 +31,7 @@
 
     <template #content="{ close }">
       <div class="px-4 py-3 border-b border-slate-100 dark:border-white/5 mb-1 sm:hidden">
-        <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider truncate">{{ displayName }}</p>
+        <p class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-tight truncate">{{ displayName }}</p>
         <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">{{ emailText }}</p>
       </div>
 
