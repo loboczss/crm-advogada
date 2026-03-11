@@ -14,9 +14,74 @@
           system_prompt.md
           <span v-if="hasUnsavedChanges" class="w-2 h-2 rounded-full bg-orange-500 animate-pulse" title="Alterações não salvas"></span>
         </h2>
+
+        <div class="h-4 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-2"></div>
+        
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Agente:</span>
+          
+          <!-- Normal Mode -->
+          <div v-if="!isCreatingAgent" class="flex items-center gap-1.5 h-[26px]">
+            <select 
+              v-model="agentNameInput" 
+              @change="handleAgentChange"
+              class="text-[11px] font-mono h-[26px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] rounded px-2 py-0 w-32 outline-none text-slate-700 dark:text-slate-300 focus:border-[#2f81f7] dark:focus:border-[#2f81f7] transition-colors cursor-pointer"
+            >
+              <option v-for="agent in store.agents" :key="agent" :value="agent">{{ agent }}</option>
+            </select>
+            <button 
+              @click="isCreatingAgent = true"
+              class="h-[26px] bg-slate-100 dark:bg-[#21262d] hover:bg-slate-200 dark:hover:bg-[#30363d] text-slate-500 dark:text-[#8b949e] border border-slate-200 dark:border-[#30363d] rounded px-2 flex items-center justify-center transition-colors focus:outline-none gap-1"
+              title="Criar novo agente"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              <span class="text-[10px] font-medium">Novo</span>
+            </button>
+          </div>
+
+          <!-- Create Mode -->
+          <div v-else class="flex items-center gap-1.5 h-[26px] animate-in fade-in slide-in-from-left-2 direction-reverse">
+            <input 
+              ref="newAgentInputRef"
+              v-model="newAgentName" 
+              @keydown.enter="confirmNewAgent"
+              @keydown.esc="cancelNewAgent"
+              class="text-[11px] font-mono h-[26px] bg-white dark:bg-[#0d1117] border border-[#2f81f7] rounded px-2 py-0 w-32 outline-none text-[#2f81f7] placeholder-slate-400 transition-colors shadow-[0_0_0_1px_rgba(47,129,247,0.2)]"
+              placeholder="Nome do agente..."
+            />
+            <button 
+              @click="confirmNewAgent"
+              class="h-[26px] bg-[#2f81f7] hover:bg-[#2f81f7]/90 text-white rounded px-2 flex items-center justify-center transition-colors focus:outline-none text-[10px] font-medium"
+            >
+              Criar
+            </button>
+            <button 
+              @click="cancelNewAgent"
+              class="h-[26px] bg-slate-100 dark:bg-[#21262d] hover:bg-slate-200 dark:hover:bg-[#30363d] text-slate-500 dark:text-[#8b949e] border border-slate-200 dark:border-[#30363d] rounded px-2 flex items-center justify-center transition-colors focus:outline-none text-[10px] font-medium"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#21262d] text-slate-500 dark:text-[#8b949e] border border-slate-200 dark:border-[#30363d]">
+          v{{ store.version }}
+        </div>
       </div>
       
       <div class="flex items-center gap-3">
+        <button 
+          @click="showHistory = true"
+          class="text-[11px] font-medium text-slate-500 dark:text-[#8b949e] hover:text-slate-700 dark:hover:text-[#c9d1d9] transition-colors flex items-center gap-1.5 px-2 py-1"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Histórico
+        </button>
+
         <Button 
           variant="primary" 
           size="sm" 
@@ -130,6 +195,14 @@
         {{ feedback.message }}
       </Alert>
     </div>
+
+    <!-- History Modal -->
+    <PromptHistoryModal 
+      v-if="showHistory" 
+      :agent-name="store.currentAgent"
+      @close="showHistory = false"
+      @restore="(content) => { localContent = content; showHistory = false; handleInput() }"
+    />
   </div>
 </template>
 
@@ -139,9 +212,17 @@ import { onBeforeRouteLeave } from 'vue-router'
 import Button from '../Button.vue'
 import Alert from '../Alert.vue'
 import { useEvaPromptStore } from '../../stores/evaPrompt'
+import PromptHistoryModal from './PromptHistoryModal.vue'
 
 const store = useEvaPromptStore()
 const localContent = ref('')
+const agentNameInput = ref(store.currentAgent)
+const showHistory = ref(false)
+
+const isCreatingAgent = ref(false)
+const newAgentName = ref('')
+const newAgentInputRef = ref<HTMLInputElement | null>(null)
+
 const highlightedContent = ref('')
 const highlighterReady = ref(false)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
@@ -156,14 +237,15 @@ const lineCount = computed(() => {
   if (!localContent.value) return 1
   return localContent.value.split('\n').length
 })
-const hasUnsavedChanges = computed(() => localContent.value !== store.content)
+const hasUnsavedChanges = computed(() => !store.loading && localContent.value !== store.content)
 
 let observer: MutationObserver | null = null
 
 // Initialization
 onMounted(async () => {
-  await store.fetchPrompt()
-  localContent.value = store.content
+  await store.fetchAgents()
+  agentNameInput.value = store.currentAgent
+  await loadData()
   
   // Refresh protection
   window.onbeforeunload = (e) => {
@@ -275,6 +357,55 @@ function insertTab() {
 function getItemColorClass(line: number) {
   if (!hasUnsavedChanges.value) return 'text-slate-300 dark:text-[#484f58]'
   return 'text-orange-500/60 dark:text-orange-400/50'
+}
+
+async function loadData() {
+  await store.fetchPrompt(agentNameInput.value)
+  localContent.value = store.content
+}
+
+function createNewAgent() {
+  // Not used directly on button anymore, handled inline by `isCreatingAgent=true`
+}
+
+watch(isCreatingAgent, (val) => {
+  if (val) {
+    newAgentName.value = ''
+    nextTick(() => newAgentInputRef.value?.focus())
+  }
+})
+
+function confirmNewAgent() {
+  if (newAgentName.value && newAgentName.value.trim()) {
+    const formatted = newAgentName.value.trim().toLowerCase().replace(/\s+/g, '_')
+    agentNameInput.value = formatted
+    isCreatingAgent.value = false
+    handleAgentChange()
+  } else {
+    cancelNewAgent()
+  }
+}
+
+function cancelNewAgent() {
+  isCreatingAgent.value = false
+  newAgentName.value = ''
+}
+
+async function handleAgentChange() {
+  const newAgent = agentNameInput.value.trim() || 'master'
+  agentNameInput.value = newAgent
+  
+  if (newAgent === store.currentAgent) return
+  
+  if (hasUnsavedChanges.value) {
+    const confirm = window.confirm('Você tem alterações não salvas neste agente. Deseja descartar as mudanças e carregar o novo agente?')
+    if (!confirm) {
+      agentNameInput.value = store.currentAgent // revert input
+      return
+    }
+  }
+  
+  await loadData()
 }
 
 async function handleSave() {

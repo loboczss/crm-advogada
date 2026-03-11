@@ -127,6 +127,18 @@
         <template #cell-source="{ item }">
           <span class="text-xs text-slate-500 max-w-[200px] truncate block">{{ item.metadata?.source ?? '—' }}</span>
         </template>
+
+        <template #cell-actions="{ item }">
+          <button 
+            @click.stop="handleDelete(item.id)" 
+            class="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 hover:bg-red-50 dark:bg-slate-800 dark:hover:bg-red-900/20 rounded-md ring-1 ring-slate-200 dark:ring-white/5"
+            title="Excluir documento"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg>
+          </button>
+        </template>
       </DataTable>
     </div>
 
@@ -178,6 +190,25 @@
         </div>
       </template>
     </Modal>
+
+    <!-- Delete Confirmation Modal -->
+    <Modal
+      :is-open="isDeleteModalOpen"
+      title="Confirmar Exclusão"
+      max-width="md"
+      @close="isDeleteModalOpen = false"
+    >
+      <div class="p-4 text-slate-600 dark:text-slate-300">
+        <p>Tem certeza que deseja excluir o documento <strong>ID {{ docToDelete }}</strong>?</p>
+        <p class="text-sm mt-2 text-slate-500">A EVA perderá essa informação da base de conhecimento.</p>
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <Button variant="outline" @click="isDeleteModalOpen = false">Cancelar</Button>
+          <Button variant="danger" @click="confirmDeleteAction">Excluir</Button>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -202,24 +233,56 @@ const documents = ref<any[]>([])
 const loadingDocs = ref(false)
 const isModalOpen = ref(false)
 const selectedDoc = ref<any>(null)
+const isDeleteModalOpen = ref(false)
+const docToDelete = ref<number | null>(null)
 
 const columns = [
   { key: 'id', label: 'ID', sortable: true },
   { key: 'source', label: 'Fonte' },
   { key: 'tipo', label: 'Tipo' },
   { key: 'content', label: 'Conteúdo (Preview)' },
+  { key: 'actions', label: 'Ações' },
 ] as any[]
 
 async function loadDocuments() {
   loadingDocs.value = true
   try {
-    const fetch = useRequestFetch()
-    const data = await fetch<any[]>('/api/eva/rag')
+    const data = await $fetch<any[]>('/api/eva/rag')
     documents.value = data
   } catch {
     // silently fail
   } finally {
     loadingDocs.value = false
+  }
+}
+
+async function handleDelete(id: number) {
+  docToDelete.value = id
+  isDeleteModalOpen.value = true
+}
+
+async function confirmDeleteAction() {
+  if (docToDelete.value === null) return
+  const id = docToDelete.value
+  docToDelete.value = null
+  isDeleteModalOpen.value = false
+
+  try {
+    await $fetch(`/api/eva/rag/${id}`, { method: 'DELETE' })
+    await loadDocuments()
+    feedback.value = {
+      type: 'success',
+      title: 'Excluído',
+      message: 'O documento foi excluído com sucesso.'
+    }
+    setTimeout(() => feedback.value = null, 3000)
+  } catch (error: any) {
+     console.error('Erro ao excluir:', error)
+     feedback.value = {
+      type: 'danger',
+      title: 'Erro',
+      message: error.data?.statusMessage || 'Erro ao excluir documento.'
+    }
   }
 }
 
