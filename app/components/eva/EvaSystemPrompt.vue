@@ -26,7 +26,7 @@
           class="!rounded-lg transition-all"
           :class="hasUnsavedChanges ? 'ring-2 ring-orange-500/20' : ''"
         >
-          {{ store.saving ? 'Salvando...' : 'Salvar no Banco' }}
+          {{ store.saving ? 'Salvando...' : 'Salvar' }}
         </Button>
       </div>
     </div>
@@ -158,6 +158,8 @@ const lineCount = computed(() => {
 })
 const hasUnsavedChanges = computed(() => localContent.value !== store.content)
 
+let observer: MutationObserver | null = null
+
 // Initialization
 onMounted(async () => {
   await store.fetchPrompt()
@@ -183,13 +185,10 @@ onMounted(async () => {
     updateHighlight()
     
     // Watch for theme changes on documentElement
-    const observer = new MutationObserver(() => {
+    observer = new MutationObserver(() => {
       updateHighlight()
     })
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    
-    // Cleanup observer on unmount
-    onBeforeUnmount(() => observer.disconnect())
   } catch (err) {
     console.error('Failed to load shiki:', err)
   }
@@ -211,6 +210,9 @@ onBeforeRouteLeave((to, from, next) => {
 
 onBeforeUnmount(() => {
   window.onbeforeunload = null
+  if (observer) {
+    observer.disconnect()
+  }
 })
 
 // Sync state when store updates
