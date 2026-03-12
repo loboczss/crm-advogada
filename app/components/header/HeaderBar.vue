@@ -1,5 +1,7 @@
 <template>
-  <header class="sticky top-0 z-[100] w-full border-b border-slate-200/50 dark:border-white/5 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl transition-all duration-300">
+  <header 
+    class="bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-white/5 sticky top-0 z-[100] w-full transition-all duration-300"
+  >
     <div class="px-6 py-2.5">
       <div class="container mx-auto flex items-center justify-between h-12 gap-8">
         
@@ -10,12 +12,14 @@
             @click="navigateTo('/')"
           >
             <div class="relative">
-              <img src="/logo-blue.svg" alt="Evastur" class="h-8 w-auto dark:hidden select-none transition-transform duration-300 group-hover:scale-105" />
-              <img src="/logo-white.svg" alt="Evastur" class="h-8 w-auto hidden dark:block select-none transition-transform duration-300 group-hover:scale-105" />
+              <img src="/logo-blue.svg" alt="Evastur" class="dark:hidden h-8 w-auto select-none transition-transform duration-300 group-hover:scale-105" />
+              <img src="/logo-white.svg" alt="Evastur" class="hidden dark:block h-8 w-auto select-none transition-transform duration-300 group-hover:scale-105" />
             </div>
             
             <div class="flex flex-col">
-              <span class="text-sm font-bold text-slate-900 dark:text-white tracking-tight leading-none">
+              <span 
+                class="text-sm font-bold tracking-tight leading-none text-slate-900 dark:text-white"
+              >
                 {{ pageTitle }}
               </span>
               <span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 tracking-tight leading-normal">
@@ -28,14 +32,14 @@
         <VitePwaManifest />
 
         <!-- Navigation (Center) -->
-        <nav class="hidden md:flex items-center justify-center flex-1 gap-1">
+        <nav v-if="!isPublicPage || user" class="hidden md:flex items-center justify-center flex-1 gap-1">
           <NuxtLink 
             v-for="item in navItems"
             :key="item.path"
             :to="item.path" 
             class="px-4 py-2 text-sm font-medium tracking-tight transition-all rounded-lg select-none relative group/link"
             :class="isActive(item.path) 
-              ? 'text-primary dark:text-white bg-primary/5 dark:bg-white/5' 
+              ? 'text-primary dark:text-white bg-primary/5 dark:bg-white/5'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5'"
           >
             {{ item.label }}
@@ -46,12 +50,19 @@
         <div class="flex items-center gap-1 sm:gap-3 shrink-0">
           <DarkModeToggle />
           <div class="h-4 w-[1px] bg-slate-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
-          <HeaderProfile />
+          
+          <template v-if="isPublicPage && !user">
+            <HeaderAuthButtons />
+          </template>
+          <template v-else>
+            <HeaderProfile />
+          </template>
           
           <!-- Mobile Menu Toggle -->
           <button 
+            v-if="!isPublicPage"
             @click="isMobileMenuOpen = !isMobileMenuOpen"
-            class="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+            class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white md:hidden p-2 transition-colors"
           >
             <svg v-if="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -97,15 +108,24 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { navigateTo, useRoute } from '#imports'
+import { useRoute, useSupabaseUser, navigateTo } from '#imports'
 import DarkModeToggle from '../DarkModeToggle.vue'
 import HeaderProfile from './HeaderProfile.vue'
+import HeaderAuthButtons from './HeaderAuthButtons.vue'
 
 const isMobileMenuOpen = ref(false)
 const route = useRoute()
+const user = useSupabaseUser()
+
+const isPublicPage = computed(() => {
+  const publicPaths = ['/', '/login', '/confirm', '/recovery', '/privacidade']
+  // If user is logged in, we treat pages as "app pages" for header purposes
+  if (user.value) return false
+  return publicPaths.includes(route.path)
+})
 
 const navItems = [
-  { label: 'Dashboard', path: '/' },
+  { label: 'Dashboard', path: '/dashboard' },
   { label: 'Relatórios', path: '/relatorios' },
   { label: 'Vendas', path: '/vendas' },
   { label: 'CRM', path: '/crm/evastur' },
@@ -114,7 +134,8 @@ const navItems = [
 
 // Map routes to friendly names
 const pageTitle = computed(() => {
-  if (route.path === '/') return 'Dashboard'
+  if (route.path === '/') return 'Home'
+  if (route.path.startsWith('/dashboard')) return 'Dashboard'
   if (route.path.startsWith('/relatorios')) return 'Relatórios'
   if (route.path.startsWith('/vendas')) return 'Vendas'
   if (route.path.startsWith('/crm')) return 'CRM'

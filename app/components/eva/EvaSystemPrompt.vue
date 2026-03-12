@@ -77,55 +77,84 @@
       </div>
     </div>
 
-    <!-- IDE Body -->
-    <div class="flex-1 flex overflow-hidden relative min-h-[400px]">
-      
-      <!-- Gutter / Line Numbers -->
-      <div 
-        ref="gutterRef"
-        class="w-8 sm:w-12 bg-slate-50 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d] flex flex-col items-end sm:pr-3 py-4 sm:py-6 select-none transition-colors duration-500 overflow-hidden shrink-0"
-      >
+      <!-- IDE Body -->
+      <div v-if="!isModularView" class="flex-1 flex overflow-hidden relative min-h-[400px]">
+        
+        <!-- Gutter / Line Numbers -->
         <div 
-          v-for="n in lineCount" 
-          :key="n" 
-          class="text-[10px] sm:text-[11px] font-mono leading-relaxed h-[21px] flex items-center justify-end px-1.5 sm:px-0"
-          :class="getItemColorClass(n)"
+          ref="gutterRef"
+          class="w-8 sm:w-12 bg-slate-50 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d] flex flex-col items-end sm:pr-3 py-4 sm:py-6 select-none transition-colors duration-500 overflow-hidden shrink-0"
         >
-          {{ n }}
-        </div>
-      </div>
-
-      <!-- Editor Canvas -->
-      <div class="flex-1 relative bg-white dark:bg-[#0d1117] overflow-hidden">
-        <div 
-          v-if="hasUnsavedChanges"
-          class="absolute left-0 top-0 bottom-0 w-[2px] sm:w-[3px] bg-orange-500/40 z-30 transition-all duration-500"
-        ></div>
-
-        <div class="w-full h-full relative" @click="focusTextArea">
           <div 
-            ref="highlightRef"
-            class="absolute inset-0 w-full h-full pointer-events-none z-10 editor-layer transition-opacity duration-300"
-            v-html="highlightedContent || localContent"
+            v-for="n in lineCount" 
+            :key="n" 
+            class="text-[10px] sm:text-[11px] font-mono leading-relaxed h-[21px] flex items-center justify-end px-1.5 sm:px-0"
+            :class="getItemColorClass(n)"
+          >
+            {{ n }}
+          </div>
+        </div>
+
+        <!-- Editor Canvas -->
+        <div class="flex-1 relative bg-white dark:bg-[#0d1117] overflow-hidden">
+          <div 
+            v-if="hasUnsavedChanges"
+            class="absolute left-0 top-0 bottom-0 w-[2px] sm:w-[3px] bg-orange-500/40 z-30 transition-all duration-500"
           ></div>
 
-          <textarea
-            ref="textareaRef"
-            v-model="localContent"
-            class="absolute inset-0 w-full h-full resize-none bg-transparent focus:outline-none placeholder-slate-300 dark:placeholder-slate-700 caret-primary z-20 selection:bg-primary/20 editor-layer"
-            :class="{ 
-              'text-transparent': highlighterReady && highlightedContent,
-              'text-slate-800 dark:text-[#e6edf3]': !highlighterReady || !highlightedContent 
-            }"
-            placeholder="Instruções da EVA..."
-            spellcheck="false"
-            @scroll="syncScroll"
-            @keydown.tab.prevent="insertTab"
-            @input="handleInput"
-          ></textarea>
+          <div class="w-full h-full relative" @click="focusTextArea">
+            <div 
+              ref="highlightRef"
+              class="absolute inset-0 w-full h-full pointer-events-none z-10 editor-layer transition-opacity duration-300"
+              v-html="highlightedContent || localContent"
+            ></div>
+
+            <textarea
+              ref="textareaRef"
+              v-model="localContent"
+              class="absolute inset-0 w-full h-full resize-none bg-transparent focus:outline-none placeholder-slate-300 dark:placeholder-slate-700 caret-primary z-20 selection:bg-primary/20 editor-layer"
+              :class="{ 
+                'text-transparent': highlighterReady && highlightedContent,
+                'text-slate-800 dark:text-[#e6edf3]': !highlighterReady || !highlightedContent 
+              }"
+              placeholder="Instruções da EVA..."
+              spellcheck="false"
+              @scroll="syncScroll"
+              @keydown.tab.prevent="insertTab"
+              @input="handleInput"
+            ></textarea>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- Modular View Body -->
+      <div v-else class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-black/30">
+        <div class="max-w-4xl mx-auto space-y-8">
+          
+          <!-- Summary/Intro -->
+          <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-6 border border-slate-200 dark:border-white/10 shadow-sm flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <Icon name="ph:brain-bold" class="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h4 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter">Editor Modular da EVA</h4>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium italic">
+                Abaixo estão as seções estruturais do prompt da EVA. As seções destacadas são estratégicas e definem a personalidade e as regras básicas da assistente.
+              </p>
+            </div>
+          </div>
+
+          <!-- Sections Grid -->
+          <div class="grid grid-cols-1 gap-6 pb-20">
+            <EvaPromptSection
+              v-for="section in sections"
+              :key="section.id"
+              v-bind="section"
+              @update:content="(newContent) => handleSectionUpdate(section.id, newContent)"
+            />
+          </div>
+        </div>
+      </div>
 
     <!-- IDE Footer / Status Bar -->
     <div 
@@ -144,6 +173,15 @@
         <span class="flex items-center gap-1.5">
           {{ store.lastUpdated ? formatDate(store.lastUpdated) : 'Não salvo' }}
         </span>
+        <div class="h-3 w-[1px] bg-slate-200 dark:bg-[#30363d] mx-1"></div>
+        <button 
+          @click="isModularView = !isModularView"
+          class="flex items-center gap-1.5 px-2 py-0.5 rounded transition-colors"
+          :class="isModularView ? 'bg-primary/20 text-primary font-bold' : 'hover:bg-slate-200 dark:hover:bg-[#30363d]'"
+        >
+          <Icon :name="isModularView ? 'ph:grid-four-fill' : 'ph:hash-bold'" class="w-3.5 h-3.5" />
+          {{ isModularView ? 'Modo Modular ON' : 'Modo IDE' }}
+        </button>
       </div>
 
       <div class="flex items-center justify-between w-full sm:w-auto gap-4">
@@ -182,9 +220,13 @@ import Button from '../Button.vue'
 import Alert from '../Alert.vue'
 import { useEvaPromptStore } from '../../stores/evaPrompt'
 import PromptHistoryModal from './PromptHistoryModal.vue'
+import EvaPromptSection from './EvaPromptSection.vue'
+import { parsePrompt, generatePrompt, type PromptSection } from '../../utils/promptParser'
 
 const store = useEvaPromptStore()
 const localContent = ref('')
+const sections = ref<PromptSection[]>([])
+const isModularView = ref(true)
 const agentNameInput = ref(store.currentAgent)
 const showHistory = ref(false)
 
@@ -276,7 +318,28 @@ watch(() => store.content, (newVal) => {
 
 function handleInput() {
   updateHighlight()
+  if (!isModularView.value) {
+    sections.value = parsePrompt(localContent.value)
+  }
 }
+
+function handleSectionUpdate(sectionId: string, newContent: string) {
+  const section = sections.value.find(s => s.id === sectionId)
+  if (section) {
+    section.content = newContent
+    localContent.value = generatePrompt(sections.value)
+    updateHighlight()
+  }
+}
+
+watch(localContent, (newVal) => {
+  // Update sections whenever localContent changes (e.g. from IDE edit or load)
+  // but avoid deep nested updates if already in modular sync
+  const parsed = parsePrompt(newVal)
+  if (JSON.stringify(parsed) !== JSON.stringify(sections.value)) {
+    sections.value = parsed
+  }
+}, { immediate: true })
 
 function updateHighlight() {
   if (!highlighterReady.value || !highlighter) return
@@ -331,6 +394,7 @@ function getItemColorClass(line: number) {
 async function loadData() {
   await store.fetchPrompt(agentNameInput.value)
   localContent.value = store.content
+  sections.value = parsePrompt(localContent.value)
 }
 
 function createNewAgent() {

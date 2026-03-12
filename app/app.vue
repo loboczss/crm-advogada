@@ -2,10 +2,11 @@
 <template>
   <div class="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 font-sans selection:bg-primary/30">
     <NuxtRouteAnnouncer />
-    <HeaderBar v-if="showHeader" />
-    <main :class="[showHeader ? 'max-w-7xl mx-auto px-4 py-8 md:px-8 md:py-12' : '']">
+    <HeaderBar />
+    <main :class="[route.path !== '/' && showHeader ? 'max-w-7xl mx-auto px-4 py-8 md:px-8 md:py-12' : '']">
       <NuxtPage />
     </main>
+    <FooterBar />
   </div>
 </template>
 
@@ -13,11 +14,12 @@
 import { computed } from 'vue'
 import { useRoute, useHead } from '#imports'
 import HeaderBar from './components/header/HeaderBar.vue'
+import FooterBar from './components/footer/FooterBar.vue'
 
 const route = useRoute()
 
 const showHeader = computed(() => {
-  const publicPages = ['/login', '/confirm', '/recovery', '/privacidade', '/auth/dropbox']
+  const publicPages = ['/', '/login', '/confirm', '/recovery', '/privacidade', '/auth/dropbox']
   return !publicPages.includes(route.path)
 })
 

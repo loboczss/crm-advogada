@@ -70,7 +70,7 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 3600
     },
     devOptions: {
-      enabled: true,
+      enabled: false,
       type: 'module',
       suppressWarnings: true,
       navigateFallbackAllowlist: [/^\/$/]
@@ -90,7 +90,7 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/confirm',
       include: undefined,
-      exclude: ['/recovery', '/privacidade', '/auth/dropbox'],
+      exclude: ['/', '/recovery', '/privacidade', '/auth/dropbox'],
       saveRedirectToCookie: false
     },
     cookieOptions: {

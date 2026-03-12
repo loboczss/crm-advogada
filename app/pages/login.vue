@@ -5,7 +5,6 @@
         <img src="/logo-blue.svg" alt="Evastur Logo" class="h-12 w-auto dark:hidden" />
         <img src="/logo-white.svg" alt="Evastur Logo" class="h-12 w-auto hidden dark:block" />
       </div>
-      <DarkModeToggle />
     </header>
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-10 items-start">

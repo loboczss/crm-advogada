@@ -1,532 +1,102 @@
 <template>
-  <div class="w-full">
-    <div class="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
-      <!-- Topbar / Header -->
-      <header
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
-      >
-        <div>
-          <h1
-            class="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3"
-          >
-            Dashboard
-          </h1>
-          <p class="text-slate-500 dark:text-slate-400 mt-1">
-            Visão geral de performance e métricas comerciais
-          </p>
-        </div>
+  <div class="bg-slate-50 dark:bg-slate-900 min-h-[calc(100vh-64px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+    <!-- Abstract Background Patterns -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
+      <div class="absolute -bottom-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s"></div>
+    </div>
 
-        <div class="flex items-center gap-3">
-          <!-- Period Selector -->
-          <div class="relative group">
-            <select
-              v-model="selectedPeriod"
-              @change="fetchDashboardData"
-              class="appearance-none bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm font-medium rounded-xl px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 cursor-pointer backdrop-blur-md transition-all hover:bg-slate-50 dark:hover:bg-slate-800/80"
-            >
-              <option
-                v-for="period in periods"
-                :key="period.label"
-                :value="period"
-              >
-                {{ period.label }}
-              </option>
-            </select>
-            <div
-              class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400"
-            >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </div>
-          </div>
+    <div class="max-w-4xl w-full text-center relative z-10">
+      <!-- Badge/Intro -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6 animate-fade-in">
+        <Icon name="ph:shield-check-fill" class="w-4 h-4" />
+        Sistema Interno Evastur
+      </div>
 
-          <!-- Refresh Button -->
-          <button
-            @click="fetchDashboardData"
-            :disabled="loading"
-            class="bg-primary hover:bg-primary-600 text-white p-2.5 rounded-xl transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center min-w-[44px]"
-            title="Atualizar dados"
-          >
-            <svg
-              v-if="!loading"
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <svg
-              v-else
-              class="w-5 h-5 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </button>
-        </div>
-      </header>
+      <!-- Main Heading -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tight leading-tight">
+        Bem-vindo ao Painel <br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Administrativo CRM</span>
+      </h1>
 
-      <!-- Main Grid -->
-      <main class="space-y-6">
-        <!-- Error Alert -->
-        <div
-          v-if="error"
-          class="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl flex items-center gap-3"
+      <p class="text-slate-600 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+        Gerencie seus leads, monitore vendas e analise a performance comercial da Evastur em um só lugar com ferramentas avançadas de gestão.
+      </p>
+
+      <!-- Action Cards/Buttons -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto mb-12">
+        <NuxtLink 
+          to="/dashboard" 
+          class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/50 transition-all duration-300 text-left relative overflow-hidden"
         >
-          <svg
-            class="w-5 h-5 flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span class="text-sm font-medium">{{ error }}</span>
-        </div>
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Icon name="ph:chart-line-up" class="w-16 h-16 text-primary" />
+          </div>
+          <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
+            <Icon name="ph:chart-pie-slice-fill" class="w-6 h-6" />
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Dashboard</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Visão geral de métricas, KPIs e performance em tempo real.</p>
+          <div class="mt-4 flex items-center text-primary text-sm font-bold gap-1 group-hover:gap-2 transition-all">
+            Acessar Painel <Icon name="ph:arrow-right-bold" class="w-4 h-4" />
+          </div>
+        </NuxtLink>
 
-        <!-- KPI Cards row -->
-        <section
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
+        <NuxtLink 
+          to="/crm/evastur" 
+          class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/50 transition-all duration-300 text-left relative overflow-hidden"
         >
-          <KpiCard
-            title="Novos Leads"
-            :value="novosLeads"
-            color="success"
-            icon="ph:user-plus-bold"
-            :loading="loading"
-          />
-          <KpiCard
-            title="Recorrentes"
-            :value="recorrentes"
-            color="info"
-            icon="ph:users-three-bold"
-            :loading="loading"
-          />
-          <KpiCard
-            :title="leadsLabel"
-            :value="leadsNoPeriodo"
-            color="neutral"
-            icon="ph:users-bold"
-            :loading="loading"
-          />
-          <KpiCard
-            :title="vendasLabel"
-            :value="vendasNoPeriodo"
-            :sub-value="formatCurrency(valorVendasNoPeriodo)"
-            color="warning"
-            icon="ph:currency-dollar-bold"
-            :loading="loading"
-          />
-        </section>
-        <!-- Charts Area -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-          <div class="lg:col-span-2 h-full">
-            <DashboardChartArea
-              :chartData="chartData"
-              class="h-full"
-            ></DashboardChartArea>
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Icon name="ph:users-three" class="w-16 h-16 text-blue-500" />
           </div>
-
-          <!-- Quick Summary -->
-          <div class="lg:col-span-1 h-full">
-            <div
-              class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm dark:shadow-none flex flex-col h-full"
-            >
-              <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                Resumo Rápido
-              </h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
-                Métricas consolidadas do período selecionado.
-              </p>
-
-              <div class="space-y-5 flex-1">
-                <!-- Taxa de Conversão -->
-                <div class="group relative">
-                  <div class="flex justify-between items-end mb-1.5">
-                    <span
-                      class="text-sm text-slate-600 dark:text-slate-300 font-bold flex items-center gap-1.5 cursor-help"
-                    >
-                      Conversão
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        class="w-4 h-4 text-slate-400"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="text-xl font-black text-slate-900 dark:text-white"
-                      >{{ maxConversion }}%</span
-                    >
-                  </div>
-                  <div
-                    class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
-                  >
-                    <div
-                      class="h-full bg-gradient-to-r from-blue-500 to-green-500"
-                      :style="{ width: `${maxConversion}%` }"
-                    ></div>
-                  </div>
-                  <!-- Tooltip -->
-                  <div
-                    class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[95%] p-3 mt-2 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2"
-                  >
-                    Registra o percentual de contatos que se transformaram em
-                    vendas.<br /><span
-                      class="text-slate-300 mt-1 block font-mono"
-                      >{{ totalVendasPeriodo }} vendas /
-                      {{ totalLeadsPeriodo }} leads</span
-                    >
-                    <!-- Arrow -->
-                    <div
-                      class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -bottom-1 left-1/2 -translate-x-1/2"
-                    ></div>
-                  </div>
-                </div>
-
-                <!-- Taxa de Recorrência -->
-                <div class="group relative">
-                  <div class="flex justify-between items-end mb-1.5">
-                    <span
-                      class="text-sm text-slate-600 dark:text-slate-300 font-bold flex items-center gap-1.5 cursor-help"
-                    >
-                      Recorrência
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        class="w-4 h-4 text-slate-400"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="text-xl font-black text-slate-900 dark:text-white"
-                      >{{ recorrenciaPercentual }}%</span
-                    >
-                  </div>
-                  <div
-                    class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
-                  >
-                    <div
-                      class="h-full bg-gradient-to-r from-orange-400 to-orange-600"
-                      :style="{ width: `${recorrenciaPercentual}%` }"
-                    ></div>
-                  </div>
-                  <!-- Tooltip -->
-                  <div
-                    class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[95%] p-3 mt-2 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2"
-                  >
-                    Mede a fidelidade: percentual de contatos do período que já
-                    haviam comprado anteriormente.<br /><span
-                      class="text-slate-300 mt-1 block font-mono"
-                      >{{ totalRecorrentesPeriodo }} recorrentes /
-                      {{ totalLeadsPeriodo }} leads</span
-                    >
-                    <!-- Arrow -->
-                    <div
-                      class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -bottom-1 left-1/2 -translate-x-1/2"
-                    ></div>
-                  </div>
-                </div>
-
-                <hr class="border-slate-100 dark:border-white/5" />
-
-                <!-- Grid Stats -->
-                <div class="grid grid-cols-2 gap-3">
-                  <!-- Volume Leads -->
-                  <div
-                    class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 group relative"
-                  >
-                    <p
-                      class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1 flex items-center gap-1 cursor-help"
-                    >
-                      Total Leads
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        class="w-3 h-3 text-slate-400"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                        />
-                      </svg>
-                    </p>
-                    <p
-                      class="text-xl font-black text-slate-900 dark:text-white"
-                    >
-                      {{ totalLeadsPeriodo }}
-                    </p>
-                    <div
-                      class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[180px] p-2.5 mt-1 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 left-0 top-full"
-                    >
-                      Soma de clientes novos + clientes recorrentes que entraram
-                      em contato neste período.
-                      <!-- Arrow -->
-                      <div
-                        class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -top-1 left-4"
-                      ></div>
-                    </div>
-                  </div>
-
-                  <!-- Volume Vendas -->
-                  <div
-                    class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 group relative"
-                  >
-                    <p
-                      class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1 flex items-center gap-1 cursor-help justify-end"
-                    >
-                      Total Vendas
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        class="w-3 h-3 text-slate-400"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                        />
-                      </svg>
-                    </p>
-                    <p
-                      class="text-xl font-black text-slate-900 dark:text-white text-right"
-                    >
-                      {{ totalVendasPeriodo }}
-                    </p>
-                    <div
-                      class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[180px] p-2.5 mt-1 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 right-0 top-full"
-                    >
-                      Quantidade absoluta de vendas concretizadas neste período.
-                      <!-- Arrow -->
-                      <div
-                        class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -top-1 right-4"
-                      ></div>
-                    </div>
-                  </div>
-
-                  <!-- Valor Faturado -->
-                  <div
-                    class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 group relative col-span-2 flex justify-between items-center"
-                  >
-                    <div>
-                      <p
-                        class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1 flex items-center gap-1 cursor-help"
-                      >
-                        Faturamento
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="2"
-                          stroke="currentColor"
-                          class="w-3 h-3 text-slate-400"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                          />
-                        </svg>
-                      </p>
-                      <p
-                        class="text-lg font-black text-primary dark:text-primary-400 leading-none"
-                      >
-                        {{ formatCurrency(valorTotalVendasPeriodo) }}
-                      </p>
-                    </div>
-                    <div
-                      class="text-right border-l pl-4 border-slate-200 dark:border-white/10"
-                    >
-                      <p
-                        class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1 flex items-center justify-end gap-1 cursor-help"
-                      >
-                        Ticket Médio
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="2"
-                          stroke="currentColor"
-                          class="w-3 h-3 text-slate-400"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                          />
-                        </svg>
-                      </p>
-                      <p
-                        class="text-sm font-black text-slate-700 dark:text-slate-200 leading-none"
-                      >
-                        {{ formatCurrency(ticketMedio) }}
-                      </p>
-                    </div>
-
-                    <!-- Tooltip for Faturamento/Ticket -->
-                    <div
-                      class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[90%] left-1/2 -translate-x-1/2 p-3 mt-1 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 top-full"
-                    >
-                      <strong>Faturamento Bruto:</strong> Soma financeira de
-                      todas as vendas.<br />
-                      <strong class="mt-1.5 block">Ticket Médio:</strong>
-                      Faturamento dividido pela Quantidade de Vendas.
-                      <!-- Arrow -->
-                      <div
-                        class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -top-1 left-1/2 -translate-x-1/2"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <!-- End Grid Stats -->
-              </div>
-              <!-- End space-y-5 -->
-            </div>
-            <!-- End root card context -->
+          <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+            <Icon name="ph:user-list-fill" class="w-6 h-6" />
           </div>
-          <!-- End lg:col-span-1 -->
-        </section>
-        <!-- End main charts section -->
-      </main>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Gestão CRM</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Gerenciamento completo de leads, contatos e histórico de interações.</p>
+          <div class="mt-4 flex items-center text-blue-500 text-sm font-bold gap-1 group-hover:gap-2 transition-all">
+            Acessar CRM <Icon name="ph:arrow-right-bold" class="w-4 h-4" />
+          </div>
+        </NuxtLink>
+      </div>
+
+      <!-- Quick Shortcuts -->
+      <div class="flex flex-wrap justify-center gap-4 text-sm text-slate-500 dark:text-slate-500">
+        <span class="font-medium mr-2">Acesso Rápido:</span>
+        <NuxtLink to="/vendas" class="hover:text-primary transition-colors flex items-center gap-1">
+          <Icon name="ph:receipt-bold" /> Vendas
+        </NuxtLink>
+        <span class="opacity-30">•</span>
+        <NuxtLink to="/relatorios" class="hover:text-primary transition-colors flex items-center gap-1">
+          <Icon name="ph:file-text-bold" /> Relatórios
+        </NuxtLink>
+        <span class="opacity-30">•</span>
+        <NuxtLink to="/profile" class="hover:text-primary transition-colors flex items-center gap-1">
+          <Icon name="ph:user-gear-bold" /> Perfil
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, watch } from "vue";
-import { useHead } from "#imports";
-import KpiCard from "../components/KpiCard.vue";
-import DashboardChartArea from "../components/dashboard/DashboardChartArea.vue";
-import { useDashboardData } from "../composables/useDashboardData";
+import { useHead } from '#imports'
 
-definePageMeta({ middleware: "auth" });
-
-const {
-  loading,
-  error,
-  periods,
-  selectedPeriod,
-  novosLeads,
-  recorrentes,
-  leadsNoPeriodo,
-  vendasNoPeriodo,
-  valorVendasNoPeriodo,
-  totalLeadsPeriodo,
-  totalRecorrentesPeriodo,
-  totalVendasPeriodo,
-  valorTotalVendasPeriodo,
-  chartData,
-  fetchDashboardData,
-} = useDashboardData();
-
-useHead({ title: "Dashboard | Evastur" });
-
-const formatCurrency = (val: number) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(val);
-};
-
-const leadsLabel = computed(() => {
-  return selectedPeriod.value.value === 0 ? "Leads Hoje" : "Leads no Período";
-});
-
-const vendasLabel = computed(() => {
-  return selectedPeriod.value.value === 0 ? "Vendas Hoje" : "Vendas no Período";
-});
-
-const conversaoPercentual = computed(() => {
-  if (totalLeadsPeriodo.value === 0) return 0;
-  const pct = (totalVendasPeriodo.value / totalLeadsPeriodo.value) * 100;
-  return Math.round(pct * 10) / 10;
-});
-
-const maxConversion = computed(() => {
-  return conversaoPercentual.value > 100 ? 100 : conversaoPercentual.value;
-});
-
-const recorrenciaPercentual = computed(() => {
-  if (totalLeadsPeriodo.value === 0) return 0;
-  return (
-    Math.round(
-      (totalRecorrentesPeriodo.value / totalLeadsPeriodo.value) * 100 * 10,
-    ) / 10
-  );
-});
-
-const ticketMedio = computed(() => {
-  if (totalVendasPeriodo.value === 0) return 0;
-  return valorTotalVendasPeriodo.value / totalVendasPeriodo.value;
-});
-
-onMounted(() => {
-  fetchDashboardData();
-});
-
-// Trigger fetch when period changes
-watch(
-  () => selectedPeriod.value,
-  () => {
-    fetchDashboardData();
-  },
-);
+useHead({
+  title: 'Home Administrativo - Evastur',
+  meta: [
+    { name: 'description', content: 'Área administrativa de CRM e Dashboard da Evastur.' }
+  ]
+})
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
