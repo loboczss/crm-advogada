@@ -198,8 +198,8 @@ import { useEvaPromptStore } from '../../stores/evaPrompt'
 import type { PromptHistoryDTO } from '../../../shared/types/EvaSystemPromptDTO'
 import Button from '../Button.vue'
 
-const MAX_DIFF_LINES = 400
-const MAX_DIFF_OPERATIONS = 40000
+const MAX_DIFF_LINES = 1200
+const MAX_DIFF_OPERATIONS = 600000
 
 interface DiffCell {
   lineNumber: number
