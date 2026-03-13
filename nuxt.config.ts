@@ -61,7 +61,6 @@ export default defineNuxtConfig({
       display: 'standalone'
     },
     workbox: {
-      navigateFallback: '/',
       // Limit globPatterns to files that actually exist in public/ during build
       globPatterns: ['**/*.{js,css,html,png,svg,ico,json}']
     },
