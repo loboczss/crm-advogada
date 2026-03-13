@@ -37,15 +37,16 @@
 
         <!-- Actions (Right) -->
         <div class="flex items-center gap-1 sm:gap-1.5 lg:gap-2 shrink-0">
-          <DarkModeToggle />
-          <div class="h-6 w-[1px] bg-slate-200 dark:bg-white/10 mx-0.5 hidden lg:block"></div>
-          
-          <template v-if="!user">
-            <HeaderLoginButton />
-          </template>
-          <template v-else>
+          <template v-if="user">
+            <HeaderNotifications />
             <HeaderProfile />
           </template>
+          <template v-else>
+            <HeaderLoginButton />
+          </template>
+
+          <div class="h-6 w-[1px] bg-slate-200 dark:bg-white/10 mx-0.5 hidden md:block"></div>
+          <DarkModeToggle />
           
           <!-- Mobile Menu Toggle -->
           <button 
@@ -101,6 +102,7 @@ import { storeToRefs } from 'pinia'
 import { useRoute, useSupabaseUser, navigateTo } from '#imports'
 import { useProfileStore } from '../../stores/profile'
 import DarkModeToggle from '../DarkModeToggle.vue'
+import HeaderNotifications from './HeaderNotifications.vue'
 import HeaderProfile from './HeaderProfile.vue'
 import HeaderLoginButton from './HeaderLoginButton.vue'
 

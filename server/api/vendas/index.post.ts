@@ -1,5 +1,6 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import type { Venda } from '../../../shared/types/VendaDTO'
+import { notifyVendedorForSale } from '../../utils/vendasNotifications'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
@@ -22,6 +23,8 @@ export default defineEventHandler(async (event) => {
         console.error('[vendas] Erro ao criar venda:', error)
         throw createError({ statusCode: 500, message: 'Erro interno ao criar venda.' })
     }
+
+    await notifyVendedorForSale(event, data as Venda, 'created', user.sub)
 
     return data as Venda
 })
