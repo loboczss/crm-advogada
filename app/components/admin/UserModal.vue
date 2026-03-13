@@ -65,13 +65,16 @@
               <select 
                 v-model="form.role" 
                 class="w-full px-5 py-3.5 rounded-md bg-white dark:bg-white/[0.03] backdrop-blur-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-0 focus:border-primary/50"
-                :disabled="loading"
+                :disabled="loading || !isEditing"
                 required
               >
                 <option value="user">Usuário (Cliente)</option>
                 <option value="vendedor">Vendedor</option>
                 <option value="admin">Administrador</option>
               </select>
+              <p v-if="!isEditing" class="text-[10px] font-medium text-slate-400 dark:text-slate-500 ml-1">
+                Novos usuários são criados sempre como Cliente.
+              </p>
             </div>
 
             <Input 
@@ -173,7 +176,7 @@ function handleSubmit() {
     email: form.email,
     phone: form.phone,
     company: form.company,
-    role: form.role,
+    role: isEditing.value ? form.role : 'user',
     vendedor_id: form.vendedor_idStr ? parseInt(form.vendedor_idStr, 10) : null
   }
   emit('submit', payload)

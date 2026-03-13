@@ -24,6 +24,21 @@ export default defineEventHandler(async (event) => {
     // Use service role to bypass RLS and guarantee the update succeeds
     const adminClient = serverSupabaseServiceRole(event)
 
+    const { data: actorProfile, error: profileError } = await adminClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+    if (profileError) {
+        console.error('[eva/prompt] Erro ao validar perfil:', profileError)
+        throw createError({ statusCode: 500, message: 'Erro interno ao validar permissões.' })
+    }
+
+    if (!actorProfile || !['admin', 'vendedor'].includes(actorProfile.role)) {
+        throw createError({ statusCode: 403, message: 'Apenas administradores ou vendedores podem editar a EVA.' })
+    }
+
     // Get the existing row for this agent
     const { data: existing } = await adminClient
         .from('eva_system_prompt')

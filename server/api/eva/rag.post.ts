@@ -183,6 +183,22 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
 
+    const authzClient = serverSupabaseServiceRole(event)
+    const { data: actorProfile, error: profileError } = await authzClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.sub)
+        .single()
+
+    if (profileError) {
+        console.error('[eva/rag] Erro ao validar perfil:', profileError)
+        throw createError({ statusCode: 500, message: 'Erro interno ao validar permissões.' })
+    }
+
+    if (!actorProfile || !['admin', 'vendedor'].includes(actorProfile.role)) {
+        throw createError({ statusCode: 403, message: 'Apenas administradores ou vendedores podem editar a EVA.' })
+    }
+
     const config = useRuntimeConfig()
     const apiKey = config.openaiApiKey as string
 

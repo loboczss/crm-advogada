@@ -44,7 +44,7 @@ import EvaSystemPrompt from '../components/eva/EvaSystemPrompt.vue'
 import EvaDataTab from '../components/eva/EvaDataTab.vue'
 
 useHead({ title: 'Configurações EVA | Evastur' })
-definePageMeta({ middleware: ['auth'] })
+definePageMeta({ middleware: ['auth', 'eva-editor'] })
 
 const activeTab = ref<'prompt' | 'dados'>('prompt')
 
