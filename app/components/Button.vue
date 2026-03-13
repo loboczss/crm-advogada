@@ -2,7 +2,7 @@
   <button
     v-bind="$attrs"
     :class="[
-      'rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2',
+      'rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2',
       variantClasses,
       sizeClasses,
     ]"

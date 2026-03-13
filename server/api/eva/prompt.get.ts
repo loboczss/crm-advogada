@@ -1,7 +1,10 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import type { EvaSystemPrompt } from '../../../shared/types/EvaSystemPromptDTO'
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const client = await serverSupabaseClient(event)
     const query = getQuery(event)
     const agentName = (query.agent as string) || 'master'
@@ -14,7 +17,8 @@ export default defineEventHandler(async (event) => {
         .maybeSingle()
 
     if (error) {
-        throw createError({ statusCode: 500, statusMessage: error.message })
+        console.error('[eva/prompt] Erro ao buscar prompt:', error)
+        throw createError({ statusCode: 500, message: 'Erro interno ao buscar prompt.' })
     }
 
     if (!data) {

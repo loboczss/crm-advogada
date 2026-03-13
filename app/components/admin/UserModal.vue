@@ -14,7 +14,7 @@
 
       <!-- Modal Panel -->
       <div 
-        class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-200 dark:border-white/10"
+        class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-lg text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-200 dark:border-white/10"
       >
         <div class="px-6 py-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
           <h3 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-3">
@@ -64,7 +64,7 @@
               <label class="block text-[10px] font-black uppercase tracking-[0.2em] ml-1 text-slate-500 dark:text-gray-400">Nível de Acesso (Role)</label>
               <select 
                 v-model="form.role" 
-                class="w-full px-5 py-3.5 rounded-2xl bg-white dark:bg-white/[0.03] backdrop-blur-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-0 focus:border-primary/50"
+                class="w-full px-5 py-3.5 rounded-md bg-white dark:bg-white/[0.03] backdrop-blur-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-0 focus:border-primary/50"
                 :disabled="loading"
                 required
               >
@@ -84,7 +84,7 @@
           </div>
 
           <!-- Error Alert -->
-          <div v-if="errorMsg" class="p-4 rounded-2xl bg-danger-50 border border-danger-100 text-danger-600 dark:bg-danger-500/10 dark:border-danger-500/20 dark:text-danger-400 text-xs font-bold flex items-start gap-3">
+          <div v-if="errorMsg" class="p-4 rounded-md bg-danger-50 border border-danger-100 text-danger-600 dark:bg-danger-500/10 dark:border-danger-500/20 dark:text-danger-400 text-xs font-bold flex items-start gap-3">
             <Icon name="ph:warning-circle-bold" class="w-4 h-4 shrink-0 mt-0.5" />
             <p>{{ errorMsg }}</p>
           </div>

@@ -1,6 +1,9 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const client = await serverSupabaseClient(event)
 
     const { data, error } = await client
@@ -9,7 +12,8 @@ export default defineEventHandler(async (event) => {
         .order('agent_name', { ascending: true })
 
     if (error) {
-        throw createError({ statusCode: 500, statusMessage: error.message })
+        console.error('[eva/prompt-agents] Erro ao buscar agentes:', error)
+        throw createError({ statusCode: 500, message: 'Erro interno ao buscar agentes.' })
     }
 
     // Retorna uma array de strings com os nomes dos agentes

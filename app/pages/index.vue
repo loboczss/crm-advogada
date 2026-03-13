@@ -8,7 +8,7 @@
 
     <div class="max-w-4xl w-full text-center relative z-10">
       <!-- Badge/Intro -->
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6 animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6 animate-fade-in">
         <Icon name="ph:shield-check-fill" class="w-4 h-4" />
         Sistema Interno Evastur
       </div>
@@ -27,12 +27,12 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto mb-12">
         <NuxtLink 
           to="/dashboard" 
-          class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/50 transition-all duration-300 text-left relative overflow-hidden"
+          class="group p-6 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/50 transition-all duration-300 text-left relative overflow-hidden"
         >
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <Icon name="ph:chart-line-up" class="w-16 h-16 text-primary" />
           </div>
-          <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
             <Icon name="ph:chart-pie-slice-fill" class="w-6 h-6" />
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Dashboard</h3>
@@ -44,12 +44,12 @@
 
         <NuxtLink 
           to="/crm/evastur" 
-          class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/50 transition-all duration-300 text-left relative overflow-hidden"
+          class="group p-6 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/50 transition-all duration-300 text-left relative overflow-hidden"
         >
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <Icon name="ph:users-three" class="w-16 h-16 text-blue-500" />
           </div>
-          <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-10 h-10 bg-blue-500/10 rounded-md flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
             <Icon name="ph:user-list-fill" class="w-6 h-6" />
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Gestão CRM</h3>
@@ -80,7 +80,18 @@
 </template>
 
 <script setup lang="ts">
-import { useHead } from '#imports'
+import { useHead, onMounted, navigateTo } from '#imports'
+
+onMounted(() => {
+  // Check if we landed with a hash containing an auth token and type
+  if (typeof window !== 'undefined' && window.location.hash) {
+    const params = new URLSearchParams(window.location.hash.substring(1))
+    const type = params.get('type')
+    if (type === 'invite' || type === 'recovery') {
+      navigateTo('/confirm' + window.location.hash)
+    }
+  }
+})
 
 useHead({
   title: 'Home Administrativo - Evastur',

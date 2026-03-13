@@ -17,7 +17,7 @@
       <div 
         v-if="isOpen"
         :class="[
-          'absolute mt-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-slate-200 dark:border-white/10 shadow-2xl z-[110] overflow-hidden py-2',
+          'absolute mt-3 rounded-lg bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-slate-200 dark:border-white/10 shadow-2xl z-[110] overflow-hidden py-2',
           align === 'right' ? 'right-0' : 'left-0',
           widthClass
         ]"

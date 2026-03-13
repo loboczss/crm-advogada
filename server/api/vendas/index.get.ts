@@ -1,12 +1,15 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import type { Venda } from '../../../shared/types/VendaDTO'
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const client = await serverSupabaseClient(event)
 
     const query = getQuery(event)
     const page = Number(query.page ?? 1)
-    const pageSize = Number(query.pageSize ?? 25)
+    const pageSize = Math.min(Number(query.pageSize ?? 25), 100)
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
 
@@ -48,7 +51,8 @@ export default defineEventHandler(async (event) => {
     const { data, error, count } = await q
 
     if (error) {
-        throw createError({ statusCode: 500, statusMessage: error.message })
+        console.error('[vendas] Erro ao buscar vendas:', error)
+        throw createError({ statusCode: 500, message: 'Erro interno ao buscar vendas.' })
     }
 
     return {

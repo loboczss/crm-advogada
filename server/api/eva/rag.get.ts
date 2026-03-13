@@ -1,4 +1,4 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 
 function summarizeMetadata(metadata: Record<string, any> | null | undefined) {
     if (!metadata) {
@@ -15,6 +15,9 @@ function summarizeMetadata(metadata: Record<string, any> | null | undefined) {
 }
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const supabase = serverSupabaseServiceRole(event)
 
     // Fetch all rows from the documents vector store table
@@ -25,7 +28,8 @@ export default defineEventHandler(async (event) => {
         .order('id', { ascending: false })
 
     if (error) {
-        throw createError({ statusCode: 500, statusMessage: error.message })
+        console.error('[eva/rag] Erro ao buscar documentos:', error)
+        throw createError({ statusCode: 500, message: 'Erro interno ao buscar documentos.' })
     }
 
     return (data ?? []).map((item) => ({

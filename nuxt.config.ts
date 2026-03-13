@@ -105,6 +105,10 @@ export default defineNuxtConfig({
     openaiApiKey: process.env.OPENAI_API_KEY ?? '',
     resendApiKey: process.env.RESEND_API_KEY ?? '',
     mailerSenderEmail: process.env.MAILER_SENDER_EMAIL ?? '',
+    public: {
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+      originalSiteUrl: process.env.NUXT_PUBLIC_ORIGINAL_SITE_URL ?? '',
+    },
   },
   nitro: {
     // Prevent Nitro from bundling CJS-only packages — they generate

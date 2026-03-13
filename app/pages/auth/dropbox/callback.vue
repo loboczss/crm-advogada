@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute } from '#imports'
+import { useRoute, useRuntimeConfig } from '#imports'
 
 // Disable any layout or middleware that might interfere
 definePageMeta({
@@ -54,6 +54,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const runtimeConfig = useRuntimeConfig()
 const status = ref<'loading' | 'success' | 'error'>('loading')
 const title = ref('Conectando ao Dropbox')
 const message = ref('Estamos processando sua autorização. Por favor, aguarde um momento.')
@@ -93,10 +94,11 @@ onMounted(() => {
 function sendResultToOpener(data: any) {
   if (window.opener) {
     try {
+      const targetOrigin = runtimeConfig.public.originalSiteUrl || runtimeConfig.public.siteUrl || window.location.origin
       window.opener.postMessage({
         type: 'DROPBOX_OAUTH_RESULT',
         ...data
-      }, window.location.origin)
+      }, targetOrigin)
     } catch (e) {
       console.error('Failed to postMessage to opener:', e)
     }

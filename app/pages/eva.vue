@@ -15,31 +15,13 @@
           </div>
 
           <!-- Tab Navigation -->
-          <div class="flex bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm self-start">
-            <button
-              @click="activeTab = 'prompt'"
-              :class="[
-                'px-6 py-2.5 text-sm font-bold transition-all duration-300 rounded-lg',
-                activeTab === 'prompt' 
-                  ? 'bg-primary/10 text-primary shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-              ]"
-            >
-              System Prompt
-            </button>
-            <button
-              @click="activeTab = 'dados'"
-              :class="[
-                'px-6 py-2.5 text-sm font-bold transition-all duration-300 rounded-lg flex items-center gap-2',
-                activeTab === 'dados' 
-                  ? 'bg-primary/10 text-primary shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-              ]"
-            >
-              Dados
-              
-            </button>
-          </div>
+          <Tabs 
+            v-model="activeTab"
+            :tabs="[
+              { label: 'System Prompt', value: 'prompt', icon: 'ph:terminal-window-bold' },
+              { label: 'Dados', value: 'dados', icon: 'ph:database-bold' }
+            ]"
+          />
         </div>
 
         <!-- Dynamic Content -->
@@ -57,6 +39,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useHead } from '#imports'
+import Tabs from '../components/Tabs.vue'
 import EvaSystemPrompt from '../components/eva/EvaSystemPrompt.vue'
 import EvaDataTab from '../components/eva/EvaDataTab.vue'
 

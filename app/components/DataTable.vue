@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <!-- Main Table Card -->
-    <div class="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-lg shadow-sm overflow-hidden">
       
       <!-- Slot for custom header (like title, search, filters) -->
       <slot name="header"></slot>
@@ -80,7 +80,7 @@
                       type="text"
                       :value="columnFilters[col.key] || ''"
                       placeholder="Buscar..."
-                      class="w-full bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-gray-900 dark:text-white focus:border-primary focus:outline-none shadow-lg"
+                      class="w-full bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 rounded-md px-2.5 py-1.5 text-xs text-gray-900 dark:text-white focus:border-primary focus:outline-none shadow-lg"
                       autofocus
                       @input="handleFilterInput(col.key, $event)"
                       @keydown.enter="submitFilter(col.key)"
@@ -92,25 +92,25 @@
             </tr>
           </thead>
           
-          <TransitionGroup name="list" tag="tbody" class="divide-y divide-gray-100 dark:divide-zinc-800/50 relative">
+          <tbody class="divide-y divide-gray-100 dark:divide-zinc-800/50 relative">
             <tr
-              v-for="item in data"
+              v-for="(item, itemIndex) in data"
               :key="item[keyField] as string | number"
               class="group hover:bg-gray-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors relative z-10"
               @click="emit('row-click', item)"
             >
               <td 
-                v-for="(col, index) in columns" 
+                v-for="(col, colIndex) in columns" 
                 :key="col.key"
                 class="px-6 py-4"
                 :class="[
-                  index === 0 ? 'px-8' : '',
-                  index === columns.length - 1 ? 'pr-8' : '',
+                  colIndex === 0 ? 'px-8' : '',
+                  colIndex === columns.length - 1 ? 'pr-8' : '',
                   col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : 'text-left'
                 ]"
               >
                 <!-- Cell Data Slot -->
-                <slot :name="`cell-${col.key}`" :item="item" :column="col">
+                <slot :name="`cell-${col.key}`" :item="item" :column="col" :index="itemIndex">
                   <span class="text-sm font-medium text-gray-700 dark:text-zinc-300">{{ item[col.key] }}</span>
                 </slot>
               </td>
@@ -119,7 +119,7 @@
             <tr v-if="data.length === 0" key="empty" class="w-full">
               <td :colspan="columns.length" class="px-8 py-24 text-center">
                 <div class="flex flex-col items-center justify-center space-y-3">
-                  <div class="w-16 h-16 bg-gray-50 dark:bg-zinc-800 rounded-xl flex items-center justify-center text-3xl border border-gray-100 dark:border-zinc-700">🗄️</div>
+                  <div class="w-16 h-16 bg-gray-50 dark:bg-zinc-800 rounded-lg flex items-center justify-center text-3xl border border-gray-100 dark:border-zinc-700">🗄️</div>
                   <div>
                     <p class="text-base font-bold text-gray-900 dark:text-white">Nenhum registro encontrado</p>
                     <p class="text-xs text-gray-400 dark:text-zinc-500 mt-1">Ajuste seus filtros para buscar novamente</p>
@@ -127,7 +127,7 @@
                 </div>
               </td>
             </tr>
-          </TransitionGroup>
+          </tbody>
         </table>
       </div>
 
@@ -141,7 +141,7 @@
           <button
             @click="emit('page-change', 1)"
             :disabled="currentPage === 1 || loading"
-            class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+            class="w-9 h-9 flex items-center justify-center rounded-md bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
@@ -155,7 +155,7 @@
                 v-else
                 @click="emit('page-change', p as number)"
                 :class="p === currentPage ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-zinc-800/50 border-gray-100 dark:border-zinc-700 text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-700'"
-                class="w-9 h-9 flex items-center justify-center rounded-lg border text-xs font-bold transition-colors"
+                class="w-9 h-9 flex items-center justify-center rounded-md border text-xs font-bold transition-colors"
               >
                 {{ p }}
               </button>
@@ -165,7 +165,7 @@
           <button
             @click="emit('page-change', totalPages)"
             :disabled="currentPage === totalPages || loading"
-            class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+            class="w-9 h-9 flex items-center justify-center rounded-md bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />

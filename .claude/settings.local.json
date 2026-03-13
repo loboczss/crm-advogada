@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/juanm/.claude/**)",
+      "Read(//c/Users/juanm/.config/claude/**)",
+      "Bash(npx -y @supabase/mcp-server-supabase@latest --help 2>&1 | head -30)"
+    ]
+  }
+}

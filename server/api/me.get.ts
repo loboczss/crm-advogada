@@ -20,10 +20,8 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (error && error.code !== 'PGRST116') {
-    throw createError({
-      statusCode: 500,
-      message: error.message
-    })
+    console.error('[me] Erro ao buscar perfil:', error)
+    throw createError({ statusCode: 500, message: 'Erro interno ao buscar perfil.' })
   }
 
   if (!profile) {
@@ -39,10 +37,8 @@ export default defineEventHandler(async (event) => {
       .single()
 
     if (insertError) {
-      throw createError({
-        statusCode: 500,
-        message: insertError.message
-      })
+      console.error('[me] Erro ao criar perfil:', insertError)
+      throw createError({ statusCode: 500, message: 'Erro interno ao criar perfil.' })
     }
 
     return newProfile

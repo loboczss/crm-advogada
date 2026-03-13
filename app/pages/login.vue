@@ -166,13 +166,8 @@ async function handleSignup() {
     return
   }
 
-  if (signupForm.value.password.length < 8) {
-    signupError.value = 'A senha deve ter pelo menos 8 caracteres.'
-    return
-  }
-
-  if (!/[A-Z]/.test(signupForm.value.password) || !/[0-9]/.test(signupForm.value.password)) {
-    signupError.value = 'A senha deve conter pelo menos uma letra maiúscula e um número.'
+  if (signupForm.value.password.length < 6) {
+    signupError.value = 'A senha deve ter pelo menos 6 caracteres.'
     return
   }
 

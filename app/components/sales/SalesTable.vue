@@ -36,7 +36,7 @@
                 v-model="search"
                 type="text"
                 placeholder="Pesquisa rápida..."
-                class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-primary focus:outline-none transition-colors shadow-sm"
+                class="w-full pl-9 pr-4 py-2 text-sm rounded-md border border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-primary focus:outline-none transition-colors shadow-sm"
               />
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -101,7 +101,7 @@
         <div class="flex items-center justify-end gap-1.5 pr-2">
           <button
             @click.stop="emit('delete', venda.id)"
-            class="p-2 rounded-lg text-gray-400 hover:text-danger hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors opacity-0 group-hover:opacity-100"
+            class="p-2 rounded-md text-gray-400 hover:text-danger hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors opacity-0 group-hover:opacity-100"
             title="Excluir"
           >
             <svg v-if="deleting !== venda.id" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">

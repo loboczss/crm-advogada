@@ -56,10 +56,8 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (error) {
-    throw createError({
-      statusCode: 500,
-      message: error.message
-    })
+    console.error('[admin/users] Erro ao atualizar usuário:', error)
+    throw createError({ statusCode: 500, message: 'Erro interno ao atualizar usuário.' })
   }
 
   return updatedUser as Profile

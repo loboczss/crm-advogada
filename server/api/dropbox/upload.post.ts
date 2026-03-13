@@ -1,4 +1,5 @@
 import { defineEventHandler, readMultipartFormData, createError } from 'h3'
+import { serverSupabaseUser } from '#supabase/server'
 import { getDropboxAccessToken } from '../../utils/dropboxToken'
 
 /**
@@ -13,6 +14,9 @@ import { getDropboxAccessToken } from '../../utils/dropboxToken'
  * Retorna o metadata do arquivo criado no Dropbox.
  */
 export default defineEventHandler(async (event) => {
+  const user = await serverSupabaseUser(event)
+  if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
   const parts = await readMultipartFormData(event)
 
   if (!parts || parts.length === 0) {
@@ -47,6 +51,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Campo "path" é obrigatório (ex: "/pasta/arquivo.pdf").' })
   }
 
+  // Prevent path traversal attacks
+  const normalizedPath = dropboxPath.replace(/\\/g, '/')
+  if (normalizedPath.includes('..') || !normalizedPath.startsWith('/app/site/')) {
+    throw createError({ statusCode: 400, message: 'Caminho inválido. O upload deve ser dentro de /app/site/.' })
+  }
+
   let accessToken: string
   try {
     accessToken = await getDropboxAccessToken()
@@ -74,10 +84,8 @@ export default defineEventHandler(async (event) => {
 
   if (!dropboxResponse.ok) {
     const errorText = await dropboxResponse.text()
-    throw createError({
-      statusCode: dropboxResponse.status,
-      message: `Erro ao fazer upload para o Dropbox: ${errorText}`,
-    })
+    console.error('[dropbox/upload] Erro na API Dropbox:', dropboxResponse.status, errorText)
+    throw createError({ statusCode: 502, message: 'Erro ao fazer upload para o Dropbox.' })
   }
 
   const metadata = await dropboxResponse.json()

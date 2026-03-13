@@ -17,7 +17,7 @@
       <button
         v-if="!isEditing"
         @click="startEditing"
-        class="p-2 rounded-lg text-gray-400 hover:text-primary hover:bg-primary/10 transition-colors"
+        class="p-2 rounded-md text-gray-400 hover:text-primary hover:bg-primary/10 transition-colors"
         title="Editar informações"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -114,7 +114,7 @@
         <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Observações</h4>
         <div class="space-y-1.5">
           <textarea v-if="isEditing" v-model="editForm.observacao" rows="3" class="input-field resize-none leading-relaxed" placeholder="Adicione notas sobre esta venda..."></textarea>
-          <p v-else class="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-gray-100 dark:border-zinc-800/50 min-h-[3rem]">
+          <p v-else class="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-md border border-gray-100 dark:border-zinc-800/50 min-h-[3rem]">
             {{ venda.observacao || 'Nenhuma observação registrada.' }}
           </p>
         </div>
@@ -297,6 +297,6 @@ const statusStyles = (status: string | null | undefined): string => {
 }
 
 .input-field {
-  @apply w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-colors shadow-sm;
+  @apply w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-md px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-colors shadow-sm;
 }
 </style>

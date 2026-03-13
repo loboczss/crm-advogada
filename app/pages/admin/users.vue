@@ -169,7 +169,11 @@ async function handleModalSubmit(data: Partial<Profile>) {
     } else {
       // Criar Novo
       const res = await adminStore.createUser(data)
-      alert(`Usuário criado com sucesso!\nSenha padrão provisória: ${(res as any).defaultPassword}`)
+      if ((res as any).emailSent) {
+        alert(`Usuário criado com sucesso!\nUm email com as credenciais de acesso foi enviado para ${data.email}.`)
+      } else {
+        alert(`Usuário criado com sucesso!\nAtenção: não foi possível enviar o email de convite. Verifique a configuração de email do servidor.`)
+      }
     }
     closeModal()
   } catch (err: any) {

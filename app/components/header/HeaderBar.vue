@@ -37,7 +37,7 @@
             v-for="item in navItems"
             :key="item.path"
             :to="item.path" 
-            class="px-4 py-2 text-sm font-medium tracking-tight transition-all rounded-lg select-none relative group/link"
+            class="px-4 py-2 text-sm font-medium tracking-tight transition-all rounded-md select-none relative group/link"
             :class="isActive(item.path) 
               ? 'text-primary dark:text-white bg-primary/5 dark:bg-white/5'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5'"
@@ -51,8 +51,8 @@
           <DarkModeToggle />
           <div class="h-4 w-[1px] bg-slate-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
           
-          <template v-if="isPublicPage && !user">
-            <HeaderAuthButtons />
+          <template v-if="!user">
+            <HeaderLoginButton />
           </template>
           <template v-else>
             <HeaderProfile />
@@ -94,7 +94,7 @@
           :key="item.path"
           @click="isMobileMenuOpen = false" 
           :to="item.path" 
-          class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors"
+          class="flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors"
           :class="isActive(item.path) 
             ? 'text-primary dark:text-white bg-primary/5 dark:bg-white/5' 
             : 'text-slate-500 dark:text-slate-400'"
@@ -111,7 +111,7 @@ import { ref, computed } from 'vue'
 import { useRoute, useSupabaseUser, navigateTo } from '#imports'
 import DarkModeToggle from '../DarkModeToggle.vue'
 import HeaderProfile from './HeaderProfile.vue'
-import HeaderAuthButtons from './HeaderAuthButtons.vue'
+import HeaderLoginButton from './HeaderLoginButton.vue'
 
 const isMobileMenuOpen = ref(false)
 const route = useRoute()

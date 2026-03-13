@@ -44,7 +44,8 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (updateError) {
-    throw createError({ statusCode: 500, message: `Erro ao atualizar usuário: ${updateError.message}` })
+    console.error('[admin/users] Erro ao atualizar usuário:', updateError)
+    throw createError({ statusCode: 500, message: 'Erro interno ao atualizar usuário.' })
   }
 
   // Optionally update auth user_metadata if name changed

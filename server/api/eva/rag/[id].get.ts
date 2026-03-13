@@ -1,16 +1,19 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 
 function parseDocumentId(idParam: string | undefined) {
     const parsedId = Number(idParam)
 
     if (!Number.isInteger(parsedId) || parsedId <= 0) {
-        throw createError({ statusCode: 400, statusMessage: 'Invalid document ID' })
+        throw createError({ statusCode: 400, message: 'Invalid document ID' })
     }
 
     return parsedId
 }
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const supabase = serverSupabaseServiceRole(event)
     const id = parseDocumentId(getRouterParam(event, 'id'))
 
@@ -21,7 +24,8 @@ export default defineEventHandler(async (event) => {
         .single()
 
     if (error || !data) {
-        throw createError({ statusCode: 404, statusMessage: error?.message || 'Documento não encontrado.' })
+        if (error) console.error('[eva/rag] Erro ao buscar documento:', error)
+        throw createError({ statusCode: 404, message: 'Documento não encontrado.' })
     }
 
     const metadata = (data.metadata ?? {}) as Record<string, any>

@@ -18,106 +18,30 @@
 
         <div class="flex items-center gap-3">
           <!-- Period Selector -->
-          <div class="relative group">
-            <select
-              v-model="selectedPeriod"
-              @change="fetchDashboardData"
-              class="appearance-none bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm font-medium rounded-xl px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 cursor-pointer backdrop-blur-md transition-all hover:bg-slate-50 dark:hover:bg-slate-800/80"
-            >
-              <option
-                v-for="period in periods"
-                :key="period.label"
-                :value="period"
-              >
-                {{ period.label }}
-              </option>
-            </select>
-            <div
-              class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400"
-            >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </div>
-          </div>
+          <Select
+            v-model="selectedPeriod"
+            :options="periods"
+            container-class="w-48"
+            @update:model-value="fetchDashboardData"
+          />
 
           <!-- Refresh Button -->
-          <button
+          <Button
+            variant="primary"
+            icon="ph:arrows-clockwise-bold"
+            :loading="loading"
+            class="shadow-lg shadow-primary/20"
             @click="fetchDashboardData"
-            :disabled="loading"
-            class="bg-primary hover:bg-primary-600 text-white p-2.5 rounded-xl transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center min-w-[44px]"
-            title="Atualizar dados"
-          >
-            <svg
-              v-if="!loading"
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <svg
-              v-else
-              class="w-5 h-5 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </button>
+          />
         </div>
       </header>
 
       <!-- Main Grid -->
       <main class="space-y-6">
         <!-- Error Alert -->
-        <div
-          v-if="error"
-          class="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl flex items-center gap-3"
-        >
-          <svg
-            class="w-5 h-5 flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span class="text-sm font-medium">{{ error }}</span>
-        </div>
+        <Alert v-if="error" type="danger" :title="error" class="mb-6">
+          Ocorreu um erro ao carregar os dados do dashboard.
+        </Alert>
 
         <!-- KPI Cards row -->
         <section
@@ -165,7 +89,7 @@
           <!-- Quick Summary -->
           <div class="lg:col-span-1 h-full">
             <div
-              class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm dark:shadow-none flex flex-col h-full"
+              class="bg-white dark:bg-slate-900/50 rounded-lg p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm dark:shadow-none flex flex-col h-full"
             >
               <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
                 Resumo Rápido
@@ -203,7 +127,7 @@
                     >
                   </div>
                   <div
-                    class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+                    class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden"
                   >
                     <div
                       class="h-full bg-gradient-to-r from-blue-500 to-green-500"
@@ -212,7 +136,7 @@
                   </div>
                   <!-- Tooltip -->
                   <div
-                    class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[95%] p-3 mt-2 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2"
+                    class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[95%] p-3 mt-2 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-md shadow-xl transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2"
                   >
                     Registra o percentual de contatos que se transformaram em
                     vendas.<br /><span
@@ -255,7 +179,7 @@
                     >
                   </div>
                   <div
-                    class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+                    class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden"
                   >
                     <div
                       class="h-full bg-gradient-to-r from-orange-400 to-orange-600"
@@ -454,6 +378,9 @@
 import { onMounted, computed, watch } from "vue";
 import { useHead } from "#imports";
 import KpiCard from "../components/KpiCard.vue";
+import Alert from "../components/Alert.vue";
+import Select from "../components/Select.vue";
+import Button from "../components/Button.vue";
 import DashboardChartArea from "../components/dashboard/DashboardChartArea.vue";
 import { useDashboardData } from "../composables/useDashboardData";
 

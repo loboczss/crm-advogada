@@ -1,4 +1,5 @@
 import { defineEventHandler, readBody, setResponseHeaders, createError } from 'h3'
+import { serverSupabaseUser } from '#supabase/server'
 import { getDropboxAccessToken } from '../../utils/dropboxToken'
 
 /**
@@ -13,10 +14,19 @@ import { getDropboxAccessToken } from '../../utils/dropboxToken'
  * O body binário pode ser encaminhado diretamente ao client.
  */
 export default defineEventHandler(async (event) => {
+  const user = await serverSupabaseUser(event)
+  if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
   const body = await readBody<{ path: string }>(event)
 
   if (!body?.path) {
     throw createError({ statusCode: 400, message: 'O campo "path" é obrigatório.' })
+  }
+
+  // Prevent path traversal attacks
+  const normalizedPath = body.path.replace(/\\/g, '/')
+  if (normalizedPath.includes('..') || !normalizedPath.startsWith('/app/site/')) {
+    throw createError({ statusCode: 400, message: 'Caminho inválido. O download deve ser dentro de /app/site/.' })
   }
 
   let accessToken: string
@@ -36,10 +46,8 @@ export default defineEventHandler(async (event) => {
 
   if (!dropboxResponse.ok) {
     const errorText = await dropboxResponse.text()
-    throw createError({
-      statusCode: dropboxResponse.status,
-      message: `Erro ao baixar arquivo do Dropbox: ${errorText}`,
-    })
+    console.error('[dropbox/download] Erro na API Dropbox:', dropboxResponse.status, errorText)
+    throw createError({ statusCode: 502, message: 'Erro ao baixar arquivo do Dropbox.' })
   }
 
   // Repassa Content-Type e Content-Disposition do Dropbox

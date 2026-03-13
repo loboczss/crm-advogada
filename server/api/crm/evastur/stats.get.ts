@@ -1,27 +1,33 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const client = await serverSupabaseClient(event)
 
-    // Fetch various counts for KPIs
+    // Fetch all KPI data in parallel
     const [
         totalRes,
         highUrgencyRes,
-        sentimentRes
+        sentimentRes,
+        convertedRes
     ] = await Promise.all([
         client.from('crm_evastur').select('*', { count: 'exact', head: true }),
         client.from('crm_evastur').select('*', { count: 'exact', head: true }).eq('urgencia', 'Alta'),
-        client.from('crm_evastur').select('sentimento')
+        client.from('crm_evastur').select('sentimento'),
+        client.from('crm_evastur').select('*', { count: 'exact', head: true }).eq('fase_obra', 'Finalizada'),
     ])
 
-    // Error handling
-    if (totalRes.error) throw createError({ statusCode: 500, statusMessage: totalRes.error.message })
-    if (highUrgencyRes.error) throw createError({ statusCode: 500, statusMessage: highUrgencyRes.error.message })
-    if (sentimentRes.error) throw createError({ statusCode: 500, statusMessage: sentimentRes.error.message })
+    if (totalRes.error) { console.error('[crm/stats] Erro total:', totalRes.error); throw createError({ statusCode: 500, message: 'Erro interno ao buscar estatísticas.' }) }
+    if (highUrgencyRes.error) { console.error('[crm/stats] Erro urgência:', highUrgencyRes.error); throw createError({ statusCode: 500, message: 'Erro interno ao buscar estatísticas.' }) }
+    if (sentimentRes.error) { console.error('[crm/stats] Erro sentimento:', sentimentRes.error); throw createError({ statusCode: 500, message: 'Erro interno ao buscar estatísticas.' }) }
+    if (convertedRes.error) { console.error('[crm/stats] Erro conversão:', convertedRes.error); throw createError({ statusCode: 500, message: 'Erro interno ao calcular taxa de conversão.' }) }
 
     const totalCount = totalRes.count ?? 0
     const highUrgencyCount = highUrgencyRes.count ?? 0
     const leadsWithSentiment = sentimentRes.data ?? []
+    const convertedCount = convertedRes.count ?? 0
 
     // Calculate sentiment average
     let sentimentScore = 0
@@ -35,16 +41,7 @@ export default defineEventHandler(async (event) => {
         sentimentScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
     }
 
-    // Conversion rate
-    // We consider 'Finalizada' in fase_obra as conversion
-    const { count: convertedCount, error: convError } = await client
-        .from('crm_evastur')
-        .select('*', { count: 'exact', head: true })
-        .eq('fase_obra', 'Finalizada')
-
-    if (convError) throw createError({ statusCode: 500, statusMessage: convError.message })
-
-    const conversionRate = totalCount > 0 ? Math.round((convertedCount ?? 0) / totalCount * 100) : 0
+    const conversionRate = totalCount > 0 ? Math.round(convertedCount / totalCount * 100) : 0
 
     return {
         totalLeads: totalCount,

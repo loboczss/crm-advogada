@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody<{ content: string; agent_name?: string }>(event)
 
     if (!body || typeof body.content !== 'string') {
-        throw createError({ statusCode: 400, statusMessage: 'Campo "content" é obrigatório.' })
+        throw createError({ statusCode: 400, message: 'Campo "content" é obrigatório.' })
     }
 
     const agentName = body.agent_name || 'master'
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     if (authError || !user) {
         throw createError({
             statusCode: 401,
-            statusMessage: authError?.message || 'Usuário não autenticado. Faça login novamente.'
+            message: authError?.message || 'Usuário não autenticado. Faça login novamente.'
         })
     }
 
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
             .select()
             .single()
 
-        if (error) throw createError({ statusCode: 500, statusMessage: error.message })
+        if (error) { console.error('[eva/prompt] Erro ao criar prompt:', error); throw createError({ statusCode: 500, message: 'Erro interno ao criar prompt.' }) }
         result = data as EvaSystemPrompt
     } else {
         // Save history before updating
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
                 updated_by: existing.updated_by
             })
 
-        if (historyError) throw createError({ statusCode: 500, statusMessage: 'Falha ao salvar histórico: ' + historyError.message })
+        if (historyError) { console.error('[eva/prompt] Erro ao salvar histórico:', historyError); throw createError({ statusCode: 500, message: 'Falha ao salvar histórico do prompt.' }) }
 
         // Update to next version
         const { data, error } = await adminClient
@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
             .select()
             .single()
 
-        if (error) throw createError({ statusCode: 500, statusMessage: error.message })
+        if (error) { console.error('[eva/prompt] Erro ao atualizar prompt:', error); throw createError({ statusCode: 500, message: 'Erro interno ao atualizar prompt.' }) }
         result = data as EvaSystemPrompt
     }
 

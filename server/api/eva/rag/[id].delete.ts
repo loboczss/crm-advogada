@@ -1,16 +1,19 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 
 function parseDocumentId(idParam: string | undefined) {
     const parsedId = Number(idParam)
 
     if (!Number.isInteger(parsedId) || parsedId <= 0) {
-        throw createError({ statusCode: 400, statusMessage: 'Invalid document ID' })
+        throw createError({ statusCode: 400, message: 'Invalid document ID' })
     }
 
     return parsedId
 }
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const id = parseDocumentId(getRouterParam(event, 'id'))
     const client = serverSupabaseServiceRole(event)
 
@@ -20,8 +23,8 @@ export default defineEventHandler(async (event) => {
         .eq('id', id)
 
     if (error) {
-        console.error('Error deleting document:', error)
-        throw createError({ statusCode: 500, statusMessage: error.message })
+        console.error('[eva/rag] Erro ao deletar documento:', error)
+        throw createError({ statusCode: 500, message: 'Erro interno ao deletar documento.' })
     }
 
     return { success: true }

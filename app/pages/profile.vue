@@ -36,20 +36,20 @@
 
               <!-- Avatar Display Area: Clickable -->
               <div 
-                class="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary to-secondary p-[2px] shadow-glow-primary/20 group-hover:scale-105 transition-transform duration-500 cursor-pointer relative overflow-hidden"
+                class="w-32 h-32 rounded-lg bg-gradient-to-br from-primary to-secondary p-[2px] shadow-glow-primary/20 group-hover:scale-105 transition-transform duration-500 cursor-pointer relative overflow-hidden"
                 @click="triggerAvatarUpload"
               >
                 <!-- Existing Image -->
-                <div v-if="profile?.avatar_url" class="w-full h-full rounded-3xl overflow-hidden bg-white dark:bg-slate-900">
+                <div v-if="profile?.avatar_url" class="w-full h-full rounded-lg overflow-hidden bg-white dark:bg-slate-900">
                   <img :src="profile.avatar_url" class="w-full h-full object-cover" alt="Avatar" />
                 </div>
                 <!-- Fallback Initials -->
-                <div v-else class="w-full h-full rounded-3xl bg-white dark:bg-slate-900 flex items-center justify-center text-4xl font-black text-primary dark:text-white overflow-hidden">
+                <div v-else class="w-full h-full rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center text-4xl font-black text-primary dark:text-white overflow-hidden">
                   {{ initials }}
                 </div>
 
                 <!-- Hover Overlay / Loading State -->
-                <div class="absolute inset-[2px] rounded-3xl bg-black/50 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="absolute inset-[2px] rounded-lg bg-black/50 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Icon v-if="isUploading" name="ph:spinner-gap-bold" class="w-8 h-8 animate-spin" />
                   <Icon v-else name="ph:camera-bold" class="w-8 h-8" />
                   <span v-if="!isUploading" class="text-[10px] font-bold mt-1 uppercase tracking-wider">Trocar</span>
@@ -81,7 +81,7 @@
           <!-- Personal Information -->
           <Card variant="light" class="border border-slate-200 dark:border-white/10">
             <div class="flex items-center gap-3 mb-8">
-              <div class="p-2.5 rounded-xl bg-primary/10 text-primary">
+              <div class="p-2.5 rounded-md bg-primary/10 text-primary">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -123,7 +123,7 @@
           <!-- Security -->
           <Card variant="light" class="border border-slate-200 dark:border-white/10">
             <div class="flex items-center gap-3 mb-8">
-              <div class="p-2.5 rounded-xl bg-orange-500/10 text-orange-500">
+              <div class="p-2.5 rounded-md bg-orange-500/10 text-orange-500">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>

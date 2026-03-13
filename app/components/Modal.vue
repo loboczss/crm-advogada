@@ -25,7 +25,7 @@
             leave-to="opacity-0 scale-95 translate-y-4 sm:translate-y-0"
           >
             <DialogPanel 
-              class="w-full transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 text-left align-middle shadow-2xl transition-all border border-gray-200 dark:border-zinc-800 relative flex flex-col max-h-[90vh]"
+              class="w-full transform overflow-hidden rounded-lg bg-white dark:bg-zinc-900 text-left align-middle shadow-2xl transition-all border border-gray-200 dark:border-zinc-800 relative flex flex-col max-h-[90vh]"
               :class="maxWidthClass"
             >
               

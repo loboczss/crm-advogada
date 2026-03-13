@@ -1,11 +1,14 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+
     const client = await serverSupabaseClient(event)
     const { startDate, endDate } = getQuery(event)
 
     if (!startDate || !endDate) {
-        throw createError({ statusCode: 400, statusMessage: 'startDate and endDate are required' })
+        throw createError({ statusCode: 400, message: 'startDate and endDate are required' })
     }
 
     // Chamada ao RPC otimizado no banco de dados
@@ -19,10 +22,8 @@ export default defineEventHandler(async (event) => {
     })
 
     if (error) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Erro ao processar ranking no banco: ' + error.message
-        })
+        console.error('[reports/ranking] Erro ao processar ranking:', error)
+        throw createError({ statusCode: 500, message: 'Erro interno ao processar ranking.' })
     }
 
     return { ranking: data || [] }

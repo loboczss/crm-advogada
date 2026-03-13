@@ -32,10 +32,8 @@ export default defineEventHandler(async (event) => {
     .order('created_at', { ascending: false })
 
   if (error) {
-    throw createError({
-      statusCode: 500,
-      message: error.message
-    })
+    console.error('[admin/users] Erro ao buscar usuários:', error)
+    throw createError({ statusCode: 500, message: 'Erro interno ao buscar usuários.' })
   }
 
   return users as Profile[]

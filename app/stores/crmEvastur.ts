@@ -56,7 +56,7 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
             records.value = res.records
             total.value = res.total
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao carregar leads.'
+            error.value = e.data?.message || e.message || 'Erro ao carregar leads.'
         } finally {
             loading.value = false
         }
@@ -78,15 +78,26 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
     async function addRecord(payload: Omit<CrmEvasturDTO, 'id' | 'created_at'>) {
         saving.value = true
         error.value = null
+
+        // Optimistic add with a temporary negative id
+        const tempId = -Date.now()
+        const optimisticRecord: CrmEvasturDTO = { ...payload, id: tempId, created_at: new Date().toISOString() }
+        records.value.unshift(optimisticRecord)
+        total.value++
+
         try {
             const fetch = useRequestFetch()
-            await fetch<CrmEvasturDTO>('/api/crm/evastur', {
-                method: 'POST',
-                body: payload
-            })
-            await Promise.all([fetchRecords(), fetchStats()])
+            const created = await fetch<CrmEvasturDTO>('/api/crm/evastur', { method: 'POST', body: payload })
+            // Replace temp record with the real one from server
+            const idx = records.value.findIndex(r => r.id === tempId)
+            if (idx !== -1) records.value[idx] = created
+            // Refresh stats in background — don't block the UI
+            fetchStats().catch(() => {})
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao criar lead.'
+            // Revert optimistic change
+            records.value = records.value.filter(r => r.id !== tempId)
+            total.value--
+            error.value = e.data?.message || e.message || 'Erro ao criar lead.'
             throw e
         } finally {
             saving.value = false
@@ -96,15 +107,22 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
     async function updateRecord(id: number, payload: Partial<CrmEvasturDTO>) {
         saving.value = true
         error.value = null
+
+        // Optimistic update
+        const idx = records.value.findIndex(r => r.id === id)
+        const oldRecord = idx !== -1 ? { ...records.value[idx] } : null
+        if (idx !== -1) records.value[idx] = { ...records.value[idx], ...payload }
+
         try {
             const fetch = useRequestFetch()
-            await fetch<CrmEvasturDTO>(`/api/crm/evastur/${id}`, {
-                method: 'PUT',
-                body: payload
-            })
-            await Promise.all([fetchRecords(), fetchStats()])
+            const updated = await fetch<CrmEvasturDTO>(`/api/crm/evastur/${id}`, { method: 'PUT', body: payload })
+            // Sync with server response
+            if (idx !== -1) records.value[idx] = updated
+            fetchStats().catch(() => {})
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao atualizar lead.'
+            // Revert to old value
+            if (idx !== -1 && oldRecord) records.value[idx] = oldRecord
+            error.value = e.data?.message || e.message || 'Erro ao atualizar lead.'
             throw e
         } finally {
             saving.value = false
@@ -114,12 +132,22 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
     async function deleteRecord(id: number) {
         deleting.value = id
         error.value = null
+
+        // Optimistic delete
+        const idx = records.value.findIndex(r => r.id === id)
+        const deletedRecord = idx !== -1 ? records.value[idx] : null
+        if (idx !== -1) records.value.splice(idx, 1)
+        total.value = Math.max(0, total.value - 1)
+
         try {
             const fetch = useRequestFetch()
             await fetch(`/api/crm/evastur/${id}`, { method: 'DELETE' })
-            await Promise.all([fetchRecords(), fetchStats()])
+            fetchStats().catch(() => {})
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao excluir lead.'
+            // Revert: re-insert at original position
+            if (idx !== -1 && deletedRecord) records.value.splice(idx, 0, deletedRecord)
+            total.value++
+            error.value = e.data?.message || e.message || 'Erro ao excluir lead.'
             throw e
         } finally {
             deleting.value = null

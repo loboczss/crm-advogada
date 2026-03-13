@@ -20,11 +20,27 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Arquivo de imagem inválido ou ausente.' })
   }
 
+  // Validate file size (max 5MB)
+  const MAX_FILE_SIZE = 5 * 1024 * 1024
+  if (filePart.data.length > MAX_FILE_SIZE) {
+    throw createError({ statusCode: 413, message: 'Arquivo muito grande. O tamanho máximo é 5MB.' })
+  }
+
   // Generate safe filename and path
   const ext = filePart.filename.split('.').pop()?.toLowerCase() || 'jpg'
   const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp']
   if (!validExts.includes(ext)) {
     throw createError({ statusCode: 400, message: 'Formato de imagem não suportado. Use JPG, PNG, GIF ou WEBP.' })
+  }
+
+  // Validate MIME type matches declared extension
+  const ALLOWED_MIMES: Record<string, string> = {
+    jpg: 'image/jpeg', jpeg: 'image/jpeg',
+    png: 'image/png', gif: 'image/gif', webp: 'image/webp',
+  }
+  const declaredMime = filePart.type || ''
+  if (declaredMime && declaredMime !== ALLOWED_MIMES[ext]) {
+    throw createError({ statusCode: 415, message: 'Tipo de arquivo não corresponde à extensão informada.' })
   }
 
   const dropboxPath = `/app/site/crm/cliente/${user.sub}/avatar/avatar-${Date.now()}.${ext}`

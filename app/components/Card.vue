@@ -1,7 +1,7 @@
 <template>
   <div 
     :class="[
-      'rounded-3xl p-6 transition-all duration-500 relative overflow-hidden group',
+      'rounded-lg p-6 transition-all duration-500 relative overflow-hidden group',
       'border border-black/5 dark:border-white/10 backdrop-blur-xl',
       colorClasses
     ]"

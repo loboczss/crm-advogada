@@ -49,14 +49,17 @@
 import { ref } from 'vue'
 import Input from '../Input.vue'
 import Button from '../Button.vue'
-import { useSupabaseClient } from '#imports'
+import { useSupabaseClient, useRuntimeConfig } from '#imports'
 
 const email = ref('')
 const loading = ref(false)
 const errorMsg = ref('')
 const successMsg = ref('')
+const lastAttemptAt = ref(0)
+const RATE_LIMIT_MS = 30_000 // 30 seconds between attempts
 
 const supabase = useSupabaseClient()
+const runtimeConfig = useRuntimeConfig()
 
 async function handleRecovery() {
   errorMsg.value = ''
@@ -67,27 +70,34 @@ async function handleRecovery() {
     return
   }
 
+  // Client-side rate limit to prevent abuse
+  const now = Date.now()
+  if (now - lastAttemptAt.value < RATE_LIMIT_MS) {
+    const remaining = Math.ceil((RATE_LIMIT_MS - (now - lastAttemptAt.value)) / 1000)
+    errorMsg.value = `Aguarde ${remaining}s antes de tentar novamente.`
+    return
+  }
+  lastAttemptAt.value = now
+
   loading.value = true
+
+  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : ''
+  const baseUrl = (currentOrigin || runtimeConfig.public.siteUrl || runtimeConfig.public.originalSiteUrl || '').replace(/\/$/, '')
   
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email.value.trim().toLowerCase(), {
-      redirectTo: `${window.location.origin}/confirm`
+    await supabase.auth.resetPasswordForEmail(email.value.trim().toLowerCase(), {
+      redirectTo: `${baseUrl}/confirm?flow=recovery`
     })
 
-    if (error) {
-      errorMsg.value = 'Ocorreu um erro ao enviar o email. Verifique se o endereço está correto.'
-    } else {
-      successMsg.value = 'Instruções enviadas! Verifique sua caixa de entrada.'
-      email.value = ''
-    }
+    // Always show success to prevent email enumeration
+    successMsg.value = 'Se este email estiver cadastrado, você receberá as instruções de recuperação. Verifique sua caixa de entrada e spam.'
+    email.value = ''
   } catch (err) {
-    errorMsg.value = 'Erro inesperado. Tente novamente mais tarde.'
+    // Still show success message to prevent enumeration
+    successMsg.value = 'Se este email estiver cadastrado, você receberá as instruções de recuperação. Verifique sua caixa de entrada e spam.'
+    email.value = ''
   } finally {
-    loading.value = true // Keep disabled after success or error for a bit? Or just reset?
-    // Let's reset loading but maybe keep button disabled if success
-    if (!successMsg.value) {
-      loading.value = false
-    }
+    loading.value = false
   }
 }
 </script>

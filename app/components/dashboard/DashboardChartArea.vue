@@ -1,7 +1,7 @@
 <template>
   <div
     id="dashboard-chart-area"
-    class="bg-white dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl relative shadow-sm dark:shadow-none h-full flex flex-col"
+    class="bg-white dark:bg-slate-900/50 rounded-lg p-6 border border-slate-200 dark:border-white/10 backdrop-blur-xl relative shadow-sm dark:shadow-none h-full flex flex-col"
   >
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
@@ -142,7 +142,7 @@
             class="absolute pointer-events-none z-30"
             :style="tooltipStyle"
           >
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl px-4 py-3 min-w-[160px]">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-md shadow-2xl px-4 py-3 min-w-[160px]">
               <p class="text-xs font-bold text-slate-700 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2 mb-2">
                 📅 {{ tooltip.point.date }}
               </p>

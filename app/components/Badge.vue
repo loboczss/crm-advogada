@@ -1,7 +1,7 @@
 <template>
   <span
     :class="[
-      'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider inline-block transition-all duration-300 transform hover:scale-105 select-none border whitespace-nowrap',
+      'px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider inline-block transition-all duration-300 transform hover:scale-105 select-none border whitespace-nowrap',
       colorClasses
     ]"
   >

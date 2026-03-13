@@ -1,16 +1,16 @@
 <template>
   <div 
-    class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/10 p-5 flex flex-col gap-1 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden"
+    class="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-white/10 p-5 flex flex-col gap-1 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden"
   >
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-2">
-         <div v-if="icon" class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="iconBgClass">
+         <div v-if="icon" class="w-8 h-8 rounded-md flex items-center justify-center shrink-0" :class="iconBgClass">
            <Icon :name="icon" class="text-lg" :class="iconTextClass" />
          </div>
          <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">{{ title }}</p>
       </div>
       
-      <span v-if="badge" class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" :class="badgeClass">
+      <span v-if="badge" class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md" :class="badgeClass">
         {{ badge }}
       </span>
       <slot name="top-right" />

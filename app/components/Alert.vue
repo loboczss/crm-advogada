@@ -1,7 +1,7 @@
 <template>
   <div 
     :class="[
-      'px-6 py-4 rounded-2xl transition-all duration-300 backdrop-blur-xl border-l-[6px] shadow-lg relative overflow-hidden group',
+      'px-6 py-4 rounded-lg transition-all duration-300 backdrop-blur-xl border-l-[6px] shadow-lg relative overflow-hidden group',
       bgClass, borderClass
     ]" 
     role="alert"
@@ -12,7 +12,7 @@
     <div class="relative z-10 flex gap-5 items-center">
       <div 
         :class="[
-          'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner',
+          'flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center text-xl shadow-inner',
           iconBgClass
         ]"
       >
@@ -26,7 +26,7 @@
       </div>
       <button 
         @click="$emit('close')" 
-        class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xl opacity-40 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90"
+        class="flex-shrink-0 w-8 h-8 rounded-md flex items-center justify-center text-xl opacity-40 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90"
         :class="textColorClass"
       >
         ×

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200 dark:border-[#30363d] shadow-xl overflow-hidden flex flex-col h-[700px] lg:h-[800px] transition-all duration-300">
+  <div class="bg-white dark:bg-[#0d1117] rounded-lg border border-slate-200 dark:border-[#30363d] shadow-xl overflow-hidden flex flex-col h-[700px] lg:h-[800px] transition-all duration-300">
     
     <!-- IDE Header / Toolbar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-100 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22] gap-3">
@@ -132,8 +132,8 @@
         <div class="max-w-4xl mx-auto space-y-8">
           
           <!-- Summary/Intro -->
-          <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-6 border border-slate-200 dark:border-white/10 shadow-sm flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <div class="bg-white dark:bg-[#0d1117] rounded-lg p-6 border border-slate-200 dark:border-white/10 shadow-sm flex items-start gap-4">
+            <div class="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
               <Icon name="ph:brain-bold" class="w-6 h-6 text-primary" />
             </div>
             <div>

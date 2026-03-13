@@ -36,11 +36,9 @@ export const useVendasStore = defineStore('vendas', () => {
     const activeFilters = ref<SalesFilterParams>({})
     const columnFilters = ref<Record<string, string>>({})
 
-
     // Sorting state
     const sortBy = ref('created_at')
     const sortOrder = ref<'asc' | 'desc'>('desc')
-
 
     // Pagination state
     const currentPage = ref(1)
@@ -56,7 +54,6 @@ export const useVendasStore = defineStore('vendas', () => {
     // Modal state
     const selectedVenda = ref<Venda | null>(null)
     const isDetailModalOpen = ref(false)
-
 
     // ─── Computed ─────────────────────────────────────────────────────────────
     const totalVendas = computed(() => statsTotal.value || total.value)
@@ -75,7 +72,6 @@ export const useVendasStore = defineStore('vendas', () => {
         if (filters.valorAprox != null) params.set('valorAprox', String(filters.valorAprox))
         if (filters.valorExato != null) params.set('valorExato', String(filters.valorExato))
 
-        // Add column filters
         Object.entries(columnFilters.value).forEach(([key, value]) => {
             if (value) params.set(`filter_${key}`, value)
         })
@@ -86,7 +82,6 @@ export const useVendasStore = defineStore('vendas', () => {
         params.set('sortOrder', sortOrder.value)
         return params.toString()
     }
-
 
     // ─── Actions ──────────────────────────────────────────────────────────────
     async function fetchVendas(filters: SalesFilterParams = activeFilters.value, page: number = currentPage.value) {
@@ -101,7 +96,7 @@ export const useVendasStore = defineStore('vendas', () => {
             vendas.value = res.vendas
             total.value = res.total
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao carregar vendas.'
+            error.value = e.data?.message || e.message || 'Erro ao carregar vendas.'
         } finally {
             loading.value = false
         }
@@ -126,7 +121,7 @@ export const useVendasStore = defineStore('vendas', () => {
             statsTicketMedio.value = res.ticketMedio
             statsMaiorVenda.value = res.maiorVenda
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao carregar estatísticas.'
+            error.value = e.data?.message || e.message || 'Erro ao carregar estatísticas.'
         } finally {
             statsLoading.value = false
         }
@@ -145,17 +140,27 @@ export const useVendasStore = defineStore('vendas', () => {
     async function addVenda(payload: Omit<Venda, 'id' | 'created_at'>) {
         saving.value = true
         error.value = null
+
+        // Optimistic add with temporary negative id
+        const tempId = -Date.now()
+        const optimisticVenda: Venda = { ...payload, id: tempId, created_at: new Date().toISOString() }
+        vendas.value.unshift(optimisticVenda)
+        total.value++
+
         try {
             const fetch = useRequestFetch()
-            await fetch<Venda>('/api/vendas', {
-                method: 'POST',
-                body: payload,
-            })
-            // Refresh current page and stats after adding
-            await Promise.all([fetchVendas(activeFilters.value, 1), fetchStats()])
+            const created = await fetch<Venda>('/api/vendas', { method: 'POST', body: payload })
+            // Replace temp with real record
+            const idx = vendas.value.findIndex(v => v.id === tempId)
+            if (idx !== -1) vendas.value[idx] = created
             currentPage.value = 1
+            // Refresh stats in background
+            fetchStats().catch(() => {})
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao salvar venda.'
+            // Revert optimistic add
+            vendas.value = vendas.value.filter(v => v.id !== tempId)
+            total.value--
+            error.value = e.data?.message || e.message || 'Erro ao salvar venda.'
             throw e
         } finally {
             saving.value = false
@@ -167,7 +172,7 @@ export const useVendasStore = defineStore('vendas', () => {
             sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
         } else {
             sortBy.value = newSortBy
-            sortOrder.value = 'desc' // Default to desc for new column
+            sortOrder.value = 'desc'
         }
         await fetchVendas(activeFilters.value, 1)
     }
@@ -190,21 +195,26 @@ export const useVendasStore = defineStore('vendas', () => {
     async function updateVenda(id: number, payload: Partial<Venda>) {
         saving.value = true
         error.value = null
+
+        // Optimistic update
+        const idx = vendas.value.findIndex(v => v.id === id)
+        const oldVenda = idx !== -1 ? { ...vendas.value[idx] } : null
+        if (idx !== -1) vendas.value[idx] = { ...vendas.value[idx], ...payload }
+        // Also update modal if open on this record
+        if (selectedVenda.value?.id === id) selectedVenda.value = { ...selectedVenda.value, ...payload }
+
         try {
             const fetch = useRequestFetch()
-            const updated = await fetch<Venda>(`/api/vendas/${id}`, {
-                method: 'PATCH',
-                body: payload,
-            })
-            // Refresh current page and stats after updating
-            await Promise.all([fetchVendas(activeFilters.value, currentPage.value), fetchStats()])
-
-            // If the updated sale is the one open in modal, update it
-            if (selectedVenda.value?.id === id) {
-                selectedVenda.value = { ...selectedVenda.value, ...updated }
-            }
+            const updated = await fetch<Venda>(`/api/vendas/${id}`, { method: 'PATCH', body: payload })
+            // Sync with server response
+            if (idx !== -1) vendas.value[idx] = updated
+            if (selectedVenda.value?.id === id) selectedVenda.value = updated
+            fetchStats().catch(() => {})
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao atualizar venda.'
+            // Revert
+            if (idx !== -1 && oldVenda) vendas.value[idx] = oldVenda
+            if (selectedVenda.value?.id === id && oldVenda) selectedVenda.value = oldVenda
+            error.value = e.data?.message || e.message || 'Erro ao atualizar venda.'
             throw e
         } finally {
             saving.value = false
@@ -214,13 +224,22 @@ export const useVendasStore = defineStore('vendas', () => {
     async function deleteVenda(id: number) {
         deleting.value = id
         error.value = null
+
+        // Optimistic delete
+        const idx = vendas.value.findIndex(v => v.id === id)
+        const deletedVenda = idx !== -1 ? vendas.value[idx] : null
+        if (idx !== -1) vendas.value.splice(idx, 1)
+        total.value = Math.max(0, total.value - 1)
+
         try {
             const fetch = useRequestFetch()
             await fetch(`/api/vendas/${id}`, { method: 'DELETE' })
-            // Refresh current page and stats after deletion
-            await Promise.all([fetchVendas(activeFilters.value, currentPage.value), fetchStats()])
+            fetchStats().catch(() => {})
         } catch (e: any) {
-            error.value = e.data?.statusMessage || e.message || 'Erro ao excluir venda.'
+            // Revert: re-insert at original position
+            if (idx !== -1 && deletedVenda) vendas.value.splice(idx, 0, deletedVenda)
+            total.value++
+            error.value = e.data?.message || e.message || 'Erro ao excluir venda.'
             throw e
         } finally {
             deleting.value = null

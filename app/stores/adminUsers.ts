@@ -27,7 +27,7 @@ export const useAdminUsersStore = defineStore('adminUsers', () => {
     error.value = null
     try {
       const fetch = useRequestFetch()
-      const data = await fetch<{ success: boolean; user: Profile; defaultPassword?: string }>('/api/admin/users', {
+      const data = await fetch<{ success: boolean; user: Profile; emailSent?: boolean }>('/api/admin/users', {
         method: 'POST',
         body: userData
       })

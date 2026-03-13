@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="rounded-xl border transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
+    class="rounded-lg border transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
     :class="[
       isStrategic ? 'border-primary/30 bg-primary/[0.02]' : 'border-slate-200 dark:border-white/10 bg-white dark:bg-[#0d1117]',
       isCritical ? 'border-red-500/30 bg-red-500/[0.02]' : ''
@@ -27,7 +27,7 @@
         </h3>
         <span 
           v-if="isStrategic" 
-          class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter"
+          class="text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-tighter"
           :class="isCritical ? 'bg-red-500/10 text-red-500' : 'bg-primary/10 text-primary'"
         >
           {{ isCritical ? 'Crítico' : 'Estratégico' }}

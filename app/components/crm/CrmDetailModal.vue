@@ -26,13 +26,13 @@
           v-for="tab in tabs" 
           :key="tab.id"
           @click="activeTab = tab.id"
-          class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-md text-[11px] font-bold uppercase tracking-widest transition-all duration-300"
           :class="activeTab === tab.id ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent text-gray-400 dark:text-zinc-500 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-700 dark:hover:text-zinc-300'"
         >
           <Icon :name="tab.icon" class="text-lg" />
           {{ tab.label }}
           
-          <span v-if="tab.badge !== undefined" class="ml-1.5 px-2 py-0.5 rounded-full bg-white/20 text-[9px] font-bold">
+          <span v-if="tab.badge !== undefined" class="ml-1.5 px-2 py-0.5 rounded-md bg-white/20 text-[9px] font-bold">
             {{ tab.badge }}
           </span>
         </button>
@@ -49,7 +49,7 @@
           <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <!-- Info Card -->
-            <div class="bg-white dark:bg-background-dark/50 rounded-2xl p-6 border border-border-light dark:border-white/5 shadow-sm space-y-4">
+            <div class="bg-white dark:bg-background-dark/50 rounded-lg p-6 border border-border-light dark:border-white/5 shadow-sm space-y-4">
               <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                 <Icon name="ph:user-circle-bold" class="text-base" /> Perfil Principal
               </h3>
@@ -71,7 +71,7 @@
             </div>
 
             <!-- Context Card -->
-            <div class="bg-white dark:bg-background-dark/50 rounded-2xl p-6 border border-border-light dark:border-white/5 shadow-sm space-y-4">
+            <div class="bg-white dark:bg-background-dark/50 rounded-lg p-6 border border-border-light dark:border-white/5 shadow-sm space-y-4">
                <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                 <Icon name="ph:target-bold" class="text-base" /> Contexto & Sentimento
               </h3>
@@ -101,7 +101,7 @@
             </div>
 
             <!-- Resumo Perfil -->
-            <div class="col-span-1 md:col-span-2 bg-white dark:bg-background-dark/50 rounded-2xl p-6 border border-border-light dark:border-white/5 shadow-sm">
+            <div class="col-span-1 md:col-span-2 bg-white dark:bg-background-dark/50 rounded-lg p-6 border border-border-light dark:border-white/5 shadow-sm">
                <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-2 mb-3">
                 <Icon name="ph:article-bold" class="text-base" /> Resumo do Perfil IA
               </h3>
@@ -124,10 +124,10 @@
            </div>
            
            <div v-else class="space-y-3">
-             <div v-for="venda in vendasData" :key="venda.id" class="bg-white dark:bg-background-dark/50 rounded-2xl p-5 border border-border-light dark:border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
+             <div v-for="venda in vendasData" :key="venda.id" class="bg-white dark:bg-background-dark/50 rounded-lg p-5 border border-border-light dark:border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
                 
                 <div class="flex items-center gap-4">
-                   <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black">
+                   <div class="w-12 h-12 rounded-md bg-primary/10 text-primary flex items-center justify-center font-black">
                      <Icon name="ph:currency-dollar-bold" class="text-xl" />
                    </div>
                    <div>
@@ -137,14 +137,14 @@
                 </div>
 
                 <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto">
-                   <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-xl border border-gray-100 dark:border-zinc-800 text-xs">
+                   <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-md border border-gray-100 dark:border-zinc-800 text-xs">
                      <span class="font-bold text-gray-400 uppercase tracking-widest">Vendedor:</span> <span class="font-semibold ml-1 text-gray-700 dark:text-zinc-300">{{ venda.vendedor || '-' }}</span>
                    </div>
-                   <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-xl border border-gray-100 dark:border-zinc-800 text-xs">
+                   <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-md border border-gray-100 dark:border-zinc-800 text-xs">
                      <span class="font-bold text-gray-400 uppercase tracking-widest">Embarque:</span> <span class="font-semibold ml-1 text-gray-700 dark:text-zinc-300">{{ formatDate(venda.embarque) }}</span>
                    </div>
                    
-                   <span class="px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-center" :class="getStatusClass(venda.status)">
+                   <span class="px-4 py-2 rounded-md text-[10px] font-bold uppercase tracking-widest text-center" :class="getStatusClass(venda.status)">
                       {{ venda.status || 'Desconhecido' }}
                    </span>
                 </div>
@@ -177,7 +177,7 @@
                  </span>
                 
                 <div 
-                  class="px-5 py-3 rounded-2xl shadow-sm relative text-sm w-full break-words overflow-hidden"
+                  class="px-5 py-3 rounded-lg shadow-sm relative text-sm w-full break-words overflow-hidden"
                   :class="msg.fromMe === 'outgoing' 
                     ? 'bg-success text-white rounded-tr-sm border border-success' 
                     : 'bg-white dark:bg-background-dark border border-border-light dark:border-white/10 text-text-light dark:text-white rounded-tl-sm'"

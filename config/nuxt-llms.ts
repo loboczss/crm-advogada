@@ -1,5 +1,5 @@
 const llmsConfig = {
-  domain: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  domain: process.env.NUXT_PUBLIC_ORIGINAL_SITE_URL || process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   title: 'SaaS',
   description: 'Plataforma SaaS com autenticacao Supabase, gerenciamento de usuarios e painel administrativo. Construido com Nuxt 4, Tailwind CSS e Pinia.',
   sections: [

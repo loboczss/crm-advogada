@@ -1,5 +1,5 @@
 <template>
-  <div id="sales-filters" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm p-5">
+  <div id="sales-filters" class="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm p-5">
     <div class="flex items-center justify-between mb-4">
       <p class="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Filtros</p>
       <button
@@ -174,6 +174,6 @@ function clearFilters() {
 
 <style scoped>
 .filter-input {
-  @apply w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 transition;
+  @apply w-full px-3 py-2.5 text-sm rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 transition;
 }
 </style>

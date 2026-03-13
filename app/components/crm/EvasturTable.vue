@@ -28,11 +28,11 @@
                 v-model="search"
                 type="text"
                 placeholder="Pesquisa rápida..."
-                class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-primary focus:outline-none transition-colors shadow-sm"
+                class="w-full pl-9 pr-4 py-2 text-sm rounded-md border border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 text-gray-900 dark:white placeholder:text-gray-400 focus:border-primary focus:outline-none transition-colors shadow-sm"
               />
               <Icon name="ph:magnifying-glass-bold" class="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             </div>
-            <div class="px-2.5 py-1 bg-gray-50 dark:bg-zinc-800 rounded border border-gray-100 dark:border-zinc-700 whitespace-nowrap">
+            <div class="px-2.5 py-1 bg-gray-50 dark:bg-zinc-800 rounded-md border border-gray-100 dark:border-zinc-700 whitespace-nowrap">
               <p class="text-[9px] font-bold text-gray-500 dark:text-zinc-400">
                 {{ total }} TOTAL
               </p>
@@ -45,7 +45,7 @@
 
       <template #cell-contato="{ item: record }">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded bg-gray-50 dark:bg-zinc-800 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-zinc-700">
+          <div class="w-8 h-8 rounded-md bg-gray-50 dark:bg-zinc-800 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-zinc-700">
             <span class="text-xs font-semibold">{{ (record.nome ?? '?')[0]?.toUpperCase() }}</span>
           </div>
           <div>
@@ -73,7 +73,7 @@
 
       <template #cell-contexto="{ item: record }">
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-gray-100 dark:border-zinc-800">
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded-md border border-gray-100 dark:border-zinc-800">
             <span class="w-1.5 h-1.5 rounded-full" :class="getUrgencyClass(record.urgencia, true)"></span>
             <span class="text-[10px] font-bold uppercase text-gray-500 dark:text-zinc-400">{{ record.urgencia || 'Média' }}</span>
           </div>
@@ -101,7 +101,7 @@
           <span 
             v-for="tag in ensureArray(record.interesses)" 
             :key="tag"
-            class="bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 text-[9px] px-2 py-1 rounded border border-gray-100 dark:border-zinc-700 font-medium uppercase"
+            class="bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 text-[9px] px-2 py-1 rounded-md border border-gray-100 dark:border-zinc-700 font-medium uppercase"
           >
             {{ tag }}
           </span>
@@ -112,7 +112,7 @@
         <div class="flex items-center justify-end gap-1.5 pr-2">
           <button 
             @click.stop="emits('edit', record)"
-            class="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors opacity-0 group-hover:opacity-100"
+            class="p-2 rounded-md text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors opacity-0 group-hover:opacity-100"
             title="Editar"
           >
             <Icon name="ph:pencil-simple-bold" class="w-3.5 h-3.5" />
@@ -121,7 +121,7 @@
           <button 
             v-if="record.id"
             @click.stop="emits('delete', record.id!)"
-            class="p-2 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors opacity-0 group-hover:opacity-100"
+            class="p-2 rounded-md text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors opacity-0 group-hover:opacity-100"
             title="Excluir"
           >
             <Icon name="ph:trash-bold" class="w-3.5 h-3.5" />

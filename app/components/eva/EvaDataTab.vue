@@ -74,7 +74,7 @@
             v-model="manualText"
             rows="4"
             placeholder="Cole aqui informações, regras ou qualquer conteúdo que deseja que a EVA aprenda..."
-            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none shadow-inner"
+            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none shadow-inner"
             @click.stop
           ></textarea>
           <div class="flex justify-end mt-3">
@@ -92,7 +92,7 @@
     </div>
 
     <!-- Documents Table -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
       <DataTable
         :columns="columns"
         :data="filteredDocuments"
@@ -194,7 +194,7 @@
               <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Conteúdo Original Extraído</h4>
               <Button size="sm" variant="outline" @click="copyContent(displayOriginalContent)">Copiar</Button>
             </div>
-            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-white/5 min-h-[240px] max-h-[420px] overflow-auto">
+            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-md p-5 border border-slate-100 dark:border-white/5 min-h-[240px] max-h-[420px] overflow-auto">
               <pre class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{{ displayOriginalContent }}</pre>
             </div>
             <p v-if="!selectedDoc.metadata?.originalContent" class="text-xs text-amber-600 dark:text-amber-400">
@@ -207,7 +207,7 @@
               <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Markdown Gerado pela IA</h4>
               <Button size="sm" variant="outline" @click="copyContent(displayMarkdownContent)">Copiar</Button>
             </div>
-            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-white/5 min-h-[240px] max-h-[420px] overflow-auto">
+            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-md p-5 border border-slate-100 dark:border-white/5 min-h-[240px] max-h-[420px] overflow-auto">
               <pre class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{{ displayMarkdownContent }}</pre>
             </div>
             <p v-if="!selectedDoc.metadata?.markdownContent" class="text-xs text-slate-500 dark:text-slate-400">
@@ -222,7 +222,7 @@
             <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Chunk Indexado no Vector Store</h4>
             <Button size="sm" variant="outline" @click="copyContent(selectedDoc.content)">Copiar chunk</Button>
           </div>
-          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-white/5">
+          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-md p-6 border border-slate-100 dark:border-white/5">
             <pre class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{{ selectedDoc.content }}</pre>
           </div>
         </div>
@@ -443,7 +443,7 @@ async function processFile(file: File) {
       feedback.value = {
         type: 'success',
         title: 'Documento processado!',
-        message: `"${file.name}" foi extraído, convertido para Markdown e indexado com sucesso. ${ragStore.lastResult?.chunks ?? 0} chunks salvos no vector store.`
+        message: `"${file.name}" foi extraído, convertido para Markdown e indexado com sucesso. ${ragStore.lastResult?.result?.chunks ?? 0} chunks salvos no vector store.`
       }
       await loadDocuments()
     } catch (err: any) {
@@ -483,7 +483,7 @@ async function handleSendText() {
     feedback.value = {
       type: 'success',
       title: 'Texto processado!',
-      message: `O conteúdo foi convertido e indexado com sucesso. ${ragStore.lastResult?.chunks ?? 0} novos chunks adicionados.`
+      message: `O conteúdo foi convertido e indexado com sucesso. ${ragStore.lastResult?.result?.chunks ?? 0} novos chunks adicionados.`
     }
     manualText.value = ''
     await loadDocuments()

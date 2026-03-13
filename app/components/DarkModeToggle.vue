@@ -2,7 +2,7 @@
   <button
     @click="toggleDark"
     :class="[
-      'p-2.5 rounded-xl transition-all duration-500 relative overflow-hidden group',
+      'p-2.5 rounded-md transition-all duration-500 relative overflow-hidden group',
       'bg-slate-100 dark:bg-white/[0.03] backdrop-blur-xl border border-slate-200 dark:border-white/10',
       'hover:border-primary/30 dark:hover:border-white/20 hover:shadow-glow-primary active:scale-95'
     ]"
