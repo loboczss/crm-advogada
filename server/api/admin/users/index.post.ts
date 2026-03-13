@@ -30,14 +30,15 @@ export default defineEventHandler(async (event) => {
 
   // 2. Parse body
   const body = await readBody(event)
-  const { email, name, vendedor_id, company, phone } = body
+  const { email, name, role, vendedor_id, company, phone } = body
 
-  if (!email || !name) {
-    throw createError({ statusCode: 400, message: 'Dados incompletos: Nome e Email são obrigatórios.' })
+  if (!email || !name || !role) {
+    throw createError({ statusCode: 400, message: 'Dados incompletos: Nome, Email e Nível de Acesso são obrigatórios.' })
   }
 
-  // Business rule: users created by this screen are always "cliente" (role user)
-  const role = 'user'
+  if (!['admin', 'vendedor', 'user'].includes(role)) {
+    throw createError({ statusCode: 400, message: 'Nível de acesso inválido.' })
+  }
 
   // 3. Generate a cryptographically secure provisional password
   const generatePassword = (length = 16) => {
@@ -75,7 +76,7 @@ export default defineEventHandler(async (event) => {
       email,
       name,
       role,
-      vendedor_id: null,
+      vendedor_id: vendedor_id || null,
       company: company || null,
       phone: phone || null,
       updated_at: new Date().toISOString()
