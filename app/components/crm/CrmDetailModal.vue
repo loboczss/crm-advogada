@@ -4,6 +4,8 @@
     @close="closeModal"
     :title="`Detalhes • ${crmData?.nome || contatoId || 'Carregando...'}`"
     description="Visão 360 do cliente com histórico completo"
+    header-class="!pt-0 !pb-0 sm:!pt-0 sm:!pb-0"
+    content-class="!p-0"
     max-width="4xl"
   >
     <!-- Loading State -->
@@ -19,7 +21,6 @@
 
     <!-- Ready State -->
     <template v-else>
-      
       <!-- Tab Navigation -->
       <div class="flex items-center gap-2 p-4 border-b border-border-light dark:border-white/5 bg-surface-light/30 dark:bg-white/5 sticky top-0 z-20 backdrop-blur-md">
         <button 

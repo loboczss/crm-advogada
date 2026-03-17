@@ -30,7 +30,7 @@
             >
               
               <!-- Header -->
-              <div class="flex items-center justify-between p-6 sm:p-8 border-b border-gray-100 dark:border-zinc-800/50 flex-shrink-0">
+              <div class="flex items-center justify-between p-6 sm:p-8 border-b border-gray-100 dark:border-zinc-800/50 flex-shrink-0" :class="headerClass">
                 <div>
                   <DialogTitle as="h3" class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">
                     <slot name="title">{{ title }}</slot>
@@ -55,7 +55,7 @@
               </div>
 
               <!-- Content Area (Scrollable) -->
-              <div class="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar">
+              <div class="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar" :class="contentClass">
                 <slot></slot>
               </div>
 
@@ -89,6 +89,8 @@ export interface ModalProps {
   loading?: boolean
   showCloseButton?: boolean
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+  headerClass?: string
+  contentClass?: string
 }
 
 const props = withDefaults(defineProps<ModalProps>(), {
@@ -96,12 +98,17 @@ const props = withDefaults(defineProps<ModalProps>(), {
   description: '',
   loading: false,
   showCloseButton: true,
-  maxWidth: 'lg'
+  maxWidth: 'lg',
+  headerClass: '',
+  contentClass: ''
 })
 
 const emit = defineEmits<{
   close: []
 }>()
+
+const headerClass = computed(() => props.headerClass)
+const contentClass = computed(() => props.contentClass)
 
 const maxWidthClass = computed(() => {
   const sizes = {
