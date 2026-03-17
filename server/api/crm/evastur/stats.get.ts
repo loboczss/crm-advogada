@@ -1,4 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
+import type { CrmEvasturDTO } from '../../../../shared/types/CrmEvasturDTO'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
     const totalCount = totalRes.count ?? 0
     const highUrgencyCount = highUrgencyRes.count ?? 0
-    const leadsWithSentiment = sentimentRes.data ?? []
+    const leadsWithSentiment = (sentimentRes.data as Pick<CrmEvasturDTO, 'sentimento'>[]) ?? []
     const convertedCount = convertedRes.count ?? 0
 
     // Calculate sentiment average

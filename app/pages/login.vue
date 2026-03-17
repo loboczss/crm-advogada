@@ -145,7 +145,17 @@ async function handleLogin() {
   loginLoading.value = false
 
   if (error) {
-    loginError.value = 'Email ou senha incorretos.'
+    const errorCode = (error.code || '').toString().toLowerCase().trim()
+    const errorMessage = (error.message || '').toString().toLowerCase().trim()
+    const isEmailNotConfirmed =
+      errorCode.includes('email_not_confirmed') ||
+      errorMessage.includes('email_not_confirmed') ||
+      errorMessage.includes('email not confirmed') ||
+      errorMessage.includes('e-mail not confirmed')
+
+    loginError.value = isEmailNotConfirmed
+      ? 'Email não confirmado. Verifique sua caixa de entrada para confirmar a conta.'
+      : 'Email ou senha incorretos.'
     return
   }
 
