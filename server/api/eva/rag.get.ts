@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
+import { assertActorRole } from '../../utils/security'
 
 function summarizeMetadata(metadata: Record<string, any> | null | undefined) {
     if (!metadata) {
@@ -17,6 +18,7 @@ function summarizeMetadata(metadata: Record<string, any> | null | undefined) {
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+    await assertActorRole(event, user.sub, ['admin', 'vendedor'], 'Apenas administradores ou vendedores podem acessar a EVA.', 'eva/rag:list')
 
     const supabase = serverSupabaseServiceRole(event)
 

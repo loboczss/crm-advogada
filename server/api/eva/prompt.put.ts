@@ -1,5 +1,8 @@
-import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 import type { EvaSystemPrompt } from '../../../shared/types/EvaSystemPromptDTO'
+import { assertActorRole, normalizeEvaAgentName } from '../../utils/security'
+
+const PROMPT_SELECT = 'id, agent_name, content, version, updated_at, updated_by'
 
 export default defineEventHandler(async (event) => {
     const body = await readBody<{ content: string; agent_name?: string }>(event)
@@ -8,41 +11,24 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, message: 'Campo "content" é obrigatório.' })
     }
 
-    const agentName = body.agent_name || 'master'
-
-    // Use the user client to get the authenticated user from the session cookies
-    const userClient = await serverSupabaseClient(event)
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-
-    if (authError || !user) {
+    const user = await serverSupabaseUser(event)
+    if (!user?.sub) {
         throw createError({
             statusCode: 401,
-            message: authError?.message || 'Usuário não autenticado. Faça login novamente.'
+            message: 'Usuário não autenticado. Faça login novamente.'
         })
     }
 
+    const agentName = normalizeEvaAgentName(body.agent_name)
+
     // Use service role to bypass RLS and guarantee the update succeeds
     const adminClient = serverSupabaseServiceRole(event)
-
-    const { data: actorProfile, error: profileError } = await adminClient
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-    if (profileError) {
-        console.error('[eva/prompt] Erro ao validar perfil:', profileError)
-        throw createError({ statusCode: 500, message: 'Erro interno ao validar permissões.' })
-    }
-
-    if (!actorProfile || !['admin', 'vendedor'].includes(actorProfile.role)) {
-        throw createError({ statusCode: 403, message: 'Apenas administradores ou vendedores podem editar a EVA.' })
-    }
+    await assertActorRole(event, user.sub, ['admin', 'vendedor'], 'Apenas administradores ou vendedores podem editar a EVA.', 'eva/prompt')
 
     // Get the existing row for this agent
     const { data: existing } = await adminClient
         .from('eva_system_prompt')
-        .select('*')
+        .select(PROMPT_SELECT)
         .eq('agent_name', agentName)
         .limit(1)
         .maybeSingle()
@@ -58,7 +44,7 @@ export default defineEventHandler(async (event) => {
                 content: body.content,
                 version: 1,
                 updated_at: new Date().toISOString(),
-                updated_by: user.id,
+                updated_by: user.sub,
             })
             .select()
             .single()
@@ -87,7 +73,7 @@ export default defineEventHandler(async (event) => {
                 content: body.content,
                 version: existing.version + 1,
                 updated_at: new Date().toISOString(),
-                updated_by: user.id,
+                updated_by: user.sub,
             })
             .eq('id', existing.id)
             .select()

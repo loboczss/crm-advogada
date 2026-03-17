@@ -110,8 +110,12 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
 
         // Optimistic update
         const idx = records.value.findIndex(r => r.id === id)
-        const oldRecord = idx !== -1 ? { ...records.value[idx] } : null
-        if (idx !== -1) records.value[idx] = { ...records.value[idx], ...payload }
+        const currentRecord = idx !== -1 ? records.value[idx] : undefined
+        const oldRecord = currentRecord ? { ...currentRecord } : null
+        if (currentRecord) {
+            const optimisticRecord: CrmEvasturDTO = { ...currentRecord, ...payload }
+            records.value[idx] = optimisticRecord
+        }
 
         try {
             const fetch = useRequestFetch()

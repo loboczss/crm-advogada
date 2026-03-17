@@ -235,8 +235,9 @@ const selectedVersion = computed<PromptHistoryDTO | null>(() => {
 
 onMounted(async () => {
   await store.fetchHistory(props.agentName)
-  if (store.history.length > 0) {
-    selectVersion(store.history[0])
+  const firstHistoryItem = store.history[0]
+  if (firstHistoryItem) {
+    selectVersion(firstHistoryItem)
   }
 })
 

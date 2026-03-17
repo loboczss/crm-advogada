@@ -2,6 +2,7 @@ import OpenAI from 'openai'
 import { serverSupabaseUser } from '#supabase/server'
 import { OPENAI_MODELS } from '../../../shared/constants/openaiModels'
 import type { OpenAIChatPayload, OpenAIChatResponse } from '../../../shared/constants/openaiModels'
+import { throwSanitizedInternalError } from '../../utils/security'
 
 const ALLOWED_MODEL_IDS = new Set(OPENAI_MODELS.map(m => m.id))
 
@@ -15,7 +16,7 @@ export default defineEventHandler(async (event) => {
     if (!apiKey) {
         throw createError({
             statusCode: 500,
-            message: 'OPENAI_API_KEY não configurada no servidor.'
+            message: 'Serviço de IA indisponível no momento.'
         })
     }
 
@@ -34,12 +35,17 @@ export default defineEventHandler(async (event) => {
 
     const openai = new OpenAI({ apiKey: apiKey as string })
 
-    const completion = await openai.chat.completions.create({
-        model: body.model,
-        messages: body.messages,
-        temperature: body.temperature ?? 0.7,
-        ...(body.max_tokens ? { max_tokens: body.max_tokens } : {}),
-    })
+    let completion: OpenAIChatResponse
+    try {
+        completion = await openai.chat.completions.create({
+            model: body.model,
+            messages: body.messages,
+            temperature: body.temperature ?? 0.7,
+            ...(body.max_tokens ? { max_tokens: body.max_tokens } : {}),
+        }) as unknown as OpenAIChatResponse
+    } catch (error) {
+        throwSanitizedInternalError('eva/chat', error, 'Erro interno ao processar solicitação da EVA.')
+    }
 
-    return completion as unknown as OpenAIChatResponse
+    return completion
 })

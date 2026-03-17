@@ -198,10 +198,17 @@ export const useVendasStore = defineStore('vendas', () => {
 
         // Optimistic update
         const idx = vendas.value.findIndex(v => v.id === id)
-        const oldVenda = idx !== -1 ? { ...vendas.value[idx] } : null
-        if (idx !== -1) vendas.value[idx] = { ...vendas.value[idx], ...payload }
+        const currentVenda = idx !== -1 ? vendas.value[idx] : undefined
+        const oldVenda = currentVenda ? { ...currentVenda } : null
+        if (currentVenda) {
+            const optimisticVenda: Venda = { ...currentVenda, ...payload }
+            vendas.value[idx] = optimisticVenda
+        }
         // Also update modal if open on this record
-        if (selectedVenda.value?.id === id) selectedVenda.value = { ...selectedVenda.value, ...payload }
+        if (selectedVenda.value?.id === id) {
+            const optimisticSelectedVenda: Venda = { ...selectedVenda.value, ...payload }
+            selectedVenda.value = optimisticSelectedVenda
+        }
 
         try {
             const fetch = useRequestFetch()

@@ -1,6 +1,7 @@
 import { defineEventHandler, readMultipartFormData, createError } from 'h3'
 import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
 import { getDropboxAccessToken } from '../../utils/dropboxToken'
+import { throwSanitizedInternalError } from '../../utils/security'
 
 export default defineEventHandler(async (event) => {
   // 1. Authenticate user
@@ -50,7 +51,7 @@ export default defineEventHandler(async (event) => {
   try {
     accessToken = await getDropboxAccessToken()
   } catch (err: any) {
-    throw createError({ statusCode: 500, message: `Erro de Token: ${err.message}` })
+    throwSanitizedInternalError('profile/avatar-token', err, 'Erro interno ao autenticar com o provedor de arquivos.')
   }
 
   const dropboxApiArg = {
@@ -91,7 +92,8 @@ export default defineEventHandler(async (event) => {
 
   if (!uploadResponse.ok) {
     const errorText = await uploadResponse.text()
-    throw createError({ statusCode: uploadResponse.status, message: `Erro de Upload no Dropbox: ${errorText}` })
+    console.error('[profile/avatar] Erro no upload para Dropbox:', uploadResponse.status, errorText)
+    throw createError({ statusCode: 502, message: 'Erro ao enviar avatar para o provedor de arquivos.' })
   }
 
   const uploadMetadata = await uploadResponse.json()
@@ -116,7 +118,8 @@ export default defineEventHandler(async (event) => {
   if (!linkResponse.ok) {
     // Pode falhar se o link já existir, mas como geramos com timestamp, deve ser sempre novo.
     const errorText = await linkResponse.text()
-    throw createError({ statusCode: linkResponse.status, message: `Erro ao gerar link público: ${errorText}` })
+    console.error('[profile/avatar] Erro ao gerar link público:', linkResponse.status, errorText)
+    throw createError({ statusCode: 502, message: 'Erro ao publicar avatar.' })
   }
 
   const linkData = await linkResponse.json()
@@ -132,7 +135,7 @@ export default defineEventHandler(async (event) => {
     .eq('id', user.sub)
 
   if (dbError) {
-    throw createError({ statusCode: 500, message: `Erro ao salvar no banco: ${dbError.message}` })
+    throwSanitizedInternalError('profile/avatar-db', dbError, 'Erro interno ao salvar avatar.')
   }
 
   return {

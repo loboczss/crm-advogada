@@ -1,6 +1,9 @@
 import { defineEventHandler, createError } from 'h3'
 import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
 import type { Profile } from '../../../../shared/types/profile'
+import { assertActorRole } from '../../../utils/security'
+
+const PROFILE_SELECT = 'id, email, name, role, phone, company, avatar_url, vendedor_id, created_at'
 
 export default defineEventHandler(async (event) => {
   // 1. Verify Authentication and Admin Role
@@ -10,21 +13,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const supabaseClient = serverSupabaseServiceRole(event)
-
-  const { data: currentUserProfile } = await supabaseClient
-    .from('profiles')
-    .select('role')
-    .eq('id', user.sub)
-    .single()
-
-  if (currentUserProfile?.role !== 'admin') {
-    throw createError({ statusCode: 403, message: 'Acesso negado. Apenas administradores.' })
-  }
+  await assertActorRole(event, user.sub, ['admin'], 'Acesso negado. Apenas administradores.', 'admin/users/list')
 
   // 2. Fetch all profiles
   const { data: users, error } = await supabaseClient
     .from('profiles')
-    .select('*')
+    .select(PROFILE_SELECT)
     .order('created_at', { ascending: false })
 
   if (error) {

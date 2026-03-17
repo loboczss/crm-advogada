@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto'
 import { pathToFileURL } from 'node:url'
 import { createJob, completeJob, failJob } from '../../utils/ragJobStore'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { assertActorRole, throwSanitizedInternalError } from '../../utils/security'
 
 // Use node: prefix so Rollup/esbuild always treat these as Node built-ins.
 // pathToFileURL(cwd) avoids Windows drive-letter issues with import.meta.url.
@@ -183,27 +184,13 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
 
-    const authzClient = serverSupabaseServiceRole(event)
-    const { data: actorProfile, error: profileError } = await authzClient
-        .from('profiles')
-        .select('role')
-        .eq('id', user.sub)
-        .single()
-
-    if (profileError) {
-        console.error('[eva/rag] Erro ao validar perfil:', profileError)
-        throw createError({ statusCode: 500, message: 'Erro interno ao validar permissões.' })
-    }
-
-    if (!actorProfile || !['admin', 'vendedor'].includes(actorProfile.role)) {
-        throw createError({ statusCode: 403, message: 'Apenas administradores ou vendedores podem editar a EVA.' })
-    }
+    await assertActorRole(event, user.sub, ['admin', 'vendedor'], 'Apenas administradores ou vendedores podem editar a EVA.', 'eva/rag:create')
 
     const config = useRuntimeConfig()
     const apiKey = config.openaiApiKey as string
 
     if (!apiKey) {
-        throw createError({ statusCode: 500, message: 'OPENAI_API_KEY não configurada.' })
+        throw createError({ statusCode: 500, message: 'Serviço de IA indisponível no momento.' })
     }
 
     const body = await readBody<RagBody>(event)
@@ -255,7 +242,7 @@ export default defineEventHandler(async (event) => {
     const openai = new OpenAI({ apiKey })
     const supabase = serverSupabaseServiceRole(event)
 
-    createJob(documentGroupId)
+    createJob(documentGroupId, user.sub)
 
     // Fire-and-forget: GPT conversion + embeddings + DB inserts run after response
     processInBackground(openai, supabase, body, tipo, documentGroupId, rawText).catch(() => {})

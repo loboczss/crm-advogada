@@ -1,5 +1,7 @@
 import { defineEventHandler, createError } from 'h3'
-import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseUser, serverSupabaseServiceRole, serverSupabaseClient } from '#supabase/server'
+
+const PROFILE_SELECT = 'id, email, name, role, phone, company, avatar_url, vendedor_id, created_at'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
@@ -11,11 +13,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const userClient = await serverSupabaseClient(event)
   const supabaseAdmin = serverSupabaseServiceRole(event)
 
-  const { data: profile, error } = await supabaseAdmin
+  const { data: profile, error } = await userClient
     .from('profiles')
-    .select('*')
+    .select(PROFILE_SELECT)
     .eq('id', user.sub)
     .single()
 
@@ -33,7 +36,7 @@ export default defineEventHandler(async (event) => {
         name: (user['user_metadata'] as any)?.name ?? (user.email as string)?.split('@')[0] ?? '',
         role: 'user',
       })
-      .select()
+      .select(PROFILE_SELECT)
       .single()
 
     if (insertError) {

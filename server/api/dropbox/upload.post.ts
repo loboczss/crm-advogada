@@ -1,6 +1,7 @@
 import { defineEventHandler, readMultipartFormData, createError } from 'h3'
 import { serverSupabaseUser } from '#supabase/server'
 import { getDropboxAccessToken } from '../../utils/dropboxToken'
+import { assertDropboxPathAccess, throwSanitizedInternalError } from '../../utils/security'
 
 /**
  * POST /api/dropbox/upload
@@ -51,21 +52,26 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Campo "path" é obrigatório (ex: "/pasta/arquivo.pdf").' })
   }
 
-  // Prevent path traversal attacks
-  const normalizedPath = dropboxPath.replace(/\\/g, '/')
-  if (normalizedPath.includes('..') || !normalizedPath.startsWith('/app/site/')) {
-    throw createError({ statusCode: 400, message: 'Caminho inválido. O upload deve ser dentro de /app/site/.' })
+  if (!['add', 'overwrite'].includes(mode)) {
+    throw createError({ statusCode: 400, message: 'Modo de upload inválido.' })
+  }
+
+  const normalizedPath = await assertDropboxPathAccess(event, user.sub, dropboxPath)
+
+  const MAX_FILE_SIZE = 15 * 1024 * 1024
+  if (fileData.length > MAX_FILE_SIZE) {
+    throw createError({ statusCode: 413, message: 'Arquivo muito grande. O tamanho máximo é 15MB.' })
   }
 
   let accessToken: string
   try {
     accessToken = await getDropboxAccessToken()
   } catch (err: any) {
-    throw createError({ statusCode: 500, message: err.message })
+    throwSanitizedInternalError('dropbox/upload-token', err, 'Erro interno ao autenticar com o provedor de arquivos.')
   }
 
   const dropboxApiArg = {
-    path: dropboxPath,
+    path: normalizedPath,
     mode,
     autorename,
     mute: false,
@@ -89,5 +95,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const metadata = await dropboxResponse.json()
-  return metadata
+  return {
+    id: metadata.id,
+    name: metadata.name || fileName,
+    path_display: metadata.path_display,
+    size: metadata.size,
+    client_modified: metadata.client_modified,
+  }
 })

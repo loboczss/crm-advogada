@@ -45,9 +45,11 @@ export default defineEventHandler(async (event) => {
         console.error('Erro ao buscar WhatsApp:', whatsappError)
     }
 
+    const whatsappTimeline = (whatsappData || []).slice().reverse()
+
     return {
         crm: crmData || null,
         vendas: vendasData || [],
-        whatsapp: whatsappData || []
+        whatsapp: whatsappTimeline
     }
 })

@@ -22,7 +22,6 @@
             v-model="selectedPeriod"
             :options="periods"
             container-class="w-48"
-            @update:model-value="fetchDashboardData"
           />
 
           <!-- Refresh Button -->
@@ -414,11 +413,11 @@ const formatCurrency = (val: number) => {
 };
 
 const leadsLabel = computed(() => {
-  return selectedPeriod.value.value === 0 ? "Leads Hoje" : "Leads no Período";
+  return selectedPeriod.value === 0 ? "Leads Hoje" : "Leads no Período";
 });
 
 const vendasLabel = computed(() => {
-  return selectedPeriod.value.value === 0 ? "Vendas Hoje" : "Vendas no Período";
+  return selectedPeriod.value === 0 ? "Vendas Hoje" : "Vendas no Período";
 });
 
 const conversaoPercentual = computed(() => {

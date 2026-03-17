@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
+import { assertActorRole } from '../../../utils/security'
 
 function parseDocumentId(idParam: string | undefined) {
     const parsedId = Number(idParam)
@@ -14,21 +15,7 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
 
-    const authzClient = serverSupabaseServiceRole(event)
-    const { data: actorProfile, error: profileError } = await authzClient
-        .from('profiles')
-        .select('role')
-        .eq('id', user.sub)
-        .single()
-
-    if (profileError) {
-        console.error('[eva/rag] Erro ao validar perfil:', profileError)
-        throw createError({ statusCode: 500, message: 'Erro interno ao validar permissões.' })
-    }
-
-    if (!actorProfile || !['admin', 'vendedor'].includes(actorProfile.role)) {
-        throw createError({ statusCode: 403, message: 'Apenas administradores ou vendedores podem editar a EVA.' })
-    }
+    await assertActorRole(event, user.sub, ['admin', 'vendedor'], 'Apenas administradores ou vendedores podem editar a EVA.', 'eva/rag:delete')
 
     const id = parseDocumentId(getRouterParam(event, 'id'))
     const client = serverSupabaseServiceRole(event)

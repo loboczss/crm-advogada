@@ -1,5 +1,6 @@
 import { defineEventHandler, createError, getRouterParam } from 'h3'
 import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
+import { throwSanitizedInternalError } from '../../utils/security'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
     .eq('user_id', user.sub)
 
   if (error) {
-    throw createError({ statusCode: 500, message: error.message })
+    throwSanitizedInternalError('notifications/delete', error, 'Erro interno ao excluir notificação.')
   }
 
   return { success: true }

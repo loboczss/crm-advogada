@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody, setResponseHeaders, createError } from 'h3'
 import { serverSupabaseUser } from '#supabase/server'
 import { getDropboxAccessToken } from '../../utils/dropboxToken'
+import { assertDropboxPathAccess, throwSanitizedInternalError } from '../../utils/security'
 
 /**
  * POST /api/dropbox/download
@@ -23,24 +24,20 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'O campo "path" é obrigatório.' })
   }
 
-  // Prevent path traversal attacks
-  const normalizedPath = body.path.replace(/\\/g, '/')
-  if (normalizedPath.includes('..') || !normalizedPath.startsWith('/app/site/')) {
-    throw createError({ statusCode: 400, message: 'Caminho inválido. O download deve ser dentro de /app/site/.' })
-  }
+  const normalizedPath = await assertDropboxPathAccess(event, user.sub, body.path)
 
   let accessToken: string
   try {
     accessToken = await getDropboxAccessToken()
   } catch (err: any) {
-    throw createError({ statusCode: 500, message: err.message })
+    throwSanitizedInternalError('dropbox/download-token', err, 'Erro interno ao autenticar com o provedor de arquivos.')
   }
 
   const dropboxResponse = await fetch('https://content.dropboxapi.com/2/files/download', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Dropbox-API-Arg': JSON.stringify({ path: body.path }),
+      'Dropbox-API-Arg': JSON.stringify({ path: normalizedPath }),
     },
   })
 
@@ -52,13 +49,11 @@ export default defineEventHandler(async (event) => {
 
   // Repassa Content-Type e Content-Disposition do Dropbox
   const contentType = dropboxResponse.headers.get('Content-Type') || 'application/octet-stream'
-  const contentDisposition = dropboxResponse.headers.get('Content-Disposition') || `attachment; filename="${body.path.split('/').pop()}"`
-  const dropboxApiResult = dropboxResponse.headers.get('dropbox-api-result')
+  const contentDisposition = dropboxResponse.headers.get('Content-Disposition') || `attachment; filename="${normalizedPath.split('/').pop()}"`
 
   setResponseHeaders(event, {
     'Content-Type': contentType,
     'Content-Disposition': contentDisposition,
-    ...(dropboxApiResult ? { 'dropbox-api-result': dropboxApiResult } : {}),
   })
 
   // Retorna o buffer binário

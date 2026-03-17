@@ -1,5 +1,8 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
+import { assertActorRole } from '../../../utils/security'
+
+const PROFILE_SELECT = 'id, email, name, role, phone, company, avatar_url, vendedor_id, created_at'
 
 export default defineEventHandler(async (event) => {
   // 1. Params and auth
@@ -12,20 +15,19 @@ export default defineEventHandler(async (event) => {
   if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autenticado' })
 
   const supabaseAdmin = serverSupabaseServiceRole(event)
-
-  const { data: actorProfile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.sub)
-    .single()
-
-  if (actorProfile?.role !== 'admin') {
-    throw createError({ statusCode: 403, message: 'Somente administradores.' })
-  }
+  await assertActorRole(event, user.sub, ['admin'], 'Somente administradores.', 'admin/users/update')
 
   // 2. Read body
   const body = await readBody(event)
   const { role, vendedor_id, company, phone, name } = body
+
+  if (role !== undefined && !['admin', 'vendedor', 'user'].includes(role)) {
+    throw createError({ statusCode: 400, message: 'Nível de acesso inválido.' })
+  }
+
+  if (name !== undefined && (typeof name !== 'string' || !name.trim())) {
+    throw createError({ statusCode: 400, message: 'Nome inválido.' })
+  }
 
   // We do not allow changing email through this endpoint for now as it disrupts Auth.
   
@@ -40,7 +42,7 @@ export default defineEventHandler(async (event) => {
     .from('profiles')
     .update(updates)
     .eq('id', userIdToUpdate)
-    .select()
+    .select(PROFILE_SELECT)
     .single()
 
   if (updateError) {

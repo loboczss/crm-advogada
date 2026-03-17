@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
+import { assertActorRole } from '../../../utils/security'
 
 function parseDocumentId(idParam: string | undefined) {
     const parsedId = Number(idParam)
@@ -13,6 +14,7 @@ function parseDocumentId(idParam: string | undefined) {
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+    await assertActorRole(event, user.sub, ['admin', 'vendedor'], 'Apenas administradores ou vendedores podem acessar a EVA.', 'eva/rag:get')
 
     const supabase = serverSupabaseServiceRole(event)
     const id = parseDocumentId(getRouterParam(event, 'id'))

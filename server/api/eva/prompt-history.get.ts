@@ -1,13 +1,15 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import type { PromptHistoryDTO } from '../../../shared/types/EvaSystemPromptDTO'
+import { assertActorRole, normalizeEvaAgentName } from '../../utils/security'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
+    await assertActorRole(event, user.sub, ['admin', 'vendedor'], 'Apenas administradores ou vendedores podem acessar a EVA.', 'eva/prompt-history')
 
     const client = await serverSupabaseClient(event)
     const query = getQuery(event)
-    const agentName = (query.agent as string) || 'master'
+    const agentName = normalizeEvaAgentName(query.agent)
 
     const { data, error } = await client
         .from('eva_prompt_history')

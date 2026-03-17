@@ -6,6 +6,7 @@
 
 export interface RagJob {
     jobId: string
+    ownerId: string
     status: 'processing' | 'completed' | 'error'
     createdAt: number
     result?: { chunks: number; markdownPreview: string }
@@ -22,9 +23,9 @@ function evictExpiredJobs() {
     }
 }
 
-export function createJob(jobId: string): void {
+export function createJob(jobId: string, ownerId: string): void {
     evictExpiredJobs()
-    store.set(jobId, { jobId, status: 'processing', createdAt: Date.now() })
+    store.set(jobId, { jobId, ownerId, status: 'processing', createdAt: Date.now() })
 }
 
 export function completeJob(jobId: string, result: { chunks: number; markdownPreview: string }): void {
@@ -39,4 +40,10 @@ export function failJob(jobId: string, errorMessage: string): void {
 
 export function getJob(jobId: string): RagJob | undefined {
     return store.get(jobId)
+}
+
+export function getJobForUser(jobId: string, ownerId: string): RagJob | undefined {
+    const job = store.get(jobId)
+    if (!job || job.ownerId !== ownerId) return undefined
+    return job
 }

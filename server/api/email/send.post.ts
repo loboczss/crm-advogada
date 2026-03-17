@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { serverSupabaseUser } from '#supabase/server'
 import { useRuntimeConfig } from '#imports'
+import { assertActorRole } from '../../utils/security'
 
 export default defineEventHandler(async (event) => {
   // 1. Authenticate user
@@ -8,6 +9,8 @@ export default defineEventHandler(async (event) => {
   if (!user?.sub) {
     throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
+
+  await assertActorRole(event, user.sub, ['admin'], 'Apenas administradores podem enviar emails.', 'email/send')
 
   // 2. Read request body
   const body = await readBody(event)
@@ -21,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const recipients = Array.isArray(to) ? to : [to]
   for (const addr of recipients) {
-    if (!emailRegex.test(addr)) {
+    if (typeof addr !== 'string' || !emailRegex.test(addr)) {
       throw createError({ statusCode: 400, message: `Endereço de email inválido: ${addr}` })
     }
   }

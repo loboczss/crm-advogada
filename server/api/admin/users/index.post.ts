@@ -2,6 +2,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
 import { randomBytes } from 'node:crypto'
 import { useRuntimeConfig } from '#imports'
+import { assertActorRole } from '../../../utils/security'
 
 export default defineEventHandler(async (event) => {
   const escapeHtml = (value: string) =>
@@ -17,23 +18,23 @@ export default defineEventHandler(async (event) => {
   if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autenticado' })
 
   const supabaseAdmin = serverSupabaseServiceRole(event)
-
-  const { data: actorProfile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.sub)
-    .single()
-
-  if (actorProfile?.role !== 'admin') {
-    throw createError({ statusCode: 403, message: 'Somente administradores.' })
-  }
+  await assertActorRole(event, user.sub, ['admin'], 'Somente administradores.', 'admin/users/create')
 
   // 2. Parse body
   const body = await readBody(event)
-  const { email, name, role, vendedor_id, company, phone } = body
+  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
+  const name = typeof body.name === 'string' ? body.name.trim() : ''
+  const role = body.role
+  const vendedor_id = body.vendedor_id
+  const company = typeof body.company === 'string' ? body.company.trim() : body.company
+  const phone = typeof body.phone === 'string' ? body.phone.trim() : body.phone
 
   if (!email || !name || !role) {
     throw createError({ statusCode: 400, message: 'Dados incompletos: Nome, Email e Nível de Acesso são obrigatórios.' })
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw createError({ statusCode: 400, message: 'Email inválido.' })
   }
 
   if (!['admin', 'vendedor', 'user'].includes(role)) {
@@ -46,7 +47,9 @@ export default defineEventHandler(async (event) => {
     const bytes = randomBytes(length)
     let res = ''
     for (let i = 0; i < length; i++) {
-      res += charset.charAt(bytes[i] % charset.length)
+      const randomByte = bytes[i]
+      if (randomByte === undefined) continue
+      res += charset.charAt(randomByte % charset.length)
     }
     return res
   }
@@ -63,7 +66,7 @@ export default defineEventHandler(async (event) => {
 
   if (authError || !authData.user) {
     console.error('[admin/users] Erro ao criar usuário:', authError)
-    throw createError({ statusCode: 400, message: authError?.message || 'Não foi possível criar o usuário. Verifique se o e-mail já está cadastrado.' })
+    throw createError({ statusCode: 400, message: 'Não foi possível criar o usuário. Verifique se o e-mail já está cadastrado.' })
   }
 
   const userId = authData.user.id
@@ -81,7 +84,7 @@ export default defineEventHandler(async (event) => {
       phone: phone || null,
       updated_at: new Date().toISOString()
     })
-    .select()
+    .select('id, email, name, role, phone, company, avatar_url, vendedor_id, created_at')
     .single()
 
   if (profileError) {

@@ -1,6 +1,10 @@
 import { serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+    if (process.env.NODE_ENV === 'production') {
+        throw createError({ statusCode: 404, message: 'Rota não encontrada.' })
+    }
+
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
 
