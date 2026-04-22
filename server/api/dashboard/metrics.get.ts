@@ -64,34 +64,43 @@ export default defineEventHandler(async (event) => {
         // Process data: group by date and deduplicate leads
         const metricsMap = new Map<string, { novos: Set<string>; recorrentes: Set<string>; vendas: number; valor: number }>()
 
-        // Dedup by telefone and keep the latest state for each lead.
-        const latestLeadByTelefone = new Map<string, LeadMessageRecord>()
+        // Aggregate by telefone so the same contact is counted once per period.
+        const leadStateByTelefone = new Map<string, { hasPrimeiraMensagem: boolean; firstCreatedAt: string }>()
 
         ;(leadsData as LeadMessageRecord[]).forEach((lead) => {
             if (!lead.telefone || !lead.created_at) return
 
-            const prev = latestLeadByTelefone.get(lead.telefone)
-            if (!prev || !prev.created_at || new Date(lead.created_at) > new Date(prev.created_at)) {
-                latestLeadByTelefone.set(lead.telefone, lead)
+            const prev = leadStateByTelefone.get(lead.telefone)
+            const hasPrimeiraMensagem = lead.primeira_mensagem === true
+
+            if (!prev) {
+                leadStateByTelefone.set(lead.telefone, {
+                    hasPrimeiraMensagem,
+                    firstCreatedAt: lead.created_at,
+                })
+                return
             }
+
+            leadStateByTelefone.set(lead.telefone, {
+                hasPrimeiraMensagem: prev.hasPrimeiraMensagem || hasPrimeiraMensagem,
+                firstCreatedAt: new Date(lead.created_at) < new Date(prev.firstCreatedAt)
+                    ? lead.created_at
+                    : prev.firstCreatedAt,
+            })
         })
 
-        ;(latestLeadByTelefone.values()).forEach((lead) => {
-            if (!lead.created_at || !lead.telefone) return
-
-            const dateStr = lead.created_at.split('T')[0]
+        ;(leadStateByTelefone.entries()).forEach(([telefone, leadState]) => {
+            const dateStr = leadState.firstCreatedAt.split('T')[0]
             if (!metricsMap.has(dateStr)) {
                 metricsMap.set(dateStr, { novos: new Set(), recorrentes: new Set(), vendas: 0, valor: 0 })
             }
 
             const metrics = metricsMap.get(dateStr)!
 
-            const isPrimeiraMensagem = lead.primeira_mensagem === true
-
-            if (isPrimeiraMensagem) {
-                metrics.novos.add(lead.telefone)
+            if (leadState.hasPrimeiraMensagem) {
+                metrics.novos.add(telefone)
             } else {
-                metrics.recorrentes.add(lead.telefone)
+                metrics.recorrentes.add(telefone)
             }
         })
 
