@@ -1,4 +1,4 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
+import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 
 interface DashboardMetricRow {
     date: string
@@ -9,14 +9,13 @@ interface DashboardMetricRow {
 }
 
 interface CrmEvasturRecord {
-    id: number
-    created_at: string
-    contato_id: string
+    created_at: string | null
+    contato_id: string | null
     compras_cliente: any | null
 }
 
 interface VendaRecord {
-    created_at: string
+    created_at: string | null
     valor_venda: number | null
 }
 
@@ -41,7 +40,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, message: 'Os parâmetros startDate e endDate devem ser datas válidas.' })
     }
 
-    const client = await serverSupabaseClient(event)
+    const client = serverSupabaseServiceRole(event)
     
     try {
         // Fetch all CRM Evastur records (leads)
@@ -65,35 +64,41 @@ export default defineEventHandler(async (event) => {
         // Process data: group by date and deduplicate leads
         const metricsMap = new Map<string, { novos: Set<string>; recorrentes: Set<string>; vendas: number; valor: number }>()
 
-        // Process leads - each lead should be counted ONLY ONCE based on its CURRENT status
-        const leadsProcessed = new Set<number>()
-        
-        ;(evasturData as CrmEvasturRecord[]).forEach(lead => {
-            // Only count each lead ID once, based on current state
-            if (!leadsProcessed.has(lead.id)) {
-                leadsProcessed.add(lead.id)
-                
-                const dateStr = lead.created_at.split('T')[0]
-                if (!metricsMap.has(dateStr)) {
-                    metricsMap.set(dateStr, { novos: new Set(), recorrentes: new Set(), vendas: 0, valor: 0 })
-                }
+        // Dedup by contato_id and keep the latest state for each lead.
+        const latestLeadByContato = new Map<string, CrmEvasturRecord>()
 
-                const metrics = metricsMap.get(dateStr)!
+        ;(evasturData as CrmEvasturRecord[]).forEach((lead) => {
+            if (!lead.contato_id || !lead.created_at) return
 
-                // Determine if lead is new or recurrent based on CURRENT compras_cliente state
-                const hasCompras = lead.compras_cliente && 
-                    (Array.isArray(lead.compras_cliente) ? lead.compras_cliente.length > 0 : true)
+            const prev = latestLeadByContato.get(lead.contato_id)
+            if (!prev || !prev.created_at || new Date(lead.created_at) > new Date(prev.created_at)) {
+                latestLeadByContato.set(lead.contato_id, lead)
+            }
+        })
 
-                if (hasCompras) {
-                    metrics.recorrentes.add(lead.contato_id)
-                } else {
-                    metrics.novos.add(lead.contato_id)
-                }
+        ;(latestLeadByContato.values()).forEach((lead) => {
+            if (!lead.created_at || !lead.contato_id) return
+
+            const dateStr = lead.created_at.split('T')[0]
+            if (!metricsMap.has(dateStr)) {
+                metricsMap.set(dateStr, { novos: new Set(), recorrentes: new Set(), vendas: 0, valor: 0 })
+            }
+
+            const metrics = metricsMap.get(dateStr)!
+
+            const hasCompras = lead.compras_cliente &&
+                (Array.isArray(lead.compras_cliente) ? lead.compras_cliente.length > 0 : true)
+
+            if (hasCompras) {
+                metrics.recorrentes.add(lead.contato_id)
+            } else {
+                metrics.novos.add(lead.contato_id)
             }
         })
 
         // Process sales
         ;(vendasData as VendaRecord[]).forEach(venda => {
+            if (!venda.created_at) return
             const dateStr = venda.created_at.split('T')[0]
             if (!metricsMap.has(dateStr)) {
                 metricsMap.set(dateStr, { novos: new Set(), recorrentes: new Set(), vendas: 0, valor: 0 })
