@@ -8,10 +8,10 @@ interface DashboardMetricRow {
     valor_vendas: number | string | null
 }
 
-interface CrmEvasturRecord {
+interface LeadMessageRecord {
     created_at: string | null
-    contato_id: string | null
-    compras_cliente: any | null
+    telefone: string | null
+    primeira_mensagem: boolean | null
 }
 
 interface VendaRecord {
@@ -43,14 +43,14 @@ export default defineEventHandler(async (event) => {
     const client = serverSupabaseServiceRole(event)
     
     try {
-        // Fetch all CRM Evastur records (leads)
-        const { data: evasturData, error: evasturError } = await client
-            .from('crm_evastur')
-            .select('id, created_at, contato_id, compras_cliente')
+        // Fetch lead messages data (source of leads)
+        const { data: leadsData, error: leadsError } = await client
+            .from('todas_mensagens_whatsapp')
+            .select('created_at, telefone, primeira_mensagem')
             .gte('created_at', parsedStartDate.toISOString())
             .lte('created_at', parsedEndDate.toISOString())
 
-        if (evasturError) throw evasturError
+        if (leadsError) throw leadsError
 
         // Fetch all sales records
         const { data: vendasData, error: vendasError } = await client
@@ -64,20 +64,20 @@ export default defineEventHandler(async (event) => {
         // Process data: group by date and deduplicate leads
         const metricsMap = new Map<string, { novos: Set<string>; recorrentes: Set<string>; vendas: number; valor: number }>()
 
-        // Dedup by contato_id and keep the latest state for each lead.
-        const latestLeadByContato = new Map<string, CrmEvasturRecord>()
+        // Dedup by telefone and keep the latest state for each lead.
+        const latestLeadByTelefone = new Map<string, LeadMessageRecord>()
 
-        ;(evasturData as CrmEvasturRecord[]).forEach((lead) => {
-            if (!lead.contato_id || !lead.created_at) return
+        ;(leadsData as LeadMessageRecord[]).forEach((lead) => {
+            if (!lead.telefone || !lead.created_at) return
 
-            const prev = latestLeadByContato.get(lead.contato_id)
+            const prev = latestLeadByTelefone.get(lead.telefone)
             if (!prev || !prev.created_at || new Date(lead.created_at) > new Date(prev.created_at)) {
-                latestLeadByContato.set(lead.contato_id, lead)
+                latestLeadByTelefone.set(lead.telefone, lead)
             }
         })
 
-        ;(latestLeadByContato.values()).forEach((lead) => {
-            if (!lead.created_at || !lead.contato_id) return
+        ;(latestLeadByTelefone.values()).forEach((lead) => {
+            if (!lead.created_at || !lead.telefone) return
 
             const dateStr = lead.created_at.split('T')[0]
             if (!metricsMap.has(dateStr)) {
@@ -86,13 +86,12 @@ export default defineEventHandler(async (event) => {
 
             const metrics = metricsMap.get(dateStr)!
 
-            const hasCompras = lead.compras_cliente &&
-                (Array.isArray(lead.compras_cliente) ? lead.compras_cliente.length > 0 : true)
+            const isPrimeiraMensagem = lead.primeira_mensagem === true
 
-            if (hasCompras) {
-                metrics.recorrentes.add(lead.contato_id)
+            if (isPrimeiraMensagem) {
+                metrics.novos.add(lead.telefone)
             } else {
-                metrics.novos.add(lead.contato_id)
+                metrics.recorrentes.add(lead.telefone)
             }
         })
 
