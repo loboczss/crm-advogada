@@ -53,14 +53,38 @@
             <div v-else class="space-y-6">
               <div>
                 <h2 class="text-2xl font-bold text-text-light dark:text-text-dark">Criar conta</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Preencha os dados para comecar.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Preencha todos os dados para criar sua conta de acesso.</p>
               </div>
 
               <form class="space-y-4" @submit.prevent="handleSignup">
-                <Input v-model="signupForm.name" label="Nome completo" type="text" placeholder="Seu nome" />
-                <Input v-model="signupForm.email" label="Email" type="email" placeholder="voce@empresa.com" />
-                <Input v-model="signupForm.password" label="Senha" type="password" placeholder="********" />
-                <Input v-model="signupForm.confirmPassword" label="Confirmar senha" type="password" placeholder="********" />
+                <Input 
+                  v-model="signupForm.name" 
+                  label="Nome completo" 
+                  type="text" 
+                  placeholder="Ex: João Silva"
+                  required
+                />
+                <Input 
+                  v-model="signupForm.email" 
+                  label="Email" 
+                  type="email" 
+                  placeholder="seu.email@empresa.com"
+                  required
+                />
+                <Input 
+                  v-model="signupForm.password" 
+                  label="Senha" 
+                  type="password" 
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                />
+                <Input 
+                  v-model="signupForm.confirmPassword" 
+                  label="Confirmar senha" 
+                  type="password" 
+                  placeholder="Repita sua senha"
+                  required
+                />
 
                 <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                   <input v-model="signupForm.acceptTerms" type="checkbox" class="rounded border-border-light dark:border-border-dark" />
@@ -167,27 +191,32 @@ async function handleSignup() {
   signupSuccess.value = ''
 
   if (!signupForm.value.name.trim()) {
-    signupError.value = 'Informe seu nome completo.'
+    signupError.value = '❌ Por favor, informe seu nome completo.'
     return
   }
 
-  if (!signupForm.value.email || !signupForm.value.password) {
-    signupError.value = 'Preencha email e senha.'
+  if (!signupForm.value.email) {
+    signupError.value = '❌ Por favor, informe um email válido.'
+    return
+  }
+
+  if (!signupForm.value.password) {
+    signupError.value = '❌ Por favor, informe uma senha.'
     return
   }
 
   if (signupForm.value.password.length < 6) {
-    signupError.value = 'A senha deve ter pelo menos 6 caracteres.'
+    signupError.value = '❌ A senha deve ter no mínimo 6 caracteres. Atual: ' + signupForm.value.password.length + ' caracteres.'
     return
   }
 
   if (signupForm.value.password !== signupForm.value.confirmPassword) {
-    signupError.value = 'As senhas nao conferem.'
+    signupError.value = '❌ As senhas não correspondem. Verifique se digitou igual em ambos os campos.'
     return
   }
 
   if (!signupForm.value.acceptTerms) {
-    signupError.value = 'Você precisa aceitar os termos para continuar.'
+    signupError.value = '❌ Você precisa aceitar os termos e políticas para continuar.'
     return
   }
 
@@ -205,11 +234,28 @@ async function handleSignup() {
   signupLoading.value = false
 
   if (error) {
-    signupError.value = 'Não foi possível criar a conta. Tente novamente.'
+    // Interpretar erro específico do Supabase
+    const errorCode = (error.code || '').toString().toLowerCase().trim()
+    const errorMessage = (error.message || '').toString().toLowerCase().trim()
+
+    if (errorMessage.includes('user already exists') || errorMessage.includes('user_already_exists')) {
+      signupError.value = '❌ Este email já está registrado. Faça login ou recupere sua senha.'
+    } else if (errorMessage.includes('invalid email') || errorMessage.includes('invalid_email')) {
+      signupError.value = '❌ Email inválido. Verifique o formato (ex: seu.email@empresa.com).'
+    } else if (errorMessage.includes('password') && errorMessage.includes('weak')) {
+      signupError.value = '❌ Senha muito fraca. Use números, letras maiúsculas e minúsculas.'
+    } else if (errorMessage.includes('network') || errorCode.includes('network')) {
+      signupError.value = '❌ Erro de conexão. Verifique sua internet e tente novamente.'
+    } else if (error.status === 429) {
+      signupError.value = '❌ Muitas tentativas. Aguarde alguns minutos e tente novamente.'
+    } else {
+      // Mensagem padrão com mais contexto
+      signupError.value = '❌ ' + (error.message || 'Não foi possível criar a conta. Verifique os dados e tente novamente.')
+    }
     return
   }
 
-  signupSuccess.value = 'Conta criada. Verifique seu email para confirmar.'
+  signupSuccess.value = '✅ Conta criada com sucesso! Verifique seu email para confirmar o cadastro.'
   await navigateTo('/confirm')
 }
 </script>
