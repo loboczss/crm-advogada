@@ -104,9 +104,12 @@ export default defineNuxtConfig({
     openaiApiKey: process.env.OPENAI_API_KEY ?? '',
     resendApiKey: process.env.RESEND_API_KEY ?? '',
     mailerSenderEmail: process.env.MAILER_SENDER_EMAIL ?? '',
+    supabaseSecretKey: process.env.SUPABASE_SECRET_KEY ?? '',
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
       originalSiteUrl: process.env.NUXT_PUBLIC_ORIGINAL_SITE_URL ?? '',
+      supabaseUrl: process.env.SUPABASE_URL ?? '',
+      supabaseKey: process.env.SUPABASE_KEY ?? '',
     },
   },
   nitro: {
