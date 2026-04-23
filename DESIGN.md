@@ -1,4 +1,4 @@
-# Design System: Evastur Premium Experience
+# Design System: Andréa Rosa Premium Experience
 
 ## 1. Visual Theme & Atmosphere
 The core aesthetic is **"Futuristic Minimalist Glassmorphism."** The interface feels premium, leveraging depth, background blurs, and subtle glows. It supports both **Dark** and **Light** modes seamlessly using Tailwind CSS.

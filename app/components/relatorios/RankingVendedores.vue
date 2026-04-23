@@ -8,8 +8,8 @@
           <Icon name="ph:star-bold" class="w-6 h-6" />
         </div>
         <div>
-          <h2 class="text-xl font-bold text-slate-900 dark:text-white">Ranking de Vendedores - Histórico</h2>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-wider">Estatísticas de vendas e atendimentos</p>
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white">Ranking de Consultores - Histórico</h2>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-wider">Estatísticas de fechamentos e atendimentos</p>
         </div>
       </div>
       
@@ -135,9 +135,9 @@ defineEmits<{
 
 const columns: ColumnDef[] = [
   { key: 'position', label: '#', align: 'center' },
-  { key: 'nome', label: 'Vendedor', align: 'left' },
+  { key: 'nome', label: 'Consultor', align: 'left' },
   { key: 'clientes', label: 'Clientes At', align: 'center' },
-  { key: 'vendas', label: 'Vendas', align: 'center' },
+  { key: 'vendas', label: 'Fechamentos', align: 'center' },
   { key: 'conversao', label: 'Conversão', align: 'center' },
   { key: 'valor', label: 'Valor Total', align: 'left' },
   { key: 'actions', label: 'Ações', align: 'center' },

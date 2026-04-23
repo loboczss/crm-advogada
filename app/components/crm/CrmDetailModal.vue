@@ -112,38 +112,38 @@
           </div>
         </div>
 
-        <!-- Tab 2: Vendas -->
-        <div v-else-if="activeTab === 'vendas'" class="animate-in fade-in slide-in-from-bottom-2 duration-300">
-           <div v-if="vendasData.length === 0" class="text-center flex flex-col items-center justify-center py-16 space-y-4">
-              <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center border border-primary/10 text-primary/50">
-                <Icon name="ph:receipt-bold" class="text-4xl" />
+      <!-- Tab 2: Vendas -->
+      <div v-else-if="activeTab === 'vendas'" class="animate-in fade-in slide-in-from-bottom-2 duration-300">
+         <div v-if="vendasData.length === 0" class="text-center flex flex-col items-center justify-center py-16 space-y-4">
+            <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center border border-primary/10 text-primary/50">
+              <Icon name="ph:scales-bold" class="text-4xl" />
+            </div>
+            <div>
+              <p class="text-base font-bold text-gray-900 dark:text-white">Nenhum atendimento encontrado</p>
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Este contato ainda não possui histórico de atendimentos.</p>
+            </div>
+         </div>
+         
+         <div v-else class="space-y-3">
+           <div v-for="venda in vendasData" :key="venda.id" class="bg-white dark:bg-background-dark/50 rounded-lg p-5 border border-border-light dark:border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
+              
+              <div class="flex items-center gap-4">
+                 <div class="w-12 h-12 rounded-md bg-primary/10 text-primary flex items-center justify-center font-black">
+                   <Icon name="ph:currency-dollar-bold" class="text-xl" />
+                 </div>
+                 <div>
+                   <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">{{ formatDate(venda.created_at) }}</p>
+                   <p class="text-lg font-bold text-gray-900 dark:text-white">{{ formatCurrency(venda.valor_venda) }}</p>
+                 </div>
               </div>
-              <div>
-                <p class="text-base font-bold text-gray-900 dark:text-white">Nenhuma venda encontrada</p>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Este contato ainda não possui histórico de vendas.</p>
-              </div>
-           </div>
-           
-           <div v-else class="space-y-3">
-             <div v-for="venda in vendasData" :key="venda.id" class="bg-white dark:bg-background-dark/50 rounded-lg p-5 border border-border-light dark:border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
-                
-                <div class="flex items-center gap-4">
-                   <div class="w-12 h-12 rounded-md bg-primary/10 text-primary flex items-center justify-center font-black">
-                     <Icon name="ph:currency-dollar-bold" class="text-xl" />
-                   </div>
-                   <div>
-                     <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">{{ formatDate(venda.created_at) }}</p>
-                     <p class="text-lg font-bold text-gray-900 dark:text-white">{{ formatCurrency(venda.valor_venda) }}</p>
-                   </div>
-                </div>
 
-                <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto">
-                   <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-md border border-gray-100 dark:border-zinc-800 text-xs">
-                     <span class="font-bold text-gray-400 uppercase tracking-widest">Vendedor:</span> <span class="font-semibold ml-1 text-gray-700 dark:text-zinc-300">{{ venda.vendedor || '-' }}</span>
-                   </div>
-                   <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-md border border-gray-100 dark:border-zinc-800 text-xs">
-                     <span class="font-bold text-gray-400 uppercase tracking-widest">Embarque:</span> <span class="font-semibold ml-1 text-gray-700 dark:text-zinc-300">{{ formatDate(venda.embarque) }}</span>
-                   </div>
+              <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto">
+                 <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-md border border-gray-100 dark:border-zinc-800 text-xs">
+                   <span class="font-bold text-gray-400 uppercase tracking-widest">Consultor:</span> <span class="font-semibold ml-1 text-gray-700 dark:text-zinc-300">{{ venda.vendedor || '-' }}</span>
+                 </div>
+                 <div class="px-4 py-2 bg-gray-50 dark:bg-zinc-800/50 rounded-md border border-gray-100 dark:border-zinc-800 text-xs">
+                   <span class="font-bold text-gray-400 uppercase tracking-widest">Agendamento:</span> <span class="font-semibold ml-1 text-gray-700 dark:text-zinc-300">{{ formatDate(venda.embarque) }}</span>
+                 </div>
                    
                    <span class="px-4 py-2 rounded-md text-[10px] font-bold uppercase tracking-widest text-center" :class="getStatusClass(venda.status)">
                       {{ venda.status || 'Desconhecido' }}
@@ -220,7 +220,7 @@ const whatsappData = ref<any[]>([])
 
 const tabs = computed(() => [
   { id: 'crm', label: 'Dados CRM', icon: 'ph:user-list-bold' },
-  { id: 'vendas', label: 'Histórico Vendas', icon: 'ph:currency-dollar-bold', badge: vendasData.value.length || undefined },
+  { id: 'vendas', label: 'Histórico Atendimentos', icon: 'ph:scales-bold', badge: vendasData.value.length || undefined },
   { id: 'whatsapp', label: 'Conversas', icon: 'ph:whatsapp-logo-bold', badge: whatsappData.value.length || undefined }
 ])
 
@@ -231,7 +231,7 @@ const fetchData = async () => {
   activeTab.value = 'crm'
   
   try {
-    const data = await $fetch<any>(`/api/crm/evastur/details/${props.contatoId}`)
+    const data = await $fetch<any>(`/api/crm/andrearosa/details/${props.contatoId}`)
     if (data) {
       crmData.value = data.crm
       vendasData.value = data.vendas

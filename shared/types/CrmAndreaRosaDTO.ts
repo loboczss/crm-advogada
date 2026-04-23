@@ -1,4 +1,4 @@
-export interface CrmEvasturDTO {
+export interface CrmAndreaRosaDTO {
     id?: number
     created_at?: string
     contato_id: string

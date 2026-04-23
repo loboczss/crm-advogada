@@ -129,7 +129,7 @@
                     class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden"
                   >
                     <div
-                      class="h-full bg-gradient-to-r from-blue-500 to-green-500"
+                      class="h-full bg-gradient-to-r from-primary to-green-500"
                       :style="{ width: `${maxConversion}%` }"
                     ></div>
                   </div>
@@ -138,9 +138,9 @@
                     class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[95%] p-3 mt-2 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-md shadow-xl transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2"
                   >
                     Registra o percentual de contatos que se transformaram em
-                    vendas.<br /><span
+                    atendimentos.<br /><span
                       class="text-slate-300 mt-1 block font-mono"
-                      >{{ totalVendasPeriodo }} vendas /
+                      >{{ totalVendasPeriodo }} atendimentos /
                       {{ totalLeadsPeriodo }} leads</span
                     >
                     <!-- Arrow -->
@@ -190,7 +190,7 @@
                     class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[95%] p-3 mt-2 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2"
                   >
                     Mede a fidelidade: percentual de contatos do período que já
-                    haviam comprado anteriormente.<br /><span
+                    haviam contratado anteriormente.<br /><span
                       class="text-slate-300 mt-1 block font-mono"
                       >{{ totalRecorrentesPeriodo }} recorrentes /
                       {{ totalLeadsPeriodo }} leads</span
@@ -253,7 +253,7 @@
                     <p
                       class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1 flex items-center gap-1 cursor-help justify-end"
                     >
-                      Total Vendas
+                      Total Atendimentos
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -277,7 +277,7 @@
                     <div
                       class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[180px] p-2.5 mt-1 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 right-0 top-full"
                     >
-                      Quantidade absoluta de vendas concretizadas neste período.
+                      Quantidade absoluta de atendimentos concretizados neste período.
                       <!-- Arrow -->
                       <div
                         class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -top-1 right-4"
@@ -349,9 +349,9 @@
                       class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute z-20 w-[90%] left-1/2 -translate-x-1/2 p-3 mt-1 text-xs text-white bg-slate-800 dark:bg-slate-700 rounded-lg shadow-xl transition-all duration-200 top-full"
                     >
                       <strong>Faturamento Bruto:</strong> Soma financeira de
-                      todas as vendas.<br />
+                      todos os atendimentos.<br />
                       <strong class="mt-1.5 block">Ticket Médio:</strong>
-                      Faturamento dividido pela Quantidade de Vendas.
+                      Faturamento dividido pela Quantidade de Atendimentos.
                       <!-- Arrow -->
                       <div
                         class="absolute w-2 h-2 bg-slate-800 dark:bg-slate-700 rotate-45 -top-1 left-1/2 -translate-x-1/2"
@@ -403,7 +403,7 @@ const {
   fetchDashboardData,
 } = useDashboardData();
 
-useHead({ title: "Dashboard | Evastur" });
+useHead({ title: "Dashboard | Andréa Rosa" });
 
 const formatCurrency = (val: number) => {
   return new Intl.NumberFormat("pt-BR", {
@@ -417,7 +417,7 @@ const leadsLabel = computed(() => {
 });
 
 const vendasLabel = computed(() => {
-  return selectedPeriod.value === 0 ? "Vendas Hoje" : "Vendas no Período";
+  return selectedPeriod.value === 0 ? "Atendimentos Hoje" : "Atendimentos no Período";
 });
 
 const conversaoPercentual = computed(() => {

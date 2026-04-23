@@ -1,14 +1,14 @@
 <template>
   <Modal
     :is-open="isOpen"
-    title="Nova Venda"
-    description="Preencha os dados para registrar uma venda."
+    title="Novo Atendimento"
+    description="Preencha os dados para registrar um novo atendimento."
     :loading="saving"
     max-width="lg"
     @close="handleClose"
   >
     <form id="add-venda-form" @submit.prevent="handleSubmit" class="space-y-6">
-      <!-- Group: Cliente & Vendedor -->
+      <!-- Group: Cliente & Consultor -->
       <div class="space-y-4">
         <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Informações Principais</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -23,23 +23,23 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor</label>
-            <input v-model="form.vendedor" type="text" placeholder="Nome do vendedor" class="input-field" />
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Consultor</label>
+            <input v-model="form.vendedor" type="text" placeholder="Nome do consultor" class="input-field" />
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Vendedor ID</label>
-            <input v-model="form.vendedor_id" type="text" placeholder="ID do vendedor" class="input-field" />
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">ID do Consultor</label>
+            <input v-model="form.vendedor_id" type="text" placeholder="ID do consultor" class="input-field" />
           </div>
         </div>
       </div>
 
-      <!-- Group: Financeiro & Status -->
+      <!-- Group: Honorários & Status -->
       <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Financeiro e Status</h4>
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Honorários e Status</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Valor da Venda (R$)</label>
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Valor do Contrato (R$)</label>
             <input v-model.number="form.valor_venda" type="number" step="0.01" placeholder="0.00" class="input-field" />
           </div>
 
@@ -61,8 +61,8 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Tipo de Venda</label>
-            <input v-model="form.tipo_venda" type="text" placeholder="Pacote, Avulso..." class="input-field" />
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Tipo de Serviço</label>
+            <input v-model="form.tipo_venda" type="text" placeholder="Aposentadoria, Pensão..." class="input-field" />
           </div>
 
           <div class="space-y-1.5 sm:col-span-2">
@@ -72,17 +72,17 @@
         </div>
       </div>
 
-      <!-- Group: Logística -->
+      <!-- Group: Prazos -->
       <div class="space-y-4 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
-        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Logística</h4>
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Prazos e Agendamentos</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Data de Embarque</label>
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Data do Protocolo</label>
             <input v-model="form.embarque" type="date" class="input-field" />
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Previsão de Volta</label>
+            <label class="text-xs font-medium text-gray-500 dark:text-zinc-400">Previsão de Conclusão</label>
             <input v-model="form.data_volta" type="date" class="input-field" />
           </div>
         </div>
@@ -114,7 +114,7 @@
           icon="ph:floppy-disk-bold"
           class="w-full sm:w-auto px-8"
         >
-          Salvar Venda
+          Salvar Atendimento
         </Button>
       </div>
     </template>

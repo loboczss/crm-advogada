@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background-light via-blue-50 to-purple-50 dark:bg-gradient-to-br dark:from-background-dark dark:via-background-dark dark:to-background-dark text-text-light dark:text-text-dark transition-colors duration-500">
+  <div class="min-h-screen bg-gradient-to-br from-background-light via-rose-50 to-purple-50 dark:bg-gradient-to-br dark:from-background-dark dark:via-background-dark dark:to-background-dark text-text-light dark:text-text-dark transition-colors duration-500">
     <main class="container mx-auto px-4 py-12 max-w-5xl">
       <!-- Header Section -->
       <section class="mb-12">
@@ -188,7 +188,7 @@ import Badge from '../components/Badge.vue'
 import Alert from '../components/Alert.vue'
 
 definePageMeta({ middleware: 'auth' })
-useHead({ title: 'Meu Perfil | Evastur' })
+useHead({ title: 'Meu Perfil | Andréa Rosa' })
 
 const profileStore = useProfileStore()
 const { profile, loading, error: storeError } = storeToRefs(profileStore)

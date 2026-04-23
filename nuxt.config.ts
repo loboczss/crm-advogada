@@ -9,9 +9,9 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   app: {
     head: {
-      title: 'Evastur Cloud',
+      title: 'Andréa Rosa Advocacia',
       meta: [
-        { name: 'description', content: 'Plataforma inteligente de CRM e gestão Evastur' },
+        { name: 'description', content: 'Sistema de Gestão Previdenciária Andréa Rosa' },
         { name: 'theme-color', content: '#2f81f7' }
       ],
       link: [
@@ -32,9 +32,9 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Evastur CRM',
-      short_name: 'Evastur',
-      description: 'Plataforma inteligente de CRM e gestão Evastur',
+      name: 'Andréa Rosa CRM',
+      short_name: 'Andréa Rosa',
+      description: 'Sistema de Gestão Previdenciária Andréa Rosa',
       theme_color: '#2f81f7',
       background_color: '#ffffff',
       icons: [

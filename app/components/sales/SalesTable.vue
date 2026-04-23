@@ -25,8 +25,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-3.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
             </svg>
             <div>
-              <h2 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Histórico de Transações</h2>
-              <p class="text-[11px] text-gray-400 dark:text-zinc-500 font-medium">Gestão inteligente de vendas</p>
+              <h2 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Histórico de Atendimentos</h2>
+              <p class="text-[11px] text-gray-400 dark:text-zinc-500 font-medium">Gestão inteligente de processos</p>
             </div>
           </div>
           
@@ -161,8 +161,8 @@ const search = ref('')
 
 const columns: ColumnDef[] = [
   { key: 'contact_name', label: 'Cliente', sortable: true, filterable: true, align: 'left' },
-  { key: 'vendedor', label: 'Vendedor', sortable: true, filterable: true, align: 'left' },
-  { key: 'embarque', label: 'Embarque', sortable: true, filterable: true, align: 'left' },
+  { key: 'vendedor', label: 'Consultor', sortable: true, filterable: true, align: 'left' },
+  { key: 'embarque', label: 'Agendamento', sortable: true, filterable: true, align: 'left' },
   { key: 'valor_venda', label: 'Valor', sortable: true, align: 'right' },
   { key: 'created_at', label: 'Data', sortable: true, align: 'center' },
   { key: 'status', label: 'Status', sortable: true, filterable: true, align: 'center' },

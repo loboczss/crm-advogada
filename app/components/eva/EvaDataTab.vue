@@ -27,8 +27,8 @@
         </h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 max-w-md">
           {{ ragStore.loading
-            ? 'A EVA está extraindo, convertendo para Markdown e indexando. Aguarde...'
-            : 'Arraste ou clique para enviar PDF, XLSX, CSV ou TXT. A EVA extrai, converte para Markdown e indexa automaticamente.'
+            ? 'A Andréa está extraindo, convertendo para Markdown e indexando. Aguarde...'
+            : 'Arraste ou clique para enviar PDF, XLSX, CSV ou TXT. A Andréa extrai, converte para Markdown e indexa automaticamente.'
           }}
         </p>
 
@@ -73,7 +73,7 @@
           <textarea
             v-model="manualText"
             rows="4"
-            placeholder="Cole aqui informações, regras ou qualquer conteúdo que deseja que a EVA aprenda..."
+            placeholder="Cole aqui informações, regras ou qualquer conteúdo que deseja que a Andréa aprenda..."
             class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none shadow-inner"
             @click.stop
           ></textarea>
@@ -250,7 +250,7 @@
     >
       <div class="p-4 text-slate-600 dark:text-slate-300">
         <p>Tem certeza que deseja excluir o documento <strong>ID {{ docToDelete }}</strong>?</p>
-        <p class="text-sm mt-2 text-slate-500">A EVA perderá essa informação da base de conhecimento.</p>
+        <p class="text-sm mt-2 text-slate-500">A Andréa perderá essa informação da base de conhecimento.</p>
       </div>
       <template #footer>
         <div class="flex justify-end gap-3">

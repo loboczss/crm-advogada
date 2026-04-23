@@ -1,5 +1,5 @@
 <template>
-  <div id="evastur-table-container">
+  <div id="andrearosa-table-container">
     <DataTable
       :columns="columns"
       :data="records"
@@ -17,8 +17,8 @@
           <div class="flex items-center gap-3">
             <Icon name="ph:users-three-bold" class="w-5 h-5 text-gray-400" />
             <div>
-              <h2 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Leads e Contatos</h2>
-              <p class="text-[11px] text-gray-400 dark:text-zinc-500 font-medium">Gestão de relacionamento</p>
+              <h2 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Clientes e Casos</h2>
+              <p class="text-[11px] text-gray-400 dark:text-zinc-500 font-medium">Gestão Andréa Rosa</p>
             </div>
           </div>
           
@@ -134,12 +134,12 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { CrmEvasturDTO } from '~/../shared/types/CrmEvasturDTO'
+import type { CrmAndreaRosaDTO } from '~/../shared/types/CrmAndreaRosaDTO'
 import DataTable from '../DataTable.vue'
 import type { ColumnDef } from '../DataTable.vue'
 
 const props = defineProps<{
-  records: CrmEvasturDTO[]
+  records: CrmAndreaRosaDTO[]
   loading?: boolean
   total?: number
   currentPage?: number
@@ -147,10 +147,10 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  edit: [record: CrmEvasturDTO]
+  edit: [record: CrmAndreaRosaDTO]
   delete: [id: number]
   changePage: [page: number]
-  'row-click': [record: CrmEvasturDTO]
+  'row-click': [record: CrmAndreaRosaDTO]
   search: [query: string]
 }>()
 
@@ -167,8 +167,8 @@ watch(search, (val) => {
 const columns: ColumnDef[] = [
   { key: 'contato', label: 'Contato', align: 'left', sortable: true },
   { key: 'localizacao', label: 'Localização / Social', align: 'left' },
-  { key: 'contexto', label: 'Contexto', align: 'left' },
-  { key: 'interesses', label: 'Interesses', align: 'left' },
+  { key: 'contexto', label: 'Prioridade', align: 'left' },
+  { key: 'interesses', label: 'Patologias / Áreas', align: 'left' },
   { key: 'actions', label: 'Ações', align: 'right' },
 ]
 
@@ -193,3 +193,4 @@ const ensureArray = (val: any): string[] => {
   return []
 }
 </script>
+

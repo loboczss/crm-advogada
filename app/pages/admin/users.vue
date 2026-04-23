@@ -5,7 +5,7 @@
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 class="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-white">Gerenciar Usuários</h1>
-          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Controle total sobre as permissões e dados dos clientes da Evastur.</p>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Controle total sobre as permissões e dados dos usuários Andréa Rosa.</p>
         </div>
         <Button variant="primary" @click="openModal(null)" class="shrink-0 shadow-glow-primary/20">
           <div class="flex items-center gap-2">
@@ -44,7 +44,7 @@
               <tr class="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
                 <th class="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400">Usuário</th>
                 <th class="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400">Nível</th>
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400">Vend. ID</th>
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400">Cons. ID</th>
                 <th class="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400 text-right">Acesso</th>
                 <th class="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400 text-center">Ações</th>
               </tr>

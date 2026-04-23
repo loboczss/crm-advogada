@@ -2,7 +2,7 @@
   <Modal
     :is-open="isOpen"
     :title="isEdit ? 'Editar Lead' : 'Novo Lead'"
-    :description="isEdit ? 'Atualize as informações do contato abaixo.' : 'Preencha os dados básicos para iniciar a jornada do cliente.'"
+    :description="isEdit ? 'Atualize as informações do contato abaixo.' : 'Preencha os dados básicos para iniciar o atendimento jurídico.'"
     :loading="loading"
     max-width="3xl"
     @close="emit('close')"
@@ -60,15 +60,15 @@
         <!-- Context Section -->
         <div class="md:col-span-2 flex items-center gap-2 mt-4 mb-2">
           <div class="h-px flex-1 bg-gray-100 dark:bg-zinc-800"></div>
-          <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-600">Contexto e Qualificação</span>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-600">Contexto Previdenciário</span>
           <div class="h-px flex-1 bg-gray-100 dark:bg-zinc-800"></div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Sentimento</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Sentimento / Urgência</label>
           <div class="relative group">
             <select v-model="form.sentimento" class="modal-input appearance-none" style="padding-left: 3.5rem !important;">
-              <option value="">Selecionar...</option>
+              <option value="">Selecionar Sentimento...</option>
               <option value="Positivo">😊 Positivo</option>
               <option value="Neutro">😐 Neutro</option>
               <option value="Negativo">😡 Negativo</option>
@@ -83,11 +83,11 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Urgência</label>
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Nível de Prioridade</label>
           <div class="relative group">
             <select v-model="form.urgencia" class="modal-input appearance-none" style="padding-left: 3.5rem !important;">
-              <option value="">Selecionar...</option>
-              <option value="Alta">🔥 Alta</option>
+              <option value="">Selecionar Prioridade...</option>
+              <option value="Alta">🔥 Alta (Urgente)</option>
               <option value="Média">⚡ Média</option>
               <option value="Baixa">☁️ Baixa</option>
             </select>
@@ -101,8 +101,8 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Fase da Obra</label>
-          <input v-model="form.fase_obra" type="text" placeholder="Ex: Acabamento, Planta..." class="modal-input" />
+          <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Tipo de Benefício / Serviço</label>
+          <input v-model="form.fase_obra" type="text" placeholder="Ex: Aposentadoria, BPC, Revisão..." class="modal-input" />
         </div>
 
         <div class="flex flex-col gap-1.5">
@@ -118,7 +118,7 @@
         <div class="md:col-span-2 space-y-4 mt-2">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Interesses</label>
+              <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Patologias / Condições</label>
               <div class="relative group">
                 <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
                   <Icon name="ph:tag-bold" size="16" />
@@ -126,16 +126,16 @@
                 <input 
                   v-model="interessesRaw" 
                   type="text" 
-                  placeholder="Ex: Praia, Cruzeiro, Europa" 
+                  placeholder="Ex: Fibromialgia, Deficiência..." 
                   class="modal-input" 
                   style="padding-left: 3.5rem !important;"
                 />
               </div>
-              <p class="text-[10px] text-gray-400 ml-1">Separe os interesses por vírgulas.</p>
+              <p class="text-[10px] text-gray-400 ml-1">Separe por vírgulas.</p>
             </div>
             
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Objeções</label>
+              <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Objeções / Dificuldades</label>
               <div class="relative group">
                 <span class="absolute inset-y-0 left-0 w-12 flex items-center justify-center pointer-events-none text-gray-400 group-focus-within:text-danger transition-colors">
                   <Icon name="ph:warning-circle-bold" size="16" />
@@ -143,21 +143,21 @@
                 <input 
                   v-model="objeccoesRaw" 
                   type="text" 
-                  placeholder="Ex: Preço, Datas, Visto" 
+                  placeholder="Ex: Documentação, Renda..." 
                   class="modal-input" 
                   style="padding-left: 3.5rem !important;"
                 />
               </div>
-              <p class="text-[10px] text-gray-400 ml-1">Separe as objeções por vírgulas.</p>
+              <p class="text-[10px] text-gray-400 ml-1">Separe por vírgulas.</p>
             </div>
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Resumo do Perfil</label>
+            <label class="text-[11px] font-bold text-gray-600 dark:text-zinc-400 ml-1">Resumo do Caso / Perfil</label>
             <textarea 
               v-model="form.resumo_perfil" 
               rows="3" 
-              placeholder="Anotações estratégicas sobre o perfil deste cliente..." 
+              placeholder="Descreva detalhes importantes do histórico previdenciário do cliente..." 
               class="modal-input resize-none h-28"
             ></textarea>
           </div>
@@ -194,24 +194,24 @@ import { ref, reactive, watch, computed } from 'vue'
 import Modal from '../Modal.vue'
 import Button from '../Button.vue'
 
-import type { CrmEvasturDTO } from '../../../shared/types/CrmEvasturDTO'
+import type { CrmAndreaRosaDTO } from '../../../shared/types/CrmAndreaRosaDTO'
 
 interface Props {
   isOpen: boolean
-  initialData?: CrmEvasturDTO | null
+  initialData?: CrmAndreaRosaDTO | null
   loading?: boolean
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<{
   close: []
-  submit: [data: Omit<CrmEvasturDTO, 'id' | 'created_at'>]
+  submit: [data: Omit<CrmAndreaRosaDTO, 'id' | 'created_at'>]
 }>()
 
 const isEdit = computed(() => !!props.initialData)
 
 // Initialize form with defaults
-const formDefault: CrmEvasturDTO = {
+const formDefault: CrmAndreaRosaDTO = {
   contato_id: '',
   nome: '',
   cidade: '',
@@ -227,7 +227,7 @@ const formDefault: CrmEvasturDTO = {
   compras_cliente: []
 }
 
-const form = reactive<CrmEvasturDTO>({ ...formDefault })
+const form = reactive<CrmAndreaRosaDTO>({ ...formDefault })
 const interessesRaw = ref('')
 const objeccoesRaw = ref('')
 
@@ -266,3 +266,4 @@ function handleSubmit() {
   emit('submit', data)
 }
 </script>
+

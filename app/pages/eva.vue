@@ -7,7 +7,7 @@
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div>
             <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
-              Configurações da <span class="text-primary">EVA</span>
+              Configurações da <span class="text-primary">Andréa</span>
             </h1>
             <p class="text-slate-500 dark:text-slate-400 mt-1">
               Personalize o comportamento e a base de conhecimento da sua assistente virtual.
@@ -43,7 +43,7 @@ import Tabs from '../components/Tabs.vue'
 import EvaSystemPrompt from '../components/eva/EvaSystemPrompt.vue'
 import EvaDataTab from '../components/eva/EvaDataTab.vue'
 
-useHead({ title: 'Configurações EVA | Evastur' })
+useHead({ title: 'Configurações Andréa | Andréa Rosa' })
 definePageMeta({ middleware: ['auth', 'eva-editor'] })
 
 const activeTab = ref<'prompt' | 'dados'>('prompt')

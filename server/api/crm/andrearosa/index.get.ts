@@ -1,5 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import type { CrmEvasturDTO } from '../../../../shared/types/CrmEvasturDTO'
+import type { CrmAndreaRosaDTO } from '../../../../shared/types/CrmAndreaRosaDTO'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
@@ -32,9 +32,10 @@ export default defineEventHandler(async (event) => {
     }
 
     return {
-        records: (data ?? []) as CrmEvasturDTO[],
+        records: (data ?? []) as CrmAndreaRosaDTO[],
         total: count ?? 0,
         page,
         pageSize
     }
 })
+

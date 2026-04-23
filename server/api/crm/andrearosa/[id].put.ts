@@ -1,5 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import type { CrmEvasturDTO } from '../../../../shared/types/CrmEvasturDTO'
+import type { CrmAndreaRosaDTO } from '../../../../shared/types/CrmAndreaRosaDTO'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
     const client = await serverSupabaseClient(event)
     const id = getRouterParam(event, 'id')
-    const body = await readBody<Partial<CrmEvasturDTO>>(event)
+    const body = await readBody<Partial<CrmAndreaRosaDTO>>(event)
 
     if (!id) {
         throw createError({ statusCode: 400, message: 'ID é obrigatório para atualização.' })
@@ -28,5 +28,6 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: 'Erro interno ao atualizar registro.' })
     }
 
-    return data as CrmEvasturDTO
+    return data as CrmAndreaRosaDTO
 })
+

@@ -12,9 +12,9 @@
       :loading="loading"
     />
 
-    <!-- Maior Venda Card -->
+    <!-- Maior Atendimento Card -->
     <KpiCard
-      title="Maior Venda"
+      title="Maior Atendimento"
       badge="TOP"
       :loading="loading"
       color="primary"
@@ -78,8 +78,8 @@ interface Stat {
 }
 
 const stats = computed<Stat[]>(() => [
-  { label: 'Total de Vendas', value: props.totalVendas.toString(), sub: 'registros no histórico', icon: 'ph:shopping-cart-bold', color: 'neutral' },
-  { label: 'Valor Total', value: formatCurrency(props.valorTotal), sub: 'soma de todas as vendas', icon: 'ph:currency-dollar-bold', color: 'success' },
-  { label: 'Ticket Médio', value: formatCurrency(props.ticketMedio), sub: 'média por venda', icon: 'ph:chart-line-up-bold', color: 'info' },
+  { label: 'Total de Atendimentos', value: props.totalVendas.toString(), sub: 'registros no histórico', icon: 'ph:briefcase-bold', color: 'neutral' },
+  { label: 'Valor Total', value: formatCurrency(props.valorTotal), sub: 'soma de honorários', icon: 'ph:scales-bold', color: 'success' },
+  { label: 'Ticket Médio', value: formatCurrency(props.ticketMedio), sub: 'média por contrato', icon: 'ph:chart-line-up-bold', color: 'info' },
 ])
 </script>

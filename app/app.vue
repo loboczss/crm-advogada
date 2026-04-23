@@ -23,11 +23,11 @@ const showHeader = computed(() => {
   return !publicPages.includes(route.path)
 })
 
-const defaultTitle = 'Evastur'
+const defaultTitle = 'Andréa Rosa'
 useHead({
   title: defaultTitle,
   titleTemplate: (titleChunk) => {
-    return titleChunk && titleChunk !== defaultTitle ? `${titleChunk} | Evastur` : 'Evastur Cloud'
+    return titleChunk && titleChunk !== defaultTitle ? `${titleChunk} | Andréa Rosa` : 'Andréa Rosa Advocacia'
   },
   meta: [
     { name: 'description', content: 'Plataforma inteligente de CRM e gestão' }

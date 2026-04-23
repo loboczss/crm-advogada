@@ -39,7 +39,7 @@
             v-model="form.email" 
             label="E-mail" 
             type="email" 
-            placeholder="usuario@evastur.com" 
+            placeholder="usuario@andrearosa.com" 
             required
             :disabled="isEditing || loading"
           />
@@ -69,14 +69,14 @@
                 required
               >
                 <option value="user">Usuário (Cliente)</option>
-                <option value="vendedor">Vendedor</option>
+                <option value="vendedor">Consultor</option>
                 <option value="admin">Administrador</option>
               </select>
             </div>
 
             <Input 
               v-model="form.vendedor_idStr" 
-              label="Vendedor ID" 
+              label="Consultor ID" 
               placeholder="Ex: 15" 
               type="number"
               :disabled="loading"

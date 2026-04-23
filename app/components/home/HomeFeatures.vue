@@ -2,7 +2,7 @@
   <section class="py-24 container mx-auto px-6">
     <div class="text-center mb-20">
       <h2 class="text-xs font-black uppercase tracking-[0.3em] text-primary mb-4">Funcionalidades</h2>
-      <h3 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">O que você ganha com o CRM Evastur</h3>
+      <h3 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">O que você ganha com o CRM Andréa Rosa</h3>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -27,9 +27,9 @@ import Card from '../Card.vue'
 
 const features = [
   {
-    title: 'Gestão de Vendas',
-    description: 'Acompanhe todo o pipeline de vendas em tempo real, desde o primeiro contato até o fechamento com métricas precisas.',
-    icon: 'ph:handshake-bold'
+    title: 'Gestão de Atendimentos',
+    description: 'Acompanhe todo o fluxo de atendimentos em tempo real, desde o primeiro contato até o fechamento com métricas precisas.',
+    icon: 'ph:scales-bold'
   },
   {
     title: 'Relatórios Inteligentes',
@@ -37,7 +37,7 @@ const features = [
     icon: 'ph:chart-pie-slice-bold'
   },
   {
-    title: 'Inteligência Artificial (EVA)',
+    title: 'Inteligência Artificial (Andréa)',
     description: 'Sua assistente virtual integrada para análise de dados e automação de tarefas repetitivas, economizando seu tempo.',
     icon: 'ph:sparkle-bold'
   }

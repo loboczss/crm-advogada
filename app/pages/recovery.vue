@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background-light via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
+  <div class="min-h-screen bg-gradient-to-br from-background-light via-rose-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
     <RecoveryHeader />
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-10 items-start">

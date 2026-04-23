@@ -12,8 +12,8 @@
             @click="navigateTo('/')"
           >
             <div class="relative">
-              <img src="/logo-blue.svg" alt="Evastur" class="dark:hidden h-6 sm:h-7 lg:h-8 w-auto select-none transition-transform duration-300 group-hover:scale-105" />
-              <img src="/logo-white.svg" alt="Evastur" class="hidden dark:block h-6 sm:h-7 lg:h-8 w-auto select-none transition-transform duration-300 group-hover:scale-105" />
+              <img src="/logo-andrea-rosa.png" alt="Andréa Rosa" class="dark:hidden h-6 sm:h-7 lg:h-8 w-auto select-none transition-transform duration-300 group-hover:scale-105" />
+              <img src="/logo-andrea-rosa-white.png" alt="Andréa Rosa" class="hidden dark:block h-6 sm:h-7 lg:h-8 w-auto select-none transition-transform duration-300 group-hover:scale-105" />
             </div>
           </div>
         </div>
@@ -123,13 +123,13 @@ const navItems = computed(() => {
   const items = [
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Relatórios', path: '/relatorios' },
-    { label: 'Vendas', path: '/vendas' },
-    { label: 'Crm', path: '/crm/evastur' }
+    { label: 'Atendimentos', path: '/vendas' },
+    { label: 'CRM', path: '/crm/andrearosa' }
   ]
 
   const role = profile.value?.role
   if (role === 'admin' || role === 'vendedor') {
-    items.push({ label: 'Eva', path: '/eva' })
+    items.push({ label: 'Andréa', path: '/eva' })
   }
 
   return items
@@ -140,11 +140,11 @@ const pageTitle = computed(() => {
   if (route.path === '/') return 'Home'
   if (route.path.startsWith('/dashboard')) return 'Dashboard'
   if (route.path.startsWith('/relatorios')) return 'Relatórios'
-  if (route.path.startsWith('/vendas')) return 'Vendas'
-  if (route.path.startsWith('/crm')) return 'Crm'
-  if (route.path.startsWith('/eva')) return 'Eva'
+  if (route.path.startsWith('/vendas')) return 'Atendimentos'
+  if (route.path.startsWith('/crm')) return 'CRM'
+  if (route.path.startsWith('/eva')) return 'Andréa'
   if (route.path.startsWith('/profile')) return 'Meu Perfil'
-  return 'Evastur'
+  return 'Andréa Rosa'
 })
 
 // Check if a path is the currently active route

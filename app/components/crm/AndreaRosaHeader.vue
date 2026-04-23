@@ -11,7 +11,7 @@ const emits = defineEmits(['add'])
         <Icon name="ph:address-book-duotone" class="text-xl text-blue-600 dark:text-blue-400" />
       </div>
       <div>
-        <h1 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">CRM Evastur</h1>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">CRM Andréa Rosa</h1>
         <p class="text-xs text-gray-500 dark:text-zinc-400">Gestão de leads e oportunidades</p>
       </div>
     </div>

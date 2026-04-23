@@ -102,7 +102,7 @@ import { useVendasStore } from '../stores/vendas'
 import type { Venda } from '../../shared/types/VendaDTO'
 import type { SalesFilterParams } from '../components/sales/SalesFilters.vue'
 
-useHead({ title: 'Histórico de Vendas | Evastur' })
+useHead({ title: 'Histórico de Atendimentos | Andréa Rosa' })
 definePageMeta({ middleware: ['auth'] })
 
 const store = useVendasStore()
@@ -127,8 +127,8 @@ async function handleAdd(payload: Omit<Venda, 'id' | 'created_at'>) {
     isModalOpen.value = false
     
     alertType.value = 'success'
-    alertTitle.value = 'Venda Adicionada'
-    alertMessage.value = 'A nova venda foi cadastrada com sucesso.'
+    alertTitle.value = 'Atendimento Adicionado'
+    alertMessage.value = 'O novo atendimento foi cadastrado com sucesso.'
     showAlert.value = true
     
     setTimeout(() => {
@@ -137,7 +137,7 @@ async function handleAdd(payload: Omit<Venda, 'id' | 'created_at'>) {
   } catch (error) {
     alertType.value = 'danger'
     alertTitle.value = 'Erro ao Salvar'
-    alertMessage.value = 'Ocorreu um problema ao tentar salvar a nova venda.'
+    alertMessage.value = 'Ocorreu um problema ao tentar salvar o novo atendimento.'
     showAlert.value = true
     
     setTimeout(() => {
@@ -150,8 +150,8 @@ async function handleDelete(id: number) {
   try {
     await store.deleteVenda(id)
     alertType.value = 'success'
-    alertTitle.value = 'Venda Excluída'
-    alertMessage.value = 'A venda foi removida do sistema com sucesso.'
+    alertTitle.value = 'Atendimento Excluído'
+    alertMessage.value = 'O atendimento foi removido do sistema com sucesso.'
     showAlert.value = true
     
     setTimeout(() => {
@@ -160,7 +160,7 @@ async function handleDelete(id: number) {
   } catch (error) {
     alertType.value = 'danger'
     alertTitle.value = 'Erro ao Excluir'
-    alertMessage.value = 'Ocorreu um problema ao tentar excluir esta venda.'
+    alertMessage.value = 'Ocorreu um problema ao tentar excluir este atendimento.'
     showAlert.value = true
     
     setTimeout(() => {
@@ -171,8 +171,8 @@ async function handleDelete(id: number) {
 
 function handleUpdateSuccess() {
   alertType.value = 'success'
-  alertTitle.value = 'Venda Atualizada'
-  alertMessage.value = 'Os dados da venda foram atualizados com sucesso.'
+  alertTitle.value = 'Atendimento Atualizado'
+  alertMessage.value = 'Os dados do atendimento foram atualizados com sucesso.'
   showAlert.value = true
   
   setTimeout(() => {
@@ -183,7 +183,7 @@ function handleUpdateSuccess() {
 function handleUpdateError() {
   alertType.value = 'danger'
   alertTitle.value = 'Erro ao Atualizar'
-  alertMessage.value = 'Ocorreu um problema ao tentar atualizar os dados da venda.'
+  alertMessage.value = 'Ocorreu um problema ao tentar atualizar os dados do atendimento.'
   showAlert.value = true
   
   setTimeout(() => {

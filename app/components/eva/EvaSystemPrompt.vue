@@ -117,7 +117,7 @@
                 'text-transparent': highlighterReady && highlightedContent,
                 'text-slate-800 dark:text-[#e6edf3]': !highlighterReady || !highlightedContent 
               }"
-              placeholder="Instruções da EVA..."
+              placeholder="Instruções da Andréa..."
               spellcheck="false"
               @scroll="syncScroll"
               @keydown.tab.prevent="insertTab"
@@ -137,9 +137,9 @@
               <Icon name="ph:brain-bold" class="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h4 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter">Editor Modular da EVA</h4>
+              <h4 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter">Editor Modular da Andréa</h4>
               <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium italic">
-                Abaixo estão as seções estruturais do prompt da EVA. As seções destacadas são estratégicas e definem a personalidade e as regras básicas da assistente.
+                Abaixo estão as seções estruturais do prompt da Andréa. As seções destacadas são estratégicas e definem a personalidade e as regras básicas da assistente.
               </p>
             </div>
           </div>

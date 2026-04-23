@@ -1,10 +1,10 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useRequestFetch } from '#imports'
-import type { CrmEvasturDTO } from '../../shared/types/CrmEvasturDTO'
+import type { CrmAndreaRosaDTO } from '../../shared/types/CrmAndreaRosaDTO'
 
 interface CrmResponse {
-    records: CrmEvasturDTO[]
+    records: CrmAndreaRosaDTO[]
     total: number
     page: number
     pageSize: number
@@ -17,9 +17,9 @@ interface CrmStats {
     conversionRate: number
 }
 
-export const useCrmEvasturStore = defineStore('crmEvastur', () => {
+export const useCrmAndreaRosaStore = defineStore('crmAndreaRosa', () => {
     // ─── State ────────────────────────────────────────────────────────────────
-    const records = ref<CrmEvasturDTO[]>([])
+    const records = ref<CrmAndreaRosaDTO[]>([])
     const total = ref(0)
     const loading = ref(false)
     const saving = ref(false)
@@ -52,7 +52,7 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
             params.set('pageSize', String(pageSize.value))
             if (search.value) params.set('search', search.value)
 
-            const res = await fetch<CrmResponse>(`/api/crm/evastur?${params.toString()}`)
+            const res = await fetch<CrmResponse>(`/api/crm/andrearosa?${params.toString()}`)
             records.value = res.records
             total.value = res.total
         } catch (e: any) {
@@ -66,7 +66,7 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
         statsLoading.value = true
         try {
             const fetch = useRequestFetch()
-            const res = await fetch<CrmStats>('/api/crm/evastur/stats')
+            const res = await fetch<CrmStats>('/api/crm/andrearosa/stats')
             stats.value = res
         } catch (e: any) {
             console.error('Erro ao carregar stats do CRM:', e)
@@ -75,19 +75,19 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
         }
     }
 
-    async function addRecord(payload: Omit<CrmEvasturDTO, 'id' | 'created_at'>) {
+    async function addRecord(payload: Omit<CrmAndreaRosaDTO, 'id' | 'created_at'>) {
         saving.value = true
         error.value = null
 
         // Optimistic add with a temporary negative id
         const tempId = -Date.now()
-        const optimisticRecord: CrmEvasturDTO = { ...payload, id: tempId, created_at: new Date().toISOString() }
+        const optimisticRecord: CrmAndreaRosaDTO = { ...payload, id: tempId, created_at: new Date().toISOString() }
         records.value.unshift(optimisticRecord)
         total.value++
 
         try {
             const fetch = useRequestFetch()
-            const created = await fetch<CrmEvasturDTO>('/api/crm/evastur', { method: 'POST', body: payload })
+            const created = await fetch<CrmAndreaRosaDTO>('/api/crm/andrearosa', { method: 'POST', body: payload })
             // Replace temp record with the real one from server
             const idx = records.value.findIndex(r => r.id === tempId)
             if (idx !== -1) records.value[idx] = created
@@ -104,7 +104,7 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
         }
     }
 
-    async function updateRecord(id: number, payload: Partial<CrmEvasturDTO>) {
+    async function updateRecord(id: number, payload: Partial<CrmAndreaRosaDTO>) {
         saving.value = true
         error.value = null
 
@@ -113,13 +113,13 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
         const currentRecord = idx !== -1 ? records.value[idx] : undefined
         const oldRecord = currentRecord ? { ...currentRecord } : null
         if (currentRecord) {
-            const optimisticRecord: CrmEvasturDTO = { ...currentRecord, ...payload }
+            const optimisticRecord: CrmAndreaRosaDTO = { ...currentRecord, ...payload }
             records.value[idx] = optimisticRecord
         }
 
         try {
             const fetch = useRequestFetch()
-            const updated = await fetch<CrmEvasturDTO>(`/api/crm/evastur/${id}`, { method: 'PUT', body: payload })
+            const updated = await fetch<CrmAndreaRosaDTO>(`/api/crm/andrearosa/${id}`, { method: 'PUT', body: payload })
             // Sync with server response
             if (idx !== -1) records.value[idx] = updated
             fetchStats().catch(() => {})
@@ -145,7 +145,7 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
 
         try {
             const fetch = useRequestFetch()
-            await fetch(`/api/crm/evastur/${id}`, { method: 'DELETE' })
+            await fetch(`/api/crm/andrearosa/${id}`, { method: 'DELETE' })
             fetchStats().catch(() => {})
         } catch (e: any) {
             // Revert: re-insert at original position
@@ -177,3 +177,4 @@ export const useCrmEvasturStore = defineStore('crmEvastur', () => {
         fetchRecords, fetchStats, addRecord, updateRecord, deleteRecord, setSearch, goToPage
     }
 })
+

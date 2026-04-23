@@ -90,7 +90,7 @@ const displayName = computed(() => {
 })
 
 const emailText = computed(() => {
-  return user.value?.email || 'usuario@evastur.com'
+  return user.value?.email || 'usuario@andrearosa.com'
 })
 
 const initials = computed(() => {

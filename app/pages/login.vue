@@ -1,20 +1,20 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background-light via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
+  <div class="min-h-screen bg-gradient-to-br from-background-light via-rose-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
     <header class="max-w-6xl mx-auto px-6 pt-8 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="/logo-blue.svg" alt="Evastur Logo" class="h-12 w-auto dark:hidden" />
-        <img src="/logo-white.svg" alt="Evastur Logo" class="h-12 w-auto hidden dark:block" />
+        <img src="/logo-andrea-rosa.png" alt="Andréa Rosa Logo" class="h-12 w-auto dark:hidden" />
+        <img src="/logo-andrea-rosa-white.png" alt="Andréa Rosa Logo" class="h-12 w-auto hidden dark:block" />
       </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-10 items-start">
       <section class="space-y-6">
-        <LoginBadge>Nova area de login</LoginBadge>
+        <LoginBadge>Nova área de login</LoginBadge>
         <h1 class="text-4xl md:text-5xl font-extrabold text-text-light dark:text-text-dark leading-tight">
           Bem-vindo de volta ao seu painel
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          Entre com seus dados para acessar os recursos do seu negocio com total seguranca.
+          Entre com seus dados para acessar os recursos do seu escritório com total segurança.
         </p>
 
       </section>
@@ -110,7 +110,7 @@
 import { ref, watch } from 'vue'
 import { useHead } from '#imports'
 
-useHead({ title: 'Login | Evastur' })
+useHead({ title: 'Login | Andréa Rosa' })
 import Button from '../components/Button.vue'
 import Card from '../components/Card.vue'
 import Input from '../components/Input.vue'
@@ -259,3 +259,4 @@ async function handleSignup() {
   await navigateTo('/confirm')
 }
 </script>
+

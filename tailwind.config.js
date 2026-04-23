@@ -11,14 +11,14 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          DEFAULT: '#3B82F6', // Electric Blue
-          light: '#60a5fa',
-          dark: '#1d4ed8',
+          50: '#fdf2f4',
+          100: '#fce7eb',
+          200: '#f9d0d9',
+          300: '#f4a9b8',
+          400: '#ec7a93',
+          DEFAULT: '#7B2332', // Marsala / Bordô Andréa Rosa
+          light: '#9B3344',
+          dark: '#5C1524',
         },
         secondary: {
           50: '#fef2f2',
@@ -112,7 +112,7 @@ module.exports = {
         'dark-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
         'dark-md': '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
         'dark-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-        'glow-primary': '0 0 15px -3px rgba(59, 130, 246, 0.5)',
+        'glow-primary': '0 0 15px -3px rgba(123, 35, 50, 0.5)',
         'glow-secondary': '0 0 15px -3px rgba(239, 68, 68, 0.5)',
         'glow-success': '0 0 15px -3px rgba(16, 185, 129, 0.5)',
       }

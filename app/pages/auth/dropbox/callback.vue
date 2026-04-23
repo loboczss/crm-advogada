@@ -36,7 +36,7 @@
       
       <div v-else class="pt-4">
         <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-          Sincronizando com Evastur...
+          Sincronizando com Andréa Rosa...
         </p>
       </div>
     </div>

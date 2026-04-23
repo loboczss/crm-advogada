@@ -71,11 +71,11 @@ const { isSending, error } = storeToRefs(emailStore)
 
 const form = reactive({
   to: '',
-  subject: 'Teste de Integração Resend - Evastur',
+  subject: 'Teste de Integração Resend - Andréa Rosa',
   html: `
 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
   <h2 style="color: #2f81f7; margin-bottom: 24px; font-weight: 900;">Conexão Estabelecida! 🚀</h2>
-  <p style="color: #475569; font-size: 16px; line-height: 1.6;">Parabéns, a integração de emails está funcionando perfeitamente pela plataforma Evastur CRM.</p>
+  <p style="color: #475569; font-size: 16px; line-height: 1.6;">Parabéns, a integração de emails está funcionando perfeitamente pela plataforma Andréa Rosa CRM.</p>
   <div style="background-color: #f8fafc; padding: 20px; border-radius: 12px; margin-top: 32px;">
     <p style="color: #64748b; font-size: 14px; margin: 0;">Este é um email automatizado disparado a partir da nova página de testes.</p>
   </div>

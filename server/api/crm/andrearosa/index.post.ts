@@ -1,12 +1,12 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import type { CrmEvasturDTO } from '../../../../shared/types/CrmEvasturDTO'
+import type { CrmAndreaRosaDTO } from '../../../../shared/types/CrmAndreaRosaDTO'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user?.sub) throw createError({ statusCode: 401, message: 'Não autorizado.' })
 
     const client = await serverSupabaseClient(event)
-    const body = await readBody<Omit<CrmEvasturDTO, 'id' | 'created_at'>>(event)
+    const body = await readBody<Omit<CrmAndreaRosaDTO, 'id' | 'created_at'>>(event)
 
     if (!body.contato_id) {
         throw createError({ statusCode: 400, message: 'contato_id é obrigatório.' })
@@ -23,5 +23,6 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: 'Erro interno ao criar registro.' })
     }
 
-    return data as CrmEvasturDTO
+    return data as CrmAndreaRosaDTO
 })
+

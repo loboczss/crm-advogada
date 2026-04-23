@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background-light via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 px-6">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background-light via-rose-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 px-6">
     <Card variant="light" class="p-8 max-w-md w-full">
       <div v-if="error" class="space-y-4 text-center">
         <div class="w-14 h-14 rounded-md bg-danger/10 text-danger flex items-center justify-center text-2xl font-bold mx-auto">
@@ -41,7 +41,7 @@ import Button from '../components/Button.vue'
 import Card from '../components/Card.vue'
 import ConfirmPasswordForm from '../components/auth/ConfirmPasswordForm.vue'
 
-useHead({ title: 'Confirmando... | Evastur' })
+useHead({ title: 'Confirmando... | Andréa Rosa' })
 
 const error = ref('')
 const user = useSupabaseUser()

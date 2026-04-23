@@ -6,7 +6,7 @@
           Relatórios
         </h1>
         <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">
-          Acompanhamento detalhado das métricas de vendas e conversão.
+          Acompanhamento detalhado das métricas de atendimentos e conversão.
         </p>
       </div>
 
@@ -62,7 +62,7 @@ import RankingVendedores from '../components/relatorios/RankingVendedores.vue'
 import Alert from '../components/Alert.vue'
 import { useRankingData } from '../composables/useRankingData'
 
-useHead({ title: 'Relatórios | Evastur' })
+useHead({ title: 'Relatórios | Andréa Rosa' })
 definePageMeta({ middleware: 'auth' })
 
 const { 

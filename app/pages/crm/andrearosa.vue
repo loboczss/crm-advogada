@@ -1,23 +1,28 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useHead } from '#imports'
-import { useCrmEvasturStore } from '~/stores/crmEvastur'
+import { useCrmAndreaRosaStore } from '~/stores/crmAndreaRosa'
+import AndreaRosaHeader from '~/components/crm/AndreaRosaHeader.vue'
+import AndreaRosaStats from '~/components/crm/AndreaRosaStats.vue'
+import AndreaRosaTable from '~/components/crm/AndreaRosaTable.vue'
+import AndreaRosaLeadModal from '~/components/crm/AndreaRosaLeadModal.vue'
+import CrmDetailModal from '~/components/crm/CrmDetailModal.vue'
 
-useHead({ title: 'CRM Evastur | Evastur' })
-import type { CrmEvasturDTO } from '~/../shared/types/CrmEvasturDTO'
+useHead({ title: 'CRM Andréa Rosa | Advocacia Previdenciária' })
+import type { CrmAndreaRosaDTO } from '~/../shared/types/CrmAndreaRosaDTO'
 
-const crmStore = useCrmEvasturStore()
+const crmStore = useCrmAndreaRosaStore()
 
 // Form Modal State
 const isModalOpen = ref(false)
-const selectedLead = ref<CrmEvasturDTO | null>(null)
+const selectedLead = ref<CrmAndreaRosaDTO | null>(null)
 
 // Detail Modal State
 const isDetailModalOpen = ref(false)
 const selectedDetailContactId = ref<string | null>(null)
 
 // Handlers
-const openDetailModal = (record: CrmEvasturDTO) => {
+const openDetailModal = (record: CrmAndreaRosaDTO) => {
   selectedDetailContactId.value = record.contato_id || null
   isDetailModalOpen.value = true
 }
@@ -32,7 +37,7 @@ const openAddModal = () => {
   isModalOpen.value = true
 }
 
-const openEditModal = (lead: CrmEvasturDTO) => {
+const openEditModal = (lead: CrmAndreaRosaDTO) => {
   selectedLead.value = { ...lead }
   isModalOpen.value = true
 }
@@ -42,7 +47,7 @@ const closeModal = () => {
   selectedLead.value = null
 }
 
-const handleModalSubmit = async (formData: Omit<CrmEvasturDTO, 'id' | 'created_at'>) => {
+const handleModalSubmit = async (formData: Omit<CrmAndreaRosaDTO, 'id' | 'created_at'>) => {
   try {
     if (selectedLead.value?.id) {
       await crmStore.updateRecord(selectedLead.value.id, formData)
@@ -74,18 +79,18 @@ onMounted(() => {
 <template>
   <div class="space-y-6">
     <!-- Header with Search and Add -->
-    <CrmEvasturHeader 
+    <AndreaRosaHeader 
       @add="openAddModal" 
     />
 
     <!-- Stats Overview -->
-    <CrmEvasturStats 
+    <AndreaRosaStats 
       :stats="crmStore.stats"
       :loading="crmStore.statsLoading"
     />
 
     <!-- Main Table -->
-    <CrmEvasturTable 
+    <AndreaRosaTable 
       :records="crmStore.records" 
       :loading="crmStore.loading"
       :total="crmStore.total"
@@ -106,7 +111,7 @@ onMounted(() => {
     />
 
     <!-- Lead Form Modal -->
-    <CrmEvasturLeadModal 
+    <AndreaRosaLeadModal 
       :is-open="isModalOpen"
       :initial-data="selectedLead"
       :loading="crmStore.saving"
@@ -115,3 +120,4 @@ onMounted(() => {
     />
   </div>
 </template>
+
