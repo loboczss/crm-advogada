@@ -41,25 +41,21 @@ const IMAGE_TIPOS = ['JPG', 'JPEG', 'PNG', 'WEBP', 'GIF']
 const UPLOADABLE_TIPOS = ['PDF', 'DOCX', 'DOC', 'XLSX', 'XLS', 'CSV', 'TXT']
 
 // ─── Prompt de Análise Completa ────────────────────────────────────────────────
-const ANALYSIS_PROMPT = `Você é um especialista em análise e transcrição completa de documentos.
+const ANALYSIS_PROMPT = `Você é um especialista em extração e transcrição de conteúdo de documentos.
 
-Sua tarefa é TRANSCREVER e ANALISAR completamente o documento fornecido, gerando um Markdown estruturado e detalhado que represente fielmente o original.
+Sua única tarefa é converter o conteúdo do documento fornecido em Markdown limpo e estruturado.
 
-## Regras de Saída (CRÍTICAS):
-1. **APENAS O CONTEÚDO**: Responda APENAS com o Markdown do documento transcrito.
-2. **SEM META-COMENTÁRIOS**: NUNCA inclua seções como "Observações visuais", "Metadados", ou listas do que NÃO existe no documento (ex: NÃO diga "Não há imagens" ou "Não há tabelas"). 
-3. **SILÊNCIO SOBRE AUSÊNCIAS**: Se um elemento (imagem, tabela, gráfico) não estiver presente, simplesmente ignore-o. Não mencione sua ausência.
-4. **INÍCIO DIRETO**: Comece o Markdown diretamente com o primeiro título ou parágrafo do documento.
-5. **SEM SAUDAÇÕES**: Não diga "Aqui está a transcrição" ou "Análise concluída".
+## Regras absolutas:
 
-## Instruções de Estrutura:
-1. **TRANSCREVA TODO o texto**, palavra por palavra, preservando a estrutura original.
-2. **DESCREVA imagens/gráficos** encontrados de forma detalhada, inserindo a descrição no local onde a imagem aparece no fluxo do documento.
-3. **REPRODUZA tabelas** fielmente em formato Markdown.
-4. **PRESERVE a hierarquia** (Headings ##, listas, blockquotes).
-5. **CAPTURE formatação** (negrito, itálico) e elementos como cabeçalhos e rodapés textuais.
-6. **DADOS NUMÉRICOS**: Precisão absoluta em números, datas e valores.
-7. **NÃO RESUMA** e **NÃO ADICIONE** informações externas.`
+1. Transcreva TODO o texto do documento fielmente, preservando a estrutura original.
+2. Reproduza TODAS as tabelas em formato Markdown com os dados corretos.
+3. Preserve a hierarquia: use ## e ### para títulos, listas para itens, blockquotes para citações.
+4. Transcreva números, datas e valores com precisão absoluta.
+5. Se houver imagens com conteúdo informacional relevante (gráficos, dados, texto embutido), descreva apenas a informação contida nelas, no local onde aparecem no documento.
+6. NÃO adicione informações que não existam no documento.
+7. NÃO resuma — transcreva o documento COMPLETO.
+8. É TERMINANTEMENTE PROIBIDO incluir qualquer observação, nota, análise ou comentário sobre o próprio documento — como "Não há imagens", "O documento usa negrito", "Observações visuais", "Não há cabeçalhos", "Nota:", "Formatação:", ou qualquer variação disso. Se um elemento não existe no documento, simplesmente não mencione.
+9. Responda SOMENTE com o Markdown transcrito. Nada mais.`
 
 // ─── Text Splitter ─────────────────────────────────────────────────────────────
 function splitText(text: string, chunkSize = 1200, chunkOverlap = 100): string[] {
