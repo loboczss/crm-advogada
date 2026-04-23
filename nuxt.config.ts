@@ -15,7 +15,8 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#7B2332' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/logo-andrea-rosa.png' },
+        { rel: 'icon', type: 'image/x-icon', href: '/logo-andrea-rosa-white-removebg-preview.ico' },
+        { rel: 'shortcut icon', href: '/logo-andrea-rosa-white-removebg-preview.ico' },
         { rel: 'apple-touch-icon', href: '/logo-andrea-rosa.png' }
       ]
     }
