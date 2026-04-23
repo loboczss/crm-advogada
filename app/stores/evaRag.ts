@@ -19,7 +19,8 @@ export const useEvaRagStore = defineStore('evaRag', () => {
      * Returns immediately with a jobId (202), then polls until done.
      */
     async function sendDocument(payload: {
-        conteudo: string
+        source?: string
+        conteudo?: string
         base64?: string
         tipo: string
     }): Promise<RagJobStatus> {

@@ -27,8 +27,8 @@
         </h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 max-w-md">
           {{ ragStore.loading
-            ? 'A Andréa está extraindo, convertendo para Markdown e indexando. Aguarde...'
-            : 'Arraste ou clique para enviar PDF, XLSX, CSV ou TXT. A Andréa extrai, converte para Markdown e indexa automaticamente.'
+            ? 'A IA está analisando o documento completo — texto, imagens, tabelas e layout. Aguarde...'
+            : 'Arraste ou clique para enviar PDF, DOCX, XLSX, CSV, TXT ou imagens (JPG, PNG). A IA analisa o documento completo e indexa automaticamente.'
           }}
         </p>
 
@@ -36,11 +36,11 @@
         <div v-if="ragStore.loading" class="flex gap-6 text-xs text-slate-400 mt-2">
           <span class="flex items-center gap-1 text-primary font-medium">
             <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-            Extraindo texto
+            Enviando para IA
           </span>
-          <span>→ Convertendo Markdown</span>
-          <span>→ Salvando RAG</span>
-          <span>→ Gerando embeddings</span>
+          <span>→ Analisando documento</span>
+          <span>→ Gerando Markdown</span>
+          <span>→ Salvando embeddings</span>
         </div>
 
         <!-- Feedback Alerts -->
@@ -55,7 +55,7 @@
           id="eva-rag-file-input"
           ref="fileInputRef"
           type="file"
-          accept=".pdf,.xlsx,.xls,.csv,.txt"
+          accept=".pdf,.xlsx,.xls,.csv,.txt,.docx,.doc,.jpg,.jpeg,.png,.webp,.gif"
           class="hidden"
           @change="handleFileChange"
           @click.stop
@@ -435,7 +435,7 @@ async function processFile(file: File) {
       const base64 = (e.target?.result as string).split(',')[1]
 
       await ragStore.sendDocument({
-        conteudo: file.name,
+        source: file.name,
         base64,
         tipo: ext,
       })
@@ -476,6 +476,7 @@ async function handleSendText() {
   
   try {
     await ragStore.sendDocument({
+      source: 'texto-manual',
       conteudo: manualText.value,
       tipo: 'TXT',
     })
