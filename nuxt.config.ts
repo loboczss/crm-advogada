@@ -12,11 +12,11 @@ export default defineNuxtConfig({
       title: 'Andréa Rosa Advocacia',
       meta: [
         { name: 'description', content: 'Sistema de Gestão Previdenciária Andréa Rosa' },
-        { name: 'theme-color', content: '#2f81f7' }
+        { name: 'theme-color', content: '#7B2332' }
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/icon-white.svg' },
-        { rel: 'apple-touch-icon', href: '/icon-white.svg' }
+        { rel: 'icon', type: 'image/svg+xml', href: '/icon-andrea-rosa.svg' },
+        { rel: 'apple-touch-icon', href: '/icon-andrea-rosa-192.png' }
       ]
     }
   },
@@ -35,23 +35,23 @@ export default defineNuxtConfig({
       name: 'Andréa Rosa CRM',
       short_name: 'Andréa Rosa',
       description: 'Sistema de Gestão Previdenciária Andréa Rosa',
-      theme_color: '#2f81f7',
+      theme_color: '#7B2332',
       background_color: '#ffffff',
       icons: [
         {
-          src: '/icon-192.png',
+          src: '/icon-andrea-rosa-192.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/icon-512.png',
+          src: '/icon-andrea-rosa-192.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/icon-white.svg',
+          src: '/icon-andrea-rosa-white.svg',
           sizes: 'any',
           type: 'image/svg+xml',
           purpose: 'maskable'
