@@ -15,8 +15,8 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#7B2332' }
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/icon-andrea-rosa.svg' },
-        { rel: 'apple-touch-icon', href: '/icon-andrea-rosa-192.png' }
+        { rel: 'icon', type: 'image/png', href: '/logo-andrea-rosa.png' },
+        { rel: 'apple-touch-icon', href: '/logo-andrea-rosa.png' }
       ]
     }
   },
@@ -39,21 +39,21 @@ export default defineNuxtConfig({
       background_color: '#ffffff',
       icons: [
         {
-          src: '/icon-andrea-rosa-192.png',
+          src: '/logo-andrea-rosa.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/icon-andrea-rosa-192.png',
+          src: '/logo-andrea-rosa.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/icon-andrea-rosa-white.svg',
+          src: '/logo-andrea-rosa-white.png',
           sizes: 'any',
-          type: 'image/svg+xml',
+          type: 'image/png',
           purpose: 'maskable'
         }
       ],
