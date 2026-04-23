@@ -11,8 +11,22 @@ export default defineNuxtConfig({
     head: {
       title: 'Andréa Rosa Advocacia',
       meta: [
-        { name: 'description', content: 'Sistema de Gestão Previdenciária Andréa Rosa' },
-        { name: 'theme-color', content: '#7B2332' }
+        { name: 'description', content: 'Sistema de Gestão Previdenciária — Andréa Rosa Advocacia Previdenciária' },
+        { name: 'theme-color', content: '#7B2332' },
+        // Open Graph (WhatsApp, Telegram, LinkedIn, Facebook)
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Andréa Rosa Advocacia' },
+        { property: 'og:title', content: 'Andréa Rosa Advocacia Previdenciária' },
+        { property: 'og:description', content: 'Sistema de Gestão Previdenciária — Andréa Rosa Advocacia Previdenciária' },
+        { property: 'og:image', content: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://crm.andrearosa.adv.br'}/logo-andrea-rosa-white.png` },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:image:alt', content: 'Andréa Rosa Advocacia Previdenciária' },
+        // Twitter Card
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Andréa Rosa Advocacia Previdenciária' },
+        { name: 'twitter:description', content: 'Sistema de Gestão Previdenciária — Andréa Rosa Advocacia Previdenciária' },
+        { name: 'twitter:image', content: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://crm.andrearosa.adv.br'}/logo-andrea-rosa-white.png` },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/logo-andrea-rosa-white-removebg-preview.ico' },
